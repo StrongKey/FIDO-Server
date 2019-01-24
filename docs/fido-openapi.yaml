@@ -1,0 +1,745 @@
+openapi: 3.0.0
+info:
+  title: FIDO Server API
+  version: 4.0.0
+  description: |
+    The FIDO Server API provides the registration and authentication web services required to manage the FIDO keys of users.
+
+    All API calls require a cryptographic domain ID ("did"). Cryptographic domains provide a method of cryptographically
+    separating encrypted data. Each domain uses a different set of encryption keys, uses a different set of credentials,
+    and can be configured separately to have different behaviors.
+
+    All web services require a set of valid credentials. These credentials provide administrators the ability to restrict
+    access to sensitive information. The default credentials for demo applications have the usernames "encrypt", "decrypt",
+    "encryptdecrypt", "pinguser", and "all". The usernames describe the web services these credentials are authorized to use.
+    They all have the password "Abcd1234!" for demo purposes.
+  termsOfService: 'https://www.strongkey.com/privacy-policy-terms-of-use/#terms-of-use'
+  contact:
+    name: StrongKey
+    url: 'https://www.strongkey.com'
+    email: support@strongkey.com
+  license:
+    name: GNU LGPL 2.1+
+    url: 'http://www.fsf.org/licensing/licenses/lgpl.html'
+servers:
+  - url: '/skfe/rest'
+tags:
+  - name: U2F
+    description: StrongKey implementation of the FIDO U2F protocol.
+  - name: Administration
+    description: Management API for registered FIDO keys.
+  - name: WIP
+    description: Work-In-Progress stubs for future use cases.
+paths:
+  /preregister:
+    post:
+      summary: Request a challenge (nonce) for registration.
+      description: |
+        Step-1 for FIDO  authenticator registration. This method
+        generates and returns a challenge to the caller.
+      tags:
+        - U2F
+      operationId: preregister
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      required:
+                        - username
+                      properties:
+                        username:
+                          $ref: '#/components/schemas/username'
+                  example: |
+                    {
+                      "username": "testuser"
+                    }
+      responses:
+        '200':
+          $ref: '#/components/responses/ChallengeResponse'
+  /register:
+    post:
+      summary: Submit a signed challenge (nonce) for registration.
+      description: |
+        Step 2 for FIDO authenticator registration. This method allows for caller to return the signed challenge to the server to be verified. To test this web service, follow these steps.
+        1) If you have a FIDO U2F authenticator, skip Steps 2-6
+        2) Using Firefox (**required**), open a new tab.
+        3) Enter "about:config" into URL bar.
+        4) Search for webauthn in the search bar.
+        5) Double-click security.webauth.webauthn_enable_softtoken to set the value to true.
+        6) Double-click security.webauth.webauthn_enable_hardware to set the value to false.
+        7) On this page, open the console (F12).
+        8) Copy and paste this text into the console: *u2f.register(APPID, REGISTRATIONREQUESTS, REGISTEREDKEYS, function(result){console.log(result);})*
+        9) Run the preregister web service.
+        10) Replace "APPID", "REGISTRATIONREQUESTS", and "REGISTEREDKEYS" with the values "appId", "registerRequests", and "registeredKeys" returned by the preregister response.
+        11) Press enter on the console to submit the code.
+        12) Tap the FIDO U2F authenticator to sign the challenge. If you followed Steps 2-6, ignore this step.
+        13) Replace the "CLIENTDATA" and "REGISTRATIONDATA" text in the example text with values of "clientData" and "registrationData" displayed in the console.
+        14) Run the web service. **Note: Steps 9-14 MUST be completed within 30 seconds. Otherwise the Response message will return the Error "FIDO-ERR-0006: User session in-active: {0}" and the key will not be registered.**
+      tags:
+        - U2F
+      operationId: register
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      properties:
+                        metadata:
+                          allOf:
+                            - $ref: '#/components/schemas/metadata'
+                            - type: object
+                              required:
+                                - username
+                                - version
+                                - create_location
+                              properties:
+                                username:
+                                  $ref: '#/components/schemas/username'
+                                version:
+                                  $ref: '#/components/schemas/version'
+                                create_location:
+                                  $ref: '#/components/schemas/location'
+                        response:
+                          allOf:
+                            - $ref: '#/components/schemas/response'
+                            - type: object
+                              required:
+                                - clientData
+                                - registrationData
+                              properties:
+                                clientData:
+                                  type: string
+                                registrationData:
+                                  type: string
+                      example: |
+                        {
+                          "metadata": {
+                            "username": "testuser",
+                            "version": "1.0",
+                            "create_location": "Unknown"
+                          },
+                          "response": {
+                            "clientData": "CLIENTDATA",
+                            "registrationData": "REGISTRATIONDATA"
+                          }
+                        }
+      responses:
+        '200':
+          $ref: '#/components/responses/GenericResponse'
+  /preauthenticate:
+    post:
+      summary: Request a challenge (nonce) for authentication.
+      description: |
+        Step-1 for FIDO  authenticator authentication. This method
+        generates and returns a challenge to the caller.
+      tags:
+        - U2F
+      operationId: preauthenticate
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      required:
+                        - username
+                      properties:
+                        username:
+                          $ref: '#/components/schemas/username'
+                  example: |
+                    {
+                      "username": "testuser"
+                    }
+      responses:
+        '200':
+          $ref: '#/components/responses/ChallengeResponse'
+  /authenticate:
+    post:
+      summary: Submit a signed challenge (nonce) for authenication.
+      description: |
+        Step 2 for FIDO authenticator authentication. This method allows for caller to return the signed challenge to the server to be verified. To test this web service, follow these steps:
+        1) If you have a FIDO U2F authenticator, skip Steps 2-6
+        2) Using Firefox (**required**), open a new tab.
+        3) Enter "about:config" into URL bar.
+        4) Search for webauthn in the search bar.
+        5) Double-click security.webauth.webauthn_enable_softtoken to set the value to true.
+        6) Double-click security.webauth.webauthn_enable_hardware to false.
+        7) On this page, open the console (F12).
+        8) Copy and paste this text into the consol:, *u2f.sign(APPID, CHALLENGE, REGISTEREDKEYS, function(result){console.log(result);})*
+        9) Run the preauthenticate web service.
+        10) Replace "APPID", "CHALLENGE", and "REGISTEREDKEYS" with the values "appId", "challenge", and "registeredKeys" returned by the preregister response.
+        11) Press Enter on the console to submit the code.
+        12) Tap the FIDO U2F authenticator to sign the challenge. If you followed Steps 2-6, ignore this step.
+        13) Replace the "CLIENTDATA", "KEYHANDLE" and "SIGNATUREDATA" text in the example text with values of "clientData", "keyHandle", and "signatureData" displayed in the console.
+        14) Run the web service. **Note: Steps 9-14 MUST be completed within 30 seconds. Otherwise the Response message will return the Error "FIDO-ERR-0006: User session in-active: {0}" and authentication will fail.**
+      tags:
+        - U2F
+      operationId: authenticate
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      properties:
+                        metadata:
+                          allOf:
+                            - $ref: '#/components/schemas/metadata'
+                            - type: object
+                              required:
+                                - username
+                                - version
+                                - last_used_location
+                              properties:
+                                username:
+                                  $ref: '#/components/schemas/username'
+                                version:
+                                  $ref: '#/components/schemas/version'
+                                last_used_location:
+                                  $ref: '#/components/schemas/location'
+                        response:
+                          allOf:
+                            - $ref: '#/components/schemas/response'
+                            - type: object
+                              required:
+                                - clientData
+                                - keyHandle
+                                - signatureData
+                              properties:
+                                clientData:
+                                  type: string
+                                keyHandle:
+                                  type: string
+                                signatureData:
+                                  type: string
+                      example: |
+                        {
+                          "metadata": {
+                            "username": "testuser",
+                            "version": "1.0",
+                            "last_used_location": "Unknown"
+                          },
+                          "response": {
+                            "clientData": "CLIENTDATA",
+                            "keyHandle": "KEYHANDLE",
+                            "signatureData": "SIGNATUREDATA"
+                          }
+                        }
+      responses:
+        '200':
+          $ref: '#/components/responses/GenericResponse'
+  /activate:
+    post:
+      summary: Set a registered key's status to 'Active'
+      description: |
+        Method that brings a specific user registered key stored in the persistent storage into 'ACTIVE' status. The FIDO protocol as such does not specify any activation process. So, this method just changes the user registered FIDO  authenticator information in the persistent storage to bear an 'ACTIVE' status so that it can be used for FIDO -authentication. Since the user could have registered multiple FIDO  authenticators, to identify which key has to be activated, there is a random id to be passed. This random id for every registered FIDO  authenticator can be obtained by making the getkeysinfo call, which will return an array of registered key metadata, each entry mapped to a random id. These random ids have a 'ttl (time-to-live)' associated with them. This information is also sent back with the key metadata during getkeysinfo call. Client applications have to cache these random ids if they wish to de-activate / activate / de-register keys.
+      tags:
+        - Administration
+      operationId: activate
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      required:
+                        - request
+                        - metadata
+                      properties:
+                        request:
+                          description: Information about the key to act on.
+                          type: object
+                          required:
+                            - username
+                            - randomid
+                          properties:
+                            username:
+                              $ref: '#/components/schemas/username'
+                            randomid:
+                              type: string
+                        metadata:
+                          allOf:
+                            - $ref: '#/components/schemas/metadata'
+                            - type: object
+                              required:
+                                - version
+                                - last_used_location
+                              properties:
+                                version:
+                                    $ref: '#/components/schemas/version'
+                                last_used_location:
+                                    $ref: '#/components/schemas/location'
+                      example: |
+                        {
+                          "request": {
+                            "username": "testuser",
+                            "randomid": "RANDOMID"
+                          },
+                          "metadata": {
+                            "version": "1.0",
+                            "last_used_location": "Unknown"
+                          }
+                        }
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/GenericResponse'
+  /deactivate:
+    post:
+      summary: Set a registered key's status to 'Active'
+      description: |
+        Method that puts a specific user registered key stored in the persistent
+        storage into 'INACTIVE' status. The protocol as such does not specify any
+        de-activation process. So, this method just changes the user registered
+        FIDO  authenticator information in the persistent storage to bear an
+        'INACTIVE' status so that it COULD NOT be used for FIDO -authentication.
+        However, such inactive keys can be made active by calling activate
+        method.
+      tags:
+        - Administration
+      operationId: deactivate
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      required:
+                        - request
+                        - metadata
+                      properties:
+                        request:
+                          description: Information about the key to act on.
+                          type: object
+                          required:
+                            - username
+                            - randomid
+                          properties:
+                            username:
+                              $ref: '#/components/schemas/username'
+                            randomid:
+                              type: string
+                        metadata:
+                          allOf:
+                            - $ref: '#/components/schemas/metadata'
+                            - type: object
+                              required:
+                                - version
+                                - last_used_location
+                              properties:
+                                version:
+                                    $ref: '#/components/schemas/version'
+                                last_used_location:
+                                    $ref: '#/components/schemas/location'
+                      example: |
+                        {
+                          "request": {
+                            "username": "testuser",
+                            "randomid": "RANDOMID"
+                          },
+                          "metadata": {
+                            "version": "1.0",
+                            "last_used_location": "Unknown"
+                          }
+                        }
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/GenericResponse'
+  /deregister:
+    post:
+      summary: Delete a registered key.
+      description: |
+        The process of deleting or de-registering an already
+        registered FIDO  authenticator. The inputs needed are the name of the user and
+        the randomid to point to a unique registered key for that user. This randomid
+        can be obtained by calling getkeysinfo method.
+      tags:
+        - Administration
+      operationId: deregister
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      required:
+                        - request
+                      properties:
+                        request:
+                          description: Information about the key to act on.
+                          type: object
+                          required:
+                            - username
+                            - randomid
+                          properties:
+                            username:
+                              $ref: '#/components/schemas/username'
+                            randomid:
+                              type: string
+                  example: |
+                    {
+                      "request": {
+                        "username": "testuser",
+                        "randomid": "RANDOMID"
+                      }
+                    }
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/GenericResponse'
+  /getkeysinfo:
+    post:
+      summary: Get all keys associated with a registered user.
+      description: |
+        Method to return a list of user registered FIDO  authenticator
+        information; In short, registered keys information. Information includes
+        the meta data of the key like the place and time it was registered and
+        used (last modified) from. randomid_ttl_seconds has been deprecated.
+      tags:
+        - Administration
+      operationId: getkeysinfo
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      required:
+                        - username
+                      properties:
+                        username:
+                          $ref: '#/components/schemas/username'
+                      example: |
+                        {
+                          "username": "testuser"
+                        }
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/GenericResponse'
+  /preauthorize:
+    post:
+      summary: Stub for "Transactional authorization".  Currently identitical to preauthenticate.
+      description: |
+        Step-1 for "transactional authorization". This method
+        generates and returns a challenge to the caller.
+      tags:
+        - WIP
+      operationId: preauthorize
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      required:
+                        - username
+                      properties:
+                        username:
+                          $ref: '#/components/schemas/username'
+                  example: |
+                    {
+                      "username": "testuser"
+                    }
+      responses:
+        '200':
+          $ref: '#/components/responses/GenericResponse'
+  /authorize:
+    post:
+      summary: Stub for "Transactional authorization".  Currently identitical to authenticate.
+      description: |
+        Step2 for "transactional authorization". This method allows for caller to return the signed challenge to be returned to the server to be verified. To test this web service, follow these steps:
+        1) If you have a FIDO U2F authenticator, skip Steps 2-6.
+        2) Using Firefox, open a new tab.
+        3) Enter "about:config" into URL bar.
+        4) Search for webauthn in the search bar.
+        5) Double-click security.webauth.webauthn_enable_softtoken to set the value to true.
+        6) Double-click security.webauth.webauthn_enable_hardware to false.
+        7) On this page, open the console (F12).
+        8) Copy and paste this text into the console: *u2f.sign(APPID, CHALLENGE, REGISTEREDKEYS, function(result){console.log(result);})*
+        9) Run the preauthorize web service.
+        10) Replace "APPID", "CHALLENGE", and "REGISTEREDKEYS" with the values "appId", "challenge", and "registeredKeys" returned by the preauthorize response.
+        11) Press Enter on the console to submit the code.
+        12) Tap the FIDO U2F authenticator to sign the challenge. If you followed Steps 2-6, ignore this step.
+        13) Replace the "CLIENTDATA", "KEYHANDLE" and "SIGNATUREDATA" text in the example text with values of "clientData", "keyHandle", and "signatureData" displayed in the console.
+        14) Run the web service. **Note: Steps 9-14 MUST be completed within 30 seconds. Otherwise the Response message will return the Error "FIDO-ERR-0006: User session in-active: {0}" and authorization will fail.**
+      tags:
+        - WIP
+      operationId: authorize
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+                    - type: object
+                      properties:
+                        metadata:
+                          allOf:
+                            - $ref: '#/components/schemas/metadata'
+                            - type: object
+                              required:
+                                - username
+                                - version
+                                - last_used_location
+                              properties:
+                                username:
+                                  $ref: '#/components/schemas/username'
+                                version:
+                                  $ref: '#/components/schemas/version'
+                                last_used_location:
+                                  $ref: '#/components/schemas/location'
+                        response:
+                          allOf:
+                            - $ref: '#/components/schemas/response'
+                            - type: object
+                              required:
+                                - clientData
+                                - keyHandle
+                                - signatureData
+                              properties:
+                                clientData:
+                                  type: string
+                                keyHandle:
+                                  type: string
+                                signatureData:
+                                  type: string
+                      example: |
+                        {
+                          "metadata": {
+                            "username": "testuser",
+                            "version": "1.0",
+                            "last_used_location": "Unknown"
+                          },
+                          "response": {
+                            "clientData": "CLIENTDATA",
+                            "keyHandle": "KEYHANDLE",
+                            "signatureData": "SIGNATUREDATA"
+                          }
+                        }
+      responses:
+        '200':
+          $ref: '#/components/responses/ChallengeResponse'
+  /getserverinfo:
+    post:
+      summary: Get information about FIDO server(s).
+      description: |
+        A placeholder to send back any server-side information that could be needed by the client applications.
+      tags:
+        - WIP
+      operationId: getserverinfo
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - svcinfo
+                - payload
+              properties:
+                svcinfo:
+                  $ref: '#/components/schemas/svcinfo'
+                payload:
+                  allOf:
+                    - $ref: '#/components/schemas/payload'
+        required: true
+      responses:
+        '200':
+          description: not implemented yet
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+              example:
+                not implemented yet
+
+components:
+  schemas:
+    svcinfo:
+      description: The service credentials to authorize usage of the web service.
+      type: object
+      required:
+        - did
+        - svcusername
+        - svcpassword
+        - protocol
+      properties:
+        did:
+          description: The cryptographic domain.
+          type: string
+          maxLength: 5
+        svcusername:
+          description: The service credential username.
+          type: string
+        svcpassword:
+          description: The service credential password.
+          type: string
+          format: password
+        protocol:
+          description: The FIDO protocol to use.
+          type: string
+      example: |
+        {
+          "did": "2",
+          "svcusername": "svcfidouser",
+          "svcpassword": "Abcd1234!",
+          "protocol": "U2F_V2"
+        }
+    payload:
+      description: The information needed for the web service.
+      type: object
+    username:
+      description: The username associated or to be associated with the FIDO key.
+      type: string
+      maxLength: 256
+    metadata:
+      description: Additional information sent/stored. Particular to StrongKey's implementation of FIDO.
+      type: object
+    response:
+      description: The information returned after signing the challenge.
+      type: object
+    version:
+      description: The version of the web service being used.
+      type: string
+      enum:
+        - '1.0'
+    location:
+      description: Location metadata that can be stored during web service calls.
+      type: string
+    Response:
+      description: Response JSON object returned by web services.
+      required:
+        - Message
+        - Error
+      properties:
+        Challenge:
+          description: A Challenge object that contains information dictated by the FIDO protocol. Mutually exclusive of Response.
+          type: string
+        Response:
+          description: A positive return value whose non-empty value indicates a successful web service call. Mutually exclusive of Challenge.
+          type: string
+        Message:
+          description: A neutral return value whose non-empty value indicates additional information/warning information.
+          type: string
+        Error:
+          description: A negative return value whose non-empty value indicates an unsuccessful web service call.
+          type: string
+  responses:
+    ChallengeResponse:
+      description: A request was sucessfully received by the StrongKey FIDO server.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: |
+            {
+              "Challenge": "",
+              "Message": "",
+              "Error": ""
+            }
+    GenericResponse:
+      description: A request was sucessfully received by the StrongKey FIDO server.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: |
+            {
+              "Response": "",
+              "Message": "",
+              "Error": ""
+            }

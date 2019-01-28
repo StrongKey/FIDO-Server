@@ -722,7 +722,7 @@ components:
           type: string
   responses:
     ChallengeResponse:
-      description: A request was sucessfully received by the StrongKey FIDO server.
+      description: A request was successfully received by the StrongKey FIDO server.
       content:
         application/json:
           schema:
@@ -734,7 +734,7 @@ components:
               "Error": ""
             }
     GenericResponse:
-      description: A request was sucessfully received by the StrongKey FIDO server.
+      description: A request was successfully received by the StrongKey FIDO server.
       content:
         application/json:
           schema:

@@ -4,4 +4,4 @@ description: FIDO2-certified authentication server
 pages_list:       
   FIDO Server: '/fido'
   Relying Party: '/relying-party-java'
-  WebAuthn: '/webauthn-sample-code'
+  WebAuthn: '/webauthn'

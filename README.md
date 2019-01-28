@@ -28,7 +28,9 @@ Congratulations! Installation is complete. To see it in action, sample code is p
 [Open API documentation for FIDO2/WebAuthn](URL)
 
 ## Contributing
-If you would like to contribute to the FIDO2 Community Edition project, please sign and return the [Contributor License Agreement (CLA)](URL).
+If you would like to contribute to the FIDO2 Community Edition project:
+If an individual, please sign and return the [Contributor License Agreement (CLA) for Individuals](URL).
+If a corporate entity, please sign and return the [Contributor License Agreement (CLA) for Entities](URL).
 
 ## License
 This project is currently licensed under the [GNU Public License 2.1](https://github.com/StrongKey/FIDO-Server/blob/fido/GPL_2.1) license.

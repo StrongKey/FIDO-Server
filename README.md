@@ -31,4 +31,4 @@ Congratulations! Installation is complete. To see it in action, sample code is p
 If you would like to contribute to the FIDO2 Community Edition project, please sign and return the [Contributor License Agreement (CLA)](URL).
 
 ## License
-This project is currently licensed under the [GNU Public Lidense 2.1](https://github.com/StrongKey/FIDO-Server/blob/fido/GPL_2.1) license.
+This project is currently licensed under the [GNU Public License 2.1](https://github.com/StrongKey/FIDO-Server/blob/fido/GPL_2.1) license.

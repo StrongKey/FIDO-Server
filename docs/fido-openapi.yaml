@@ -3,15 +3,15 @@ info:
   title: FIDO Server API
   version: 4.0.0
   description: |
-    The FIDO Server API provides the registration and authentication web services required to manage the FIDO keys of users.
+    The FIDO Server API provides the registration and authentication web services required to manage users' FIDO keys.
 
     All API calls require a cryptographic domain ID ("did"). Cryptographic domains provide a method of cryptographically
     separating encrypted data. Each domain uses a different set of encryption keys, uses a different set of credentials,
     and can be configured separately to have different behaviors.
 
     All web services require a set of valid credentials. These credentials provide administrators the ability to restrict
-    access to sensitive information. The default credentials for demo applications have the usernames "encrypt", "decrypt",
-    "encryptdecrypt", "pinguser", and "all". The usernames describe the web services these credentials are authorized to use.
+    access to sensitive information. The default credentials for demo applications have the usernames "encrypt," "decrypt,"
+    "encryptdecrypt," "pinguser," and "all.".The usernames describe the web services these credentials are authorized to use.
     They all have the password "Abcd1234!" for demo purposes.
   termsOfService: 'https://www.strongkey.com/privacy-policy-terms-of-use/#terms-of-use'
   contact:
@@ -72,20 +72,25 @@ paths:
       summary: Submit a signed challenge (nonce) for registration.
       description: |
         Step 2 for FIDO authenticator registration. This method allows for caller to return the signed challenge to the server to be verified. To test this web service, follow these steps.
-        1) If you have a FIDO U2F authenticator, skip Steps 2-6
-        2) Using Firefox (**required**), open a new tab.
-        3) Enter "about:config" into URL bar.
-        4) Search for webauthn in the search bar.
-        5) Double-click security.webauth.webauthn_enable_softtoken to set the value to true.
-        6) Double-click security.webauth.webauthn_enable_hardware to set the value to false.
-        7) On this page, open the console (F12).
-        8) Copy and paste this text into the console: *u2f.register(APPID, REGISTRATIONREQUESTS, REGISTEREDKEYS, function(result){console.log(result);})*
-        9) Run the preregister web service.
-        10) Replace "APPID", "REGISTRATIONREQUESTS", and "REGISTEREDKEYS" with the values "appId", "registerRequests", and "registeredKeys" returned by the preregister response.
-        11) Press enter on the console to submit the code.
-        12) Tap the FIDO U2F authenticator to sign the challenge. If you followed Steps 2-6, ignore this step.
-        13) Replace the "CLIENTDATA" and "REGISTRATIONDATA" text in the example text with values of "clientData" and "registrationData" displayed in the console.
-        14) Run the web service. **Note: Steps 9-14 MUST be completed within 30 seconds. Otherwise the Response message will return the Error "FIDO-ERR-0006: User session in-active: {0}" and the key will not be registered.**
+        1) If you have a FIDO U2F authenticator, skip Steps 2-6.
+        2) Using Firefox (**REQUIRED**), open a **new tab**.
+        3) Enter **about:config** into the URL address bar.
+        4) Search for **webauthn** in the search bar.
+        5) Double-click **security.webauth.webauthn_enable_softtoken** to set the value to **true**.
+        6) Double-click **security.webauth.webauthn_enable_hardware** to set the value to **false**.
+        7) On this page, open the console (**F12**).
+        8) **Copy and paste this text** into the console: *u2f.register(APPID, REGISTRATIONREQUESTS, REGISTEREDKEYS, function(result){console.log(result);})*
+        
+        **Note: Steps 9-14 MUST be completed within 30 seconds. Otherwise the Response message will return the Error "FIDO-ERR-0006: User session inactive: {0}" and the key will not be registered.**
+        
+        9) Run the *preregister* web service.
+        10) Replace "APPID", "REGISTRATIONREQUESTS", and "REGISTEREDKEYS" with the values "**appId**", "**registerRequests**", and "**registeredKeys**" returned by the *preregister* response.
+        11) Press **Enter** on the console to submit the code.
+        12) **Tap the FIDO U2F authenticator** to sign the challenge. If you followed Steps 2-6, ignore this step.
+        13) Replace the "CLIENTDATA" and "REGISTRATIONDATA" text in the example text with values of "**clientData**" and "**registrationData**" displayed in the console.
+        14) **Run the web service**. 
+        
+        
       tags:
         - U2F
       operationId: register

@@ -2,6 +2,6 @@ theme: jekyll-theme-cayman
 title: FIDO Server
 description: FIDO2-certified authentication server
 pages_list:       
-  FIDO Server: '/fido'
+  FIDO Server: '/FIDO-Server'
   Relying Party: '/relying-party-java'
-  WebAuthn: '/webauthn-sample-code'
+  WebAuthn: '/WebAuthn'

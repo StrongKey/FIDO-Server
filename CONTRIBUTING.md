@@ -39,6 +39,4 @@ We use GitHub Issues to track bugs.
 
 ## Coding Style
 
-The FIDO2 Server and Relying Party sample code are written in Java and use XYZ to help enforce an internally consistent coding style. Contributions should be consistent with this style.
-
-The WebAuthn sample code is written in JavaScript and uses XYZ to help enforce an internally consistent coding style. Contributions should be consistent with this style.
+The FIDO2 Server, Relying Party sample code, and the WebAuthn sample code are written in JavaScript and use XYZ to help enforce an internally consistent coding style. Contributions should be consistent with this style.

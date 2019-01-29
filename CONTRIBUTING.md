@@ -1,6 +1,6 @@
 # Contributing to StrongKey's FIDO2 Server
 
-We welcome contributions to this open-source FIDO2 Server! This guide provides some tips for successful contributions.
+We welcome contributions to this FIDO2 Server open source! This guide provides some tips for successful contributions.
 
 For complex changes, we recommend filing a GitHub Issue to start a discussion with project maintainers before implementing the change.
 

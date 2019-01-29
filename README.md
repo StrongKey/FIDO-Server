@@ -25,7 +25,7 @@ Congratulations! Installation is complete. To see it in action, sample code is p
 [StrongKey's public FIDO2/WebAuthn server](URL)
 
 ## API docs
-[Open API documentation for FIDO2/WebAuthn](URL)
+[Open API documentation for FIDO2/WebAuthn](https://strongkey.github.io/FIDO-Server/openapi.html)
 
 ## Contributing
 If you would like to contribute to the FIDO2 Community Edition project:

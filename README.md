@@ -34,4 +34,4 @@ If you would like to contribute to the FIDO2 Community Edition project:
 * If a corporate entity, please sign and return the [Contributor License Agreement (CLA) for Entities](https://github.com/StrongKey/FIDO-Server/blob/fido/FIDO2%20Community%20Edition%20Server%20by%20StrongKey-Entity.pdf).
 
 ## License
-This project is currently licensed under [GNU Lesser General Public License v2.1](https://github.com/StrongKey/FIDO-Server/blob/fido/GNU Lesser General Public License v2.1).
+This project is currently licensed under [GNU Lesser General Public License v2.1](https://github.com/StrongKey/FIDO-Server/blob/fido/GNU%20Lesser%20General%20Public%20License%20v2.1).

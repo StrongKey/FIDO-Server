@@ -653,6 +653,36 @@ paths:
 
 components:
   schemas:
+    location:
+      description: Location metadata that can be stored during web service calls.
+      type: string
+    metadata:
+      description: Additional information sent/stored. Particular to StrongKey's implementation of FIDO.
+      type: object
+    payload:
+      description: The information needed for the web service.
+      type: object
+    response:
+      description: The information returned after signing the challenge.
+      type: object
+    Response:
+      description: Response JSON object returned by web services.
+      required:
+        - Message
+        - Error
+      properties:
+        Challenge:
+          description: A challenge object that contains information dictated by the FIDO protocol. Mutually exclusive of response.
+          type: string
+        Response:
+          description: A positive return value whose non-empty value indicates a successful web service call. Mutually exclusive of Challenge.
+          type: string
+        Message:
+          description: A neutral return value whose non-empty value indicates additional information/warning information.
+          type: string
+        Error:
+          description: A negative return value whose non-empty value indicates an unsuccessful web service call.
+          type: string
     svcinfo:
       description: The service credentials to authorize usage of the web service.
       type: object
@@ -683,45 +713,15 @@ components:
           "svcpassword": "Abcd1234!",
           "protocol": "U2F_V2"
         }
-    payload:
-      description: The information needed for the web service.
-      type: object
     username:
       description: The username associated with or to be associated with the FIDO key.
       type: string
       maxLength: 256
-    metadata:
-      description: Additional information sent/stored. Particular to StrongKey's implementation of FIDO.
-      type: object
-    response:
-      description: The information returned after signing the challenge.
-      type: object
     version:
       description: The version of the web service being used.
       type: string
       enum:
         - '1.0'
-    location:
-      description: Location metadata that can be stored during web service calls.
-      type: string
-    Response:
-      description: Response JSON object returned by web services.
-      required:
-        - Message
-        - Error
-      properties:
-        Challenge:
-          description: A challenge object that contains information dictated by the FIDO protocol. Mutually exclusive of response.
-          type: string
-        Response:
-          description: A positive return value whose non-empty value indicates a successful web service call. Mutually exclusive of Challenge.
-          type: string
-        Message:
-          description: A neutral return value whose non-empty value indicates additional information/warning information.
-          type: string
-        Error:
-          description: A negative return value whose non-empty value indicates an unsuccessful web service call.
-          type: string
   responses:
     ChallengeResponse:
       description: A request was successfully received by the StrongKey FIDO server.

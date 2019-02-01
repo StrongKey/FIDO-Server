@@ -5,14 +5,14 @@ info:
   description: |
     The FIDO Server API provides the registration and authentication web services required to manage users' FIDO keys.
 
-    All API calls require a cryptographic domain ID ("did"). Cryptographic domains provide a method of cryptographically
+    All API calls require a cryptographic _domain ID (did)_. Cryptographic domains provide a method of cryptographically
     separating encrypted data. Each domain uses a different set of encryption keys, uses a different set of credentials,
     and can be configured separately to have different behaviors.
 
     All web services require a set of valid credentials. These credentials provide administrators the ability to restrict
-    access to sensitive information. The default credentials for demo applications have the usernames "encrypt," "decrypt,"
-    "encryptdecrypt," "pinguser," and "all.".The usernames describe the web services these credentials are authorized to use.
-    They all have the password "Abcd1234!" for demo purposes.
+    access to sensitive information. The default credentials for demo applications have the usernames _encrypt_, _decrypt_,
+    _encryptdecrypt_, _pinguser_, and _all_. The usernames describe the web services these credentials are authorized to use.
+    They all have the password _Abcd1234_" for demo purposes.
   termsOfService: 'https://www.strongkey.com/privacy-policy-terms-of-use/#terms-of-use'
   contact:
     name: StrongKey
@@ -35,7 +35,7 @@ paths:
     post:
       summary: Request a challenge (nonce) for registration.
       description: |
-        Step 1 for FIDO  authenticator registration. This method generates and returns a challenge to the caller.
+        Step 1 for FIDO authenticator registration. This method generates and returns a challenge to the caller.
       tags:
         - U2F
       operationId: preregister
@@ -70,23 +70,23 @@ paths:
     post:
       summary: Submit a signed challenge (nonce) for registration.
       description: |
-        Step 2 for FIDO authenticator registration. This method allows for caller to return the signed challenge to the server to be verified. To test this web service, follow these steps.
+        Step 2 for FIDO authenticator registration. This method allows for caller to return the signed challenge to the server to be verified. To test this web service, follow these steps:
         1) If you have a FIDO U2F authenticator, skip Steps 2-6.
-        2) Using Firefox (**REQUIRED**), open a **new tab**.
+        2) Using Firefox (**REQUIRED**), **open a new tab**.
         3) Enter **about:config** into the URL address bar.
         4) Search for **webauthn** in the search bar.
-        5) Double-click **security.webauth.webauthn_enable_softtoken** to set the value to **true**.
-        6) Double-click **security.webauth.webauthn_enable_hardware** to set the value to **false**.
+        5) Double-click **security.webauth.webauthn_enable_softtoken** to set the value to _true_.
+        6) Double-click **security.webauth.webauthn_enable_hardware** to set the value to _false_.
         7) On this page, open the console (**F12**).
         8) **Copy and paste this text** into the console: *u2f.register(APPID, REGISTRATIONREQUESTS, REGISTEREDKEYS, function(result){console.log(result);})*
         
         **Note: Steps 9-14 MUST be completed within 30 seconds. Otherwise the Response message will return the Error "FIDO-ERR-0006: User session inactive: {0}" and the key will not be registered.**
         
         9) Run the *preregister* web service.
-        10) Replace "APPID", "REGISTRATIONREQUESTS", and "REGISTEREDKEYS" with the values "**appId**", "**registerRequests**", and "**registeredKeys**" returned by the *preregister* response.
+        10) Replace _APPID_, _REGISTRATIONREQUESTS_, and _REGISTEREDKEYS_ with the values _**appId**_, _**registerRequests**_, and _**registeredKeys**_ returned by the *preregister* response.
         11) Press **Enter** on the console to submit the code.
         12) **Tap the FIDO U2F authenticator** to sign the challenge. If you followed Steps 2-6, ignore this step.
-        13) Replace the "CLIENTDATA" and "REGISTRATIONDATA" text in the example text with values of "**clientData**" and "**registrationData**" displayed in the console.
+        13) Replace the _CLIENTDATA_ and _REGISTRATIONDATA_ text in the example text with values of _**clientData**_ and _**registrationData**_ displayed in the console.
         14) **Run the web service**. 
         
         
@@ -155,7 +155,7 @@ paths:
     post:
       summary: Request a challenge (nonce) for authentication.
       description: |
-        Step 1 for FIDO  authenticator authentication. This method generates and returns a challenge to the caller.
+        Step 1 for FIDO authenticator authentication. This method generates and returns a challenge to the caller.
       tags:
         - U2F
       operationId: preauthenticate
@@ -192,7 +192,7 @@ paths:
       description: |
         Step 2 for FIDO authenticator authentication. This method allows for caller to return the signed challenge to the server to be verified. To test this web service, follow these steps:
         1) If you have a FIDO U2F authenticator, skip Steps 2-6
-        2) Using Firefox (**REQUIRED**), open a **new tab**.
+        2) Using Firefox (**REQUIRED**), **open a new tab**.
         3) Enter **about:config** into URL address bar.
         4) Search for **webauthn** in the search bar.
         5) Double-click **security.webauth.webauthn_enable_softtoken** to set the value to **true**.
@@ -277,9 +277,9 @@ paths:
           $ref: '#/components/responses/GenericResponse'
   /activate:
     post:
-      summary: Set a registered key's status to *Active*.
+      summary: Set a registered key's status to Active.
       description: |
-        This method brings into *ACTIVE* status a specific user-registered key stored in persistent storage. The FIDO protocol as such does not specify any activation process. This method just changes the user-registered FIDO authenticator information to bear an *ACTIVE* status in the persistent storage so it can be used for FIDO authentication. To identify which key must be activated--since the user could have registered multiple FIDO authenticators--there is a random ID to be passed. This random ID for every registered FIDO authenticator can be obtained by making the *getkeysinfo* call, which will return an array of registered key metadata with each entry mapped to a random ID. These random IDs have a 'ttl (time-to-live)' associated with them. This information is also sent back with the key metadata during the *getkeysinfo* call. Client applications have to cache these random IDs if they wish to deactivate / activate / deregister keys.
+        This method brings into *ACTIVE* status a specific user-registered key stored in persistent storage. The FIDO protocol as such does not specify any activation process. This method just changes the user-registered FIDO authenticator information to bear an *ACTIVE* status in the persistent storage so it can be used for FIDO authentication. To identify which key must be activated&mdash;since the user could have registered multiple FIDO authenticators&mdash;there is a random ID to be passed. This random ID for every registered FIDO authenticator can be obtained by making the *getkeysinfo* call, which will return an array of registered key metadata with each entry mapped to a random ID. These random IDs have a _ttl (time-to-live)_ associated with them. This information is also sent back with the key metadata during the _getkeysinfo_ call. Client applications have to cache these random IDs if they wish to deactivate, activate, or deregister keys.
       tags:
         - Administration
       operationId: activate
@@ -342,11 +342,11 @@ paths:
           $ref: '#/components/responses/GenericResponse'
   /deactivate:
     post:
-      summary: Set a registered key's status to *Active*.
+      summary: Set a registered key's status to Active.
       description: |
-        Method that puts into *INACTIVE* status a specific user-registered key in persistent storage . The protocol as such does not specify any
-        *deactivate* process. This method just changes the user-registered FIDO authenticator information to bear an *INACTIVE* status in persistent storage so it CANNOT be used for FIDO authentication.
-        However, such inactive keys can be made active by calling the *activate* method.
+        Method that puts into _INACTIVE_ status a specific user-registered key in persistent storage. The protocol as such does not specify any
+        _deactivate_ process. This method just changes the user-registered FIDO authenticator information to bear an _INACTIVE_ status in persistent storage so it CANNOT be used for FIDO authentication.
+        However, such inactive keys can be made active by calling the _activate_ method.
       tags:
         - Administration
       operationId: deactivate
@@ -411,7 +411,7 @@ paths:
     post:
       summary: Delete a registered key.
       description: |
-        The process of deleting or de-registering an already-registered FIDO authenticator. The inputs needed are the name of the user and the random ID to point to a unique registered key for that user. This random ID can be obtained by calling the *getkeysinfo* method.
+        The process of deleting or de-registering an already registered FIDO authenticator. The inputs needed are the name of the user and the random ID to point to a unique registered key for that user. This random ID can be obtained by calling the _getkeysinfo_ method.
       tags:
         - Administration
       operationId: deregister
@@ -459,7 +459,9 @@ paths:
     post:
       summary: Get all keys associated with a registered user.
       description: |
-        This method returns a list of user-registered FIDO authenticator information; in short: registered keys information. Information includes the metadata of the key, like the place and time at which it was registered and used (last modified) from. *randomid_ttl_seconds* has been deprecated.
+        This method returns a list of user-registered FIDO authenticator metadata: the place and time at which it was registered and used (last modified) from.
+        
+        *randomid_ttl_seconds* has been deprecated.
       tags:
         - Administration
       operationId: getkeysinfo
@@ -493,9 +495,9 @@ paths:
           $ref: '#/components/responses/GenericResponse'
   /preauthorize:
     post:
-      summary: Stub for *Transactional authorization*. Currently identical to *preauthenticate*.
+      summary: Stub for _transactional authorization_. Currently identical to _preauthenticate_.
       description: |
-        Step 1 for *transactional authorization*. This method generates and returns a challenge to the caller.
+        Step 1 for _transactional authorization_. This method generates and returns a challenge to the caller.
       tags:
         - WIP
       operationId: preauthorize
@@ -528,25 +530,25 @@ paths:
           $ref: '#/components/responses/GenericResponse'
   /authorize:
     post:
-      summary: Stub for *Transactional authorization*. Currently identical to *authenticate*.
+      summary: Stub for _transactional authorization_. Currently identical to _authenticate_.
       description: |
         Step 2 for *transactional authorization*. This method allows for caller to return the signed challenge to be returned to the server to be verified. To test this web service, follow these steps:
         1) If you have a FIDO U2F authenticator, skip Steps 2-6.
         2) Using Firefox, open a **new tab**.
         3) Enter **about:config** into the URL address bar.
         4) Search for **webauthn** in the search bar.
-        5) Double-click **security.webauth.webauthn_enable_softtoken** to set the value to *true*.
-        6) Double-click **security.webauth.webauthn_enable_hardware** to *false*.
+        5) Double-click **security.webauth.webauthn_enable_softtoken** to set the value to _true_.
+        6) Double-click **security.webauth.webauthn_enable_hardware** to _false_.
         7) On this page, open the console (**F12**).
         8) **Copy and paste this text** into the console: *u2f.sign(APPID, CHALLENGE, REGISTEREDKEYS, function(result){console.log(result);})*
         
         **Note: Steps 9-14 MUST be completed within 30 seconds. Otherwise the Response message will return the Error "FIDO-ERR-0006: User session in-active: {0}" and authorization will fail.**
         
         9) Run the *preauthorize* web service.
-        10) Replace "APPID", "CHALLENGE", and "REGISTEREDKEYS" with the values "**appId**", "**challenge**", and "**registeredKeys**" returned by the *preauthorize* response.
+        10) Replace _APPID_, _CHALLENGE_, and _REGISTEREDKEYS_ with the values _**appId**_, _**challenge**_, and _**registeredKeys**_ returned by the *preauthorize* response.
         11) Press **Enter** on the console to submit the code.
         12) **Tap the FIDO U2F authenticator** to sign the challenge. If you followed Steps 2-6, ignore this step.
-        13) Replace the "CLIENTDATA", "KEYHANDLE" and "SIGNATUREDATA" text in the example text with values of "**clientData**", "**keyHandle**", and "**signatureData**" displayed in the console.
+        13) Replace the _CLIENTDATA_, _KEYHANDLE_ and _SIGNATUREDATA_ text in the example text with values of _**clientData**_, _**keyHandle**_, and _**signatureData**_ displayed in the console.
         14) **Run the web service**.
         
         

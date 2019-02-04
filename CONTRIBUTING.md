@@ -8,12 +8,12 @@ For complex changes, we recommend filing a GitHub Issue to start a discussion wi
 
 Please make sure the following is done when submitting a Pull Request:
 
-1. Fork the repo and create your branch from `master`.
+1. Fork the repo and create your branch from master.
 2. If you've added code that should be tested, add test code to the RXPTest sample app.
-3. If you've changed APIs, update the .yaml documentation files.
+3. If you've changed APIs, update the .YAML documentation files.
 4. Ensure your test suite passes.
 5. If you haven't already, complete the Contributor License Agreement (CLA).
-6. Submit your Pull Request through GitHub.
+6. Submit your pull request through GitHub.
 
 ## Testing Your Change
 

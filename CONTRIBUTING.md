@@ -24,7 +24,7 @@ To test your change:
 
 ## Contributor License Agreement (CLA)
 
-You must sign a CLA before your Pull Request will be merged. This is a one-time requirement for StrongKey open-source projects in GitHub. You can read more about [Contribution License Agreements (CLA)](https://en.wikipedia.org/wiki/Contributor_License_Agreement) on Wikipedia.
+You must sign a CLA before your pull request will be merged. This is a one-time requirement for StrongKey open-source projects in GitHub. You can read more about [Contribution License Agreements (CLA)](https://en.wikipedia.org/wiki/Contributor_License_Agreement) on Wikipedia.
 
 If you would like to contribute to the FIDO2 Community Edition project:
 
@@ -39,4 +39,4 @@ We use GitHub Issues to track bugs.
 
 ## Coding Style
 
-The FIDO2 Server, Relying Party sample code, and the WebAuthn sample code are written in JavaScript and use XYZ to help enforce an internally consistent coding style. Contributions should be consistent with this style.
+The FIDO2 server, Relying Party sample code, and the WebAuthn sample code are written in JavaScript and use XYZ to help enforce an internally consistent coding style. Contributions should be consistent with this style.

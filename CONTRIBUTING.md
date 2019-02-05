@@ -26,7 +26,7 @@ To test your change:
 
 You must sign a Contribution License Agreement (CLA) before your Pull Request will be merged. This is a one-time requirement for StrongKey open-source projects in GitHub. You can read more about [Contribution License Agreements (CLAs)](https://en.wikipedia.org/wiki/Contributor_License_Agreement) on Wikipedia.
 
-You can sign the StrongKey Contribution License Agreement: [Individual](https://github.com/StrongKey/FIDO-Server/blob/master/FIDO2 Community Edition Server by StrongKey-Individual.htm) | [Entity] (https://github.com/StrongKey/FIDO-Server/blob/master/FIDO2 Community Edition Server by StrongKey-Entity.htm). Use your GitHub account to login.
+You can sign the StrongKey Contribution License Agreement: [Individual](https://github.com/StrongKey/FIDO-Server/blob/fido/FIDO2%20Community%20Edition%20Server%20by%20StrongKey-Individual.htm) | [Entity](https://github.com/StrongKey/FIDO-Server/blob/fido/FIDO2%20Community%20Edition%20Server%20by%20StrongKey-Entity.htm). Use your GitHub account to login.
 
 ## Issues
 

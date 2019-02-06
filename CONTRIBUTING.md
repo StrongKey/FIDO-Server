@@ -26,14 +26,38 @@ To test your change:
 
 You must sign a Contribution License Agreement (CLA) before your Pull Request will be merged. This is a one-time requirement for StrongKey open-source projects in GitHub. You can read more about [Contribution License Agreements (CLAs)](https://en.wikipedia.org/wiki/Contributor_License_Agreement) on Wikipedia.
 
-You can sign the StrongKey Contribution License Agreement: [Individual](https://github.com/StrongKey/FIDO-Server/blob/fido/FIDO2%20Community%20Edition%20Server%20by%20StrongKey-Individual.htm) | [Entity](https://github.com/StrongKey/FIDO-Server/blob/fido/FIDO2%20Community%20Edition%20Server%20by%20StrongKey-Entity.htm). Use your GitHub account to login.
+You can sign the StrongKey [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).
 
-## Issues
+## Issues and New Features
 
-We use GitHub Issues to track bugs.
+We use GitHub Issues to track bugs and feature additions.
+
+### Did you discover a bug?
+
+Do not open up a GitHub issue if the bug is a security vulnerability in FIDO CES, and instead to refer to our security policy.
+
+Ensure the bug was not already reported by searching on GitHub under Issues.
+
+If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
+
+If possible, use the [bug report template](https://github.com/StrongKey/FIDO-Server/blob/fido/.github/ISSUE_TEMPLATE/bug_report.md) to create the issue.
+
+### Did you write a patch that fixes a bug (including documentation)?
+
+Open a new GitHub Pull Request with the patch.
+
+Ensure the Pull Request description clearly describes the problem and solution. Include the relevant issue number if applicable.
+
+### Do you intend to add a new feature or change an existing one (including documentation)? 
+
+Submit a Feature Request with your change using the [feature request template](https://github.com/StrongKey/FIDO-Server/blob/master/.github/ISSUE_TEMPLATE/feature_request.md), then start writing code.
+
+Do not open an issue on GitHub until you have collected positive feedback about the change. GitHub issues are primarily intended for bug reports and fixes.
 
 ## Coding Style
 
 The FIDO2 Server and Relying Party sample code are written in Java and use XYZ to help enforce an internally consistent coding style. Contributions should be consistent with this style.
 
 The WebAuthn sample code is written in JavaScript and uses XYZ to help enforce an internally consistent coding style. Contributions should be consistent with this style.
+
+

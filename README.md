@@ -21,8 +21,8 @@ Congratulations! Installation is complete. To see it in action, sample code is p
 ## Sample Code
 Sample Code is provided with a brief explanation of what each sample does:
 
-* [WebAuthn](https://github.com/StrongKey/WebAuthn)
-* [Relying Party](https://github.com/StrongKey/relying-party-java)
+* [WebAuthn](https://github.com/StrongKey/WebAuthn) - JavaScript sample
+* [Relying Party](https://github.com/StrongKey/relying-party-java) -  Jave sample
 
 ## Links
 [StrongKey's public FIDO2/WebAuthn server](URL)

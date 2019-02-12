@@ -19,7 +19,10 @@ Begin by downloading the installation package [here](link) and placing it in the
 Congratulations! Installation is complete. To see it in action, sample code is provided in the links below.
 
 ## Sample Code
-[Sample Code](URL) is provided with a brief explanation of what each sample does.
+Sample Code is provided with a brief explanation of what each sample does:
+
+* [WebAuthn](https://github.com/StrongKey/WebAuthn) - JavaScript sample
+* [Relying Party](https://github.com/StrongKey/relying-party-java) - Java sample
 
 ## Links
 [StrongKey's public FIDO2/WebAuthn server](URL)

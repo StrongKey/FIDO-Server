@@ -19,7 +19,7 @@ Please make sure the following is done when submitting a Pull Request:
 
 ## Contributor License Agreement ("CLA")
 
-You must sign a Contribution License Agreement (CLA) before your Pull Request will be merged. This is a one-time requirement for StrongKey open-source projects in GitHub. You can read more about [Contribution License Agreements (CLAs)](https://en.wikipedia.org/wiki/Contributor_License_Agreement) on Wikipedia.
+You must sign a Contribution License Agreement (CLA) before your Pull Request will be merged. This is a one-time requirement for StrongKey open-source projects in GitHub. You can read more about [Contribution License Agreements](https://en.wikipedia.org/wiki/Contributor_License_Agreement) on Wikipedia.
 
 You can sign the StrongKey [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).
 
@@ -35,7 +35,7 @@ Ensure the bug was not already reported by searching on GitHub under Issues.
 
 If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
 
-If possible, use git [Issues](https://github.com/StrongKey/FIDO-Server/issues) to create the issue. Click the NEW ISSUE, then BUG REPORT, then complete the form. 
+If possible, use git [Issues](https://github.com/StrongKey/FIDO-Server/issues) to create the issue. Click NEW ISSUE, then GET STARTED in the row labeled BUG REPORT, then complete the form. 
 
 ### Did you write a patch that fixes a bug (including documentation)?
 
@@ -45,6 +45,6 @@ Ensure the Pull Request description clearly describes the problem and solution. 
 
 ### Do you intend to add a new feature or change an existing one (including documentation)? 
 
-Submit a Feature Request with your change using git [Issues](https://github.com/StrongKey/FIDO-Server/issues) to create the issue. Click the NEW ISSUE, then FEATURE REQUEST, completing the form; then start writing code.
+Submit a Feature Request with your change using git [Issues](https://github.com/StrongKey/FIDO-Server/issues) to create the issue. Click NEW ISSUE, then GET STARTED in the row labeled FEATURE REQUEST, completing the form; then start writing code.
 
 Do not open an issue on GitHub until you have collected positive feedback about the change. GitHub issues are primarily intended for bug reports and fixes.

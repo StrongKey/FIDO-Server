@@ -35,7 +35,7 @@ Ensure the bug was not already reported by searching on GitHub Issues.
 
 If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
 
-Please use GitHub [Issues](https://github.com/StrongKey/FIDO-Server/issues) to create the issue. Click NEW ISSUE, then GET STARTED in the row labeled BUG REPORT, then complete the form. 
+Please use GitHub [Issues](https://github.com/StrongKey/FIDO-Server/issues) to create the Bug Report. Click NEW ISSUE, then GET STARTED in the row labeled BUG REPORT, then complete the form. 
 
 ### Did you write a patch that fixes a bug (including documentation)?
 
@@ -47,4 +47,4 @@ Ensure the Pull Request description clearly describes the problem and solution. 
 
 Submit a Feature Request with your change using GitHub [Issues](https://github.com/StrongKey/FIDO-Server/issues). Click NEW ISSUE, then GET STARTED in the row labeled FEATURE REQUEST, completing the form; then start writing code.
 
-Do not open a feature request on GitHub until you have collected positive feedback about the change. GitHub issues are primarily intended for bug reports and fixes.
+Do not open a Feature Request on GitHub until you have collected positive feedback about the change. GitHub issues are primarily intended for Bug Reports and fixes.

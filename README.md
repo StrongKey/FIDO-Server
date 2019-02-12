@@ -8,7 +8,7 @@ The following links provide some background on FIDO, the Fido Alliance, and WebA
 
 * [FIDO Alliance Home](https://fidoalliance.org)
 * [What is FIDO?](https://fidoalliance.org/what-is-fido/)
-* [The FIDO2 Project](https://fidoalliance.org/fido2/). 
+* [The FIDO2 Project](https://fidoalliance.org/fido2/)
 
 
 ## Getting Started

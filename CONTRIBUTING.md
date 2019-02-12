@@ -14,14 +14,14 @@ Please make sure the following is done when submitting a Pull Request:
 2. If you've added code that should be tested, add test code to the RXPTest sample app.
 3. If you've changed APIs, update the .yaml documentation files.
 4. Ensure your test suite passes.
-5. If you haven't already, complete the Contributor License Agreement ("CLA"), linked below.
+5. If you haven't already, complete the Contributor License Agreement (CLA), linked below.
 6. Submit your Pull Request through GitHub.
 
-## Contributor License Agreement ("CLA")
+## Contributor License Agreement (CLA)
 
-You must sign a Contribution License Agreement (CLA) before your Pull Request will be merged. This is a one-time requirement for StrongKey open-source projects in GitHub. You can read more about [Contribution License Agreements](https://en.wikipedia.org/wiki/Contributor_License_Agreement) on Wikipedia.
+You must sign a CLA before your Pull Request will be merged. This is a one-time requirement for StrongKey open-source projects in GitHub. You can read more about [Contribution License Agreements](https://en.wikipedia.org/wiki/Contributor_License_Agreement) on Wikipedia.
 
-You can sign the StrongKey [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).
+Follow this link to sign the StrongKey [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).
 
 ## Issues and New Features
 

@@ -15,13 +15,6 @@ Please make sure the following is done when submitting a Pull Request:
 5. If you haven't already, complete the Contributor License Agreement ("CLA"), linked below.
 6. Submit your Pull Request through GitHub.
 
-## Testing Your Change
-
-To test your change:
-1. test 1
-2. test 2
-3. test 3
-
 ## Contributor License Agreement ("CLA")
 
 You must sign a Contribution License Agreement (CLA) before your Pull Request will be merged. This is a one-time requirement for StrongKey open-source projects in GitHub. You can read more about [Contribution License Agreements (CLAs)](https://en.wikipedia.org/wiki/Contributor_License_Agreement) on Wikipedia.
@@ -53,11 +46,3 @@ Ensure the Pull Request description clearly describes the problem and solution. 
 Submit a Feature Request with your change using the [feature request template](https://github.com/StrongKey/FIDO-Server/blob/master/.github/ISSUE_TEMPLATE/feature_request.md), then start writing code.
 
 Do not open an issue on GitHub until you have collected positive feedback about the change. GitHub issues are primarily intended for bug reports and fixes.
-
-## Coding Style
-
-The FIDO2 Server and Relying Party sample code are written in Java and use XYZ to help enforce an internally consistent coding style. Contributions should be consistent with this style.
-
-The WebAuthn sample code is written in JavaScript and uses XYZ to help enforce an internally consistent coding style. Contributions should be consistent with this style.
-
-

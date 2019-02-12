@@ -2,6 +2,8 @@
 
 We welcome contributions to this open-source FIDO2 Server! This guide provides some tips for successful contributions.
 
+For some background on WebAuthn/FIDO2 and its backers, visit the [FIDO2 Project](https://fidoalliance.org/fido2/). 
+
 For complex changes, we recommend filing a GitHub Issue to start a discussion with project maintainers before implementing the change.
 
 ## Pull Requests

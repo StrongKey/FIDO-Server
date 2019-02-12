@@ -34,4 +34,4 @@ Sample Code is provided with a brief explanation of what each sample does:
 If you would like to contribute to the FIDO2 Community Edition Server project, please sign and return the [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).
 
 ## License
-This project is currently licensed under the [GNU Lesser General Public License v2.1](https://github.com/StrongKey/FIDO-Server/blob/master/GNU%20Lesser%20General%20Public%20License%20v2.1).
+This project is currently licensed under the [GNU Lesser General Public License v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html).

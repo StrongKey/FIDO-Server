@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+#   Startup/shutdown script for the Glassfish JEE5 Application Server
+#
+#   Linux chkconfig stuff:
+#
+#   chkconfig: 345 70 40
+#   description: Glassfish JEE5 Application Server
+
+# Source function library.
+. /etc/init.d/functions
+. /etc/bashrc
+
+export AS_JAVA=$JAVA_HOME
+
+PROGRAM="--user strongauth /usr/local/strongauth/payara41/glassfish/bin/asadmin"
+
+prog="Glassfish 4 Application Server"
+
+start () {
+	echo -n $"Starting $prog: "
+
+	# start daemon
+	daemon $PROGRAM start-domain
+        RETVAL=$?
+	echo
+	[ $RETVAL = 0 ] && touch /var/lock/subsys/glassfishd
+	return $RETVAL
+}
+
+stop () {
+	# stop daemon
+	echo -n $"Stopping $prog: "
+	daemon $PROGRAM stop-domain
+	RETVAL=$?
+	echo
+	[ $RETVAL = 0 ] && rm -f /var/lock/subsys/glassfishd
+}
+
+restart() {
+	stop
+	start
+}
+
+case $1 in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	restart)
+		restart
+	;;
+	*)
+
+	echo $"Usage: $prog {start|stop|restart}"
+	exit 3
+esac
+
+exit $RETVAL

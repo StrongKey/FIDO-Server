@@ -17,3 +17,9 @@ Virtual Secp256R1 FIDO2 Conformance Testing CTAP2 Authenticator with supported e
 Virtual Secp256R1 Multiple Root Certificates FIDO2 Conformance Testing CTAP2 Authenticator.json
 Virtual Secp384r1 SHA384 FIDO2 Conformance Testing CTAP2 Authenticator.json
 Virtual Secp521r1 SHA512 FIDO2 Conformance Testing CTAP2 Authenticator.json
+feitian-AllinOneFIDO2_USB_BLE_NFC.json
+feitian-BioFIDO2_USB_withCN.json
+feitian-ePassFIDO2_USB.json
+KONAI_MDS_1.json
+CTAP2Secp256r1AttCert.metadata.json
+eSecu_FIDO2_Metadata.json

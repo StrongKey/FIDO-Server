@@ -2,3 +2,6 @@ _site/
 .sass-cache/
 .jekyll-cache/
 .jekyll-metadata
+/strongauth/ce/fido2mds/target/
+/strongauth/ce/skfe/target/
+/strongauth/strongauthEAR/target/

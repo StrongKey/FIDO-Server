@@ -44,7 +44,6 @@
             <modules>
                 <!-- FE only for github -->
                 <module>ce/skfe</module>
-                <module>ce/skceclient</module>
                 <module>ce/skfebeans</module>
                 <module>ce/fido2mds</module>
                 

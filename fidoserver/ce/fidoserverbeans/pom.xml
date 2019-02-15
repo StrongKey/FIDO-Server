@@ -5,6 +5,7 @@
         <artifactId>fidoserver</artifactId>
         <groupId>com.strongauth</groupId>
         <version>4.0</version>
+         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>com.strongauth</groupId>

@@ -25,11 +25,11 @@
 ###############################################################
 
 strongauth=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-version=$(sed -nr 's|^version=(.*)|\1|p' $strongauth/Common/src/main/resources/resources/appliance/appliance-version.properties)
-resources=$strongauth/Common/src/main/resources/resources/ka
-messages=$(sed -n '31,$p' $resources/strongkeylite-messages.properties)
+version=$(sed -nr 's|^version=(.*)|\1|p' $strongauth/common/src/main/resources/resources/appliance/appliance-version.properties)
+resources=$strongauth/common/src/main/resources/resources/appliance
+messages=$(sed -n '31,$p' $resources/appliance-messages.properties)
 
-skceresources=$strongauth/Common/src/main/resources/resources/skce
+skceresources=$strongauth/common/src/main/resources/resources/skce
 skcemessages=$(sed -n '31,$p' $skceresources/skce-messages.properties)
 
 cryptoresources=$strongauth/crypto/src/main/resources/resources
@@ -61,6 +61,14 @@ echo "Creating jade..."
 
 # Copy the messages part from the main strongkeylite-messages.properties to all langauge specific files
 echo "-Duplicating messages..."
+for languagefile in $resources/appliance-messages_*; do
+        if grep "ja_JP" <<< "$languagefile" &>/dev/null; then
+                continue # Do not edit the JP language file
+        fi
+        sed -i '31,$d' $languagefile
+        echo "$messages" >> $languagefile
+done
+
 for languagefile in $skceresources/skce-messages_*; do
         if grep "ja_JP" <<< "$languagefile" &>/dev/null; then
                 continue # Do not edit the JP language file
@@ -88,13 +96,13 @@ echo "-Copying files..."
 mkdir -p $strongauth/jade/sql
 touch $strongauth/jade/Version${version}
 cp -r $strongauth/ce/*/target/dist/* $strongauth/jade
-cp -r $strongauth/ce/skceSQL/mysql $strongauth/jade/sql
+cp -r $strongauth/fidoserverInstall/src/fidoserverSQL/mysql $strongauth/jade/sql
 cp $strongauth/fidoserverEAR/target/fidoserver.ear $strongauth/jade
 
 # Create archives
 echo "-Packaging jade..."
 tar zcf FIDOSERVER-${version}.tgz -C $strongauth jade
-tar zcf jadelib.tgz -C $strongauth/jade lib
+tar zcf fidolib.tgz -C $strongauth/jade lib
 
 # Remove jade
 rm -r $strongauth/jade

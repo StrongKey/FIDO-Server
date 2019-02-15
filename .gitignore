@@ -16,3 +16,4 @@ _site/
 /fidoserver/crypto/target/
 /fidoserver/ce/fidoserverbeans/target/
 /fidoserver/fidoserverEAR/target/
+/fidoserver/common/target/

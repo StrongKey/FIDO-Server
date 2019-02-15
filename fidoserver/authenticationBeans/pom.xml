@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>Common</artifactId>
+            <artifactId>common</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -45,14 +45,7 @@
             <version>1.1.1</version>
             <scope>test</scope>
             <type>jar</type>
-        </dependency><!--
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>

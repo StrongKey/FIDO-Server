@@ -33,11 +33,9 @@
 package com.strongauth.skfe.stubs;
 
 import com.strongauth.skfe.messaging.replicateSKFEObjectBeanLocal;
-import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 @Stateless
-@LocalBean
 public class replicateSKFEObjectBeanStub implements replicateSKFEObjectBeanLocal {
 
     

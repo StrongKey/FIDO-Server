@@ -135,7 +135,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>Common</artifactId>
+            <artifactId>common</artifactId>
             <version>4.0</version>
             <type>jar</type>
         </dependency>
@@ -158,7 +158,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>com.strongauth</groupId>
-                    <artifactId>Common</artifactId>
+                    <artifactId>common</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>com.strongauth</groupId>

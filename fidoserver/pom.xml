@@ -31,11 +31,11 @@
     <modules>
         <module>crypto</module>
         <module>authenticationBeans</module>
-        <module>Common</module>
         <module>fidoserverEAR</module>
         <module>ce/api</module>
         <module>ce/apiclient</module>
         <module>ce/fido2mds</module>
         <module>ce/fidoserverbeans</module>
+        <module>common</module>
     </modules>
 </project>

@@ -55,7 +55,6 @@ public interface u2fGetKeysInfoBeanLocal {
      * applications have to cache these random ids if they wish to de-register keys.
      * 
      * @param did       - FIDO domain id
-     * @param protocol  - U2F protocol version to comply with.
      * @param username  - username
      * @return          - returns SKCEReturnObject in both error and success cases.
      *                  In error case, an error key and error msg would be populated
@@ -63,6 +62,5 @@ public interface u2fGetKeysInfoBeanLocal {
      *                  successful would be populated.
      */
     SKCEReturnObject execute(String did, 
-                            String protocol, 
                             String username);
 }

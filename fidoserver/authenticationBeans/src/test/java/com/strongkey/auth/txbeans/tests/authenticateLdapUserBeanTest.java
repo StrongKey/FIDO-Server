@@ -90,9 +90,6 @@ public class authenticateLdapUserBeanTest {
         domain.setName("SAKA Domain");
         domain.setStatus("Active");
         applianceMaps.putDomain(1L, domain);
-
-        
-        
     }
 
     @AfterClass

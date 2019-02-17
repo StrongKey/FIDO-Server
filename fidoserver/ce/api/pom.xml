@@ -55,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>skfebeans</artifactId>
+            <artifactId>fidoserverbeans</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

@@ -120,6 +120,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
+import javax.ws.rs.core.Response;
 
 /**
  * EJB that helps the SKFE Servlet classes (SOAP, REST & WebSocket)
@@ -1824,7 +1825,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * successful.
      */
     @Override
-    public String getkeysinfo(String did, String protocol, String payload) {
+    public Response getkeysinfo(String did, String username) {
 
         Date in = new Date();
         Date out;
@@ -1833,50 +1834,27 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         //  1. Receive request and print inputs
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0011", "[TXID=" + ID + "]"
                 + "\n did=" + did
-                + "\n protocol=" + protocol
-                + "\n payload=" + payload);
+                + "\n username=" + username);
 
         //  2. Input checks
-        if (payload == null || payload.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " payload");
-            return skfeCommon.buildPreRegisterResponse(null, "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0002") + " payload");
-        }
-        if (!skfeCommon.isValidJsonObject(payload)) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0014", " Invalid json");
-            return skfeCommon.buildPreRegisterResponse(null, "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0014") + " Invalid json");
-        }
-
-        if (protocol == null || protocol.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " protocol");
-            return skfeCommon.buildPreRegisterResponse(null, "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0002") + " protocol");
-        }
-        if (!skfeCommon.isFIDOProtocolSupported(protocol)) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-5002", protocol);
-            return skfeCommon.buildPreRegisterResponse(null, "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-5002") + protocol);
-        }
-
-        //  fetch the username
-        String username = (String) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_USERNAME, "String");
         if (username == null || username.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " username");
-            return skfeCommon.buildPreRegisterResponse(null, "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username");
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildPreRegisterResponse(null, "",
+                    skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username")).build();
         }
 
         //  3. Hand over the job to an ejb.
         String responseJSON;
-        SKCEReturnObject skcero = u2fgetkeysbean.execute(did, protocol, username);
+        SKCEReturnObject skcero = u2fgetkeysbean.execute(did, username);
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, "FIDO-MSG-0046", skcero);
         if (skcero.getErrorkey() != null) {
-            responseJSON = skfeCommon.buildGetKeyInfoResponse(null, "", skcero.getErrormsg());
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildGetKeyInfoResponse(null, "", skcero.getErrormsg())).build();
         } else {
             // Build the output
             String keysJsonString = (String) skcero.getReturnval();
+            if (keysJsonString == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
             JsonObject keysJsonObj;
             try (JsonReader jr = Json.createReader(new StringReader(keysJsonString))) {
                 keysJsonObj = jr.readObject();
@@ -1890,7 +1868,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         long rt = out.getTime() - in.getTime();
         //  4. Print output and Return
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0012", "[TXID=" + ID + ", START=" + in.getTime() + ", FINISH=" + out.getTime() + ", TTC=" + rt + "]" + "\nResponse" + responseJSON);
-        return responseJSON;
+        return Response.ok().entity(responseJSON).build();
     }
 
     private String decryptKH(String token) {

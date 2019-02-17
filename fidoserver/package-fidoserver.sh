@@ -89,7 +89,7 @@ done
 # This cd is important for mvn to work
 cd $strongauth
 echo "-Clean and building source..."
-mvn clean install -q
+mvn clean install -q 
 
 # Copy the necessary jars, libs, wars, ears into jade
 echo "-Copying files..."

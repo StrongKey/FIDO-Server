@@ -121,6 +121,7 @@ SKFE=jade.tgz
 CENTOS=$(awk '{print $3}' /etc/redhat-release | cut -c 1)
 STRONGAUTH_HOME=/usr/local/strongauth
 SKCE_HOME=$STRONGAUTH_HOME/skce
+SKFE_HOME=$STRONGAUTH_HOME/skfe
 SKCEWS_HOME=$STRONGAUTH_HOME/skcews
 GLASSFISH_HOME=$STRONGAUTH_HOME/payara41/glassfish
 GLASSFISH_CONFIG=$GLASSFISH_HOME/domains/domain1/config
@@ -299,7 +300,7 @@ EOFSKFERC
 echo ". /etc/skferc" >> /etc/bashrc
 
 # Make needed directories
-mkdir -p $STRONGAUTH_HOME/certs $STRONGAUTH_HOME/Desktop $STRONGAUTH_HOME/dbdumps $STRONGAUTH_HOME/lib $STRONGAUTH_HOME/bin $STRONGAUTH_HOME/appliance/etc $STRONGAUTH_HOME/crypto/etc $SKCE_HOME/etc $SKCE_HOME/keystores $SKCEWS_HOME/engine_in $SKCEWS_HOME/engine_out 
+mkdir -p $STRONGAUTH_HOME/certs $STRONGAUTH_HOME/Desktop $STRONGAUTH_HOME/dbdumps $STRONGAUTH_HOME/lib $STRONGAUTH_HOME/bin $STRONGAUTH_HOME/appliance/etc $STRONGAUTH_HOME/crypto/etc $SKFE_HOME/etc $SKCE_HOME/etc $SKCE_HOME/keystores $SKCEWS_HOME/engine_in $SKCEWS_HOME/engine_out 
 
 ##### Install Jade #####
 if [ $INSTALL_JADE = 'Y' ]; then
@@ -334,7 +335,9 @@ if [ $INSTALL_JADE = 'Y' ]; then
                 s|^(ldape.cfg.property.service.ce.ldap.search.ldaptype=).*|\1$SEARCH_LDAP_TYPE|
                 s|^(ldape.cfg.property.service.ce.ldap.search.ldapbinddn=).*|\1$SEARCH_LDAP_BIND_DN|
                 s|^(ldape.cfg.property.service.ce.ldap.search.ldapbinddn.password=).*|\1$SEARCH_LDAP_BIND_PASS|
-                s|dc=strongauth,dc=com|$SERVICE_LDAP_BASEDN|" $SKFE_SOFTWARE/skce-configuration.properties > $STRONGAUTH_HOME/skce/etc/skce-configuration.properties
+                s|dc=strongauth,dc=com|$SERVICE_LDAP_BASEDN|" $SKFE_SOFTWARE/skce-configuration.properties > $SKCE_HOME/etc/skce-configuration.properties
+
+        cp $SKFE_SOFTWARE/skfe-configuration.properties $SKCE_HOME/etc/skce-configuration.properties
 
 
         test "$SEARCH_GROUPRESTRICTION_TYPE"      != 'default' && echo "ldape.cfg.property.service.ce.ldap.search.grouprestriction.type=$SEARCH_GROUPRESTRICTION_TYPE" >> $SKCE_HOME/etc/skce-configuration.properties

@@ -186,7 +186,7 @@ public class GenericCryptoModule {
         return getXMLSignatureSigningKey(password, signingdn);
     }
 
-    public String hmacRequest(String accesskey, String request, String secret) throws CryptoException {
+    public String hmacRequest(String password, String accesskey, String request) throws CryptoException {
         // Local variables
         Key sk = null;
         String keystoreurl;
@@ -204,9 +204,9 @@ public class GenericCryptoModule {
 
         try {
             KeyStore keystore = KeyStore.getInstance("BCFKS", BC_FIPS_PROVIDER);
-            keystore.load(new FileInputStream(keystoreurl), secret.toCharArray());
+            keystore.load(new FileInputStream(keystoreurl), password.toCharArray());
 
-            sk = keystore.getKey(accesskey, secret.toCharArray());
+            sk = keystore.getKey(accesskey, password.toCharArray());
 
         } catch (KeyStoreException | UnrecoverableEntryException | CertificateException | NoSuchAlgorithmException | IOException ex) {
             cryptoCommon.logp(Level.SEVERE, classname, "getHmacSignatureSigningKey", "CRYPTO-ERR-2506", ex.getLocalizedMessage());

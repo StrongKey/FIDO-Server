@@ -35,6 +35,7 @@
 package com.strongkey.auth.txbeans;
 
 import javax.ejb.Local;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Local interface for authenticateRestRequestBean
@@ -42,6 +43,7 @@ import javax.ejb.Local;
 @Local
 public interface authenticateRestRequestBeanLocal {
     
-    boolean execute(Long did, String accesskey,
-                    String request, String requestHmac);
+    boolean execute(Long did, 
+                    HttpServletRequest accesskey,
+                    String requestBody);
 }

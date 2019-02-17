@@ -92,7 +92,6 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
      * applications have to cache these random ids if they wish to de-register keys.
      * 
      * @param did       - FIDO domain id
-     * @param protocol  - U2F protocol version to comply with.
      * @param username  - username
      * @return          - returns SKCEReturnObject in both error and success cases.
      *                  In error case, an error key and error msg would be populated
@@ -101,7 +100,6 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
      */
     @Override
     public SKCEReturnObject execute(String did, 
-                                    String protocol, 
                                     String username) {
         
         //  Log the entry and inputs
@@ -109,7 +107,6 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
         skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", skfeCommon.getMessageProperty("FIDO-MSG-5001"), 
                         " EJB name=" + classname + 
                         " did=" + did + 
-                        " protocol=" + protocol + 
                         " username=" + username);
         
         SKCEReturnObject skcero = new SKCEReturnObject();
@@ -139,27 +136,11 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
             return skcero;
         }
         
-        if (protocol == null || protocol.isEmpty() ) {
-            skcero.setErrorkey("FIDO-ERR-0002");
-            skcero.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " protocol=" + protocol);
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " protocol=" + protocol);
-            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-            return skcero;
-        }
-        
-        if (!protocol.equalsIgnoreCase(skfeConstants.FIDO_PROTOCOL_VERSION_U2F_V2) && !protocol.equalsIgnoreCase(skfeConstants.FIDO_PROTOCOL_VERSION_2_0)) {
-            skcero.setErrorkey("FIDO-ERR-5002");
-            skcero.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-5002") + " protocol version passed =" + protocol);
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-5002", " protocol version passed =" + protocol);
-            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-            return skcero;
-        }
-        
         //  With the username, fetch all the keys registered for the account.   
         JsonArrayBuilder keysArrayBuilder = Json.createArrayBuilder();
         try { 
             Collection<FidoKeys> kh_coll = getkeybean.getByUsername(Long.parseLong(did),username);
-            if (kh_coll != null) {
+            if (!kh_coll.isEmpty()) {
                 Iterator it = kh_coll.iterator();
                 
                 //  Initialize a map to store the randomid to the regkeyid
@@ -216,7 +197,9 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
 //                    skceMaps.getMapObj().put(skfeConstants.MAP_USER_KEY_POINTERS,username, ukp);
 //                    skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", skfeCommon.getMessageProperty("FIDO-MSG-0030"), "");
                 }
-            }          
+            } else {
+                return skcero;
+            }
         } catch (Exception ex) {
             skcero.setErrorkey("FIDO-ERR-0001");
             skcero.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0001") + " Could not parse user keys; " + ex.getLocalizedMessage());
@@ -250,8 +233,7 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
     
     @Override
     public SKCEReturnObject remoteExecute(String did, 
-                                        String protocol, 
                                         String username) {
-        return execute(did, protocol, username);
+        return execute(did, username);
     }
 }

@@ -66,7 +66,7 @@ public class applianceMaps {
     private static ConcurrentSkipListSet<Long> disabledDomains = new ConcurrentSkipListSet<>();
 
     static {
-// Configure disabled domains list
+        // Configure disabled domains list
         String wsdisabled = applianceCommon.getApplianceConfigurationProperty("appliance.cfg.property.enableddomains.ccspin");
         StringTokenizer st = new StringTokenizer(wsdisabled, ",");
         while (st.hasMoreTokens()) {

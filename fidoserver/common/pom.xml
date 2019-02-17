@@ -106,6 +106,6 @@
                 </executions>
             </plugin>
         </plugins>
-        <finalName>Common</finalName>
+        <finalName>common</finalName>
     </build>
 </project>

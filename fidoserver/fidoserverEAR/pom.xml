@@ -52,7 +52,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.strongauth</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>api</artifactId>
             <version>4.0</version>
             <type>war</type>

@@ -35,6 +35,7 @@
 package com.strongauth.skfe.txbeans;
 
 import javax.ejb.Local;
+import javax.ws.rs.core.Response;
 
 
 @Local
@@ -58,5 +59,5 @@ public interface u2fServletHelperBeanLocal {
 
     String deactivate(String did, String protocol, String payload);
 
-    String getkeysinfo(String did, String protocol, String payload);
+    Response getkeysinfo(String did, String username);
 }

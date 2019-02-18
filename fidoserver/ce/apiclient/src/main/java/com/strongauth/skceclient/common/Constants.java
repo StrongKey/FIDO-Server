@@ -38,7 +38,7 @@ public class Constants {
     public static final String REST_SUFFIX = "/api";
     public static final String PRE_REGISTER_ENDPOINT = "/fidokeys/challenge";
     public static final String REGISTER_ENDPOINT = "/fidokeys";
-    public static final String PRE_AUTH_ENDPOINT = "/fidokeys/authenticate/challenge";
+    public static final String PRE_AUTH_ENDPOINT = "/fidokeys/authorize/challenge";
     public static final String PRE_AUTHZ_ENDPOINT = "/fidokeys/authenticate";
     public static final String AUTHENTICATE_ENDPOINT = "/fidokeys/authenticate";
     public static final String AUTHORIZE_ENDPOINT = "/fidokeys/authorize";

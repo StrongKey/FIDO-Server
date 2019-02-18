@@ -349,7 +349,7 @@ public class RestFidoU2FRegister implements FIDOClientRegister {
             httpPost.addHeader("Date", currentDate);
 
             //  Make SKFE rest call and get response from the server
-            System.out.println("\nCalling preregister @ " + resourceLoc);
+            System.out.println("\nCalling register @ " + resourceLoc);
             response = httpclient.execute(httpPost);
             try {
                 StatusLine responseStatusLine = response.getStatusLine();
@@ -361,15 +361,15 @@ public class RestFidoU2FRegister implements FIDOClientRegister {
                     case 200:
                         break;
                     case 401:
-                        System.out.println("Error during pre-register : 401 HMAC Authentication Failed");
+                        System.out.println("Error during register : 401 HMAC Authentication Failed");
                         return null;
                     case 404:
-                        System.out.println("Error during pre-register : 404 Resource not found");
+                        System.out.println("Error during register : 404 Resource not found");
                         return null;
                     case 400:
                     case 500:
                     default:
-                        System.out.println("Error during pre-register : " + responseStatusLine.getStatusCode() + " " + result);
+                        System.out.println("Error during register : " + responseStatusLine.getStatusCode() + " " + result);
                         return null;
                 }
             } finally {

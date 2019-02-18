@@ -186,41 +186,41 @@ public final class common {
         }
     }
 
-    public static String makePOSTCallUsingHMAC(String baseuri, String methodname, String body, String accesskey, String secretkey) throws HttpException, IOException, NoSuchAlgorithmException {
-//        String contentToEncode = "{" +
-//                                    "\"username\" : \"" + username + "\"" +
-//                                 "}";
-        String contentType = "application/x-www-form-urlencoded";
-        String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
-        String contentMD5 = calculateMD5(body);
-
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(baseuri + methodname);
-        StringEntity data = new StringEntity(body, ContentType.APPLICATION_FORM_URLENCODED); //create(contentType));
-        httpPost.setEntity(data);
-        String requestToHmac = httpPost.getMethod() + "\n" + 
-                        contentMD5 + "\n" +
-                        contentType + "\n" + 
-                        currentDate + "\n" +
-                        httpPost.getURI().getPath();
-
-        String hmac = calculateHMAC(secretkey, requestToHmac);
-        httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
-        httpPost.addHeader("Content-MD5", contentMD5);
-        httpPost.addHeader("content-type", contentType);
-        httpPost.addHeader("Date", currentDate);
-        CloseableHttpResponse response = httpclient.execute(httpPost);
-        try {
-            StatusLine sl = response.getStatusLine();
-            System.out.println(sl.getStatusCode());
-            HttpEntity entity = response.getEntity();
-            String result = EntityUtils.toString(entity);
-            EntityUtils.consume(entity);
-            return result;
-        } finally {
-            response.close();
-        }
-    }
+//    public static String makePOSTCallUsingHMAC(String baseuri, String methodname, String body, String accesskey, String secretkey) throws HttpException, IOException, NoSuchAlgorithmException {
+////        String contentToEncode = "{" +
+////                                    "\"username\" : \"" + username + "\"" +
+////                                 "}";
+//        String contentType = "application/x-www-form-urlencoded";
+//        String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
+//        String contentMD5 = calculateMD5(body);
+//
+//        CloseableHttpClient httpclient = HttpClients.createDefault();
+//        HttpPost httpPost = new HttpPost(baseuri + methodname);
+//        StringEntity data = new StringEntity(body, ContentType.APPLICATION_FORM_URLENCODED); //create(contentType));
+//        httpPost.setEntity(data);
+//        String requestToHmac = httpPost.getMethod() + "\n" + 
+//                        contentMD5 + "\n" +
+//                        contentType + "\n" + 
+//                        currentDate + "\n" +
+//                        httpPost.getURI().getPath();
+//
+//        String hmac = calculateHMAC(secretkey, requestToHmac);
+//        httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
+//        httpPost.addHeader("Content-MD5", contentMD5);
+//        httpPost.addHeader("content-type", contentType);
+//        httpPost.addHeader("Date", currentDate);
+//        CloseableHttpResponse response = httpclient.execute(httpPost);
+//        try {
+//            StatusLine sl = response.getStatusLine();
+//            System.out.println(sl.getStatusCode());
+//            HttpEntity entity = response.getEntity();
+//            String result = EntityUtils.toString(entity);
+//            EntityUtils.consume(entity);
+//            return result;
+//        } finally {
+//            response.close();
+//        }
+//    }
 
 //    public static String makeGETCallUsingHMAC(String baseuri, String methodname, String queryParams, String accesskey, String secretkey) throws HttpException, IOException, NoSuchAlgorithmException {
 //        String contentMD5 = "";

@@ -34,6 +34,8 @@ package com.strongauth.skfe.client.impl;
 
 import com.strongauth.skceclient.common.Constants;
 import com.strongauth.skceclient.common.common;
+import static com.strongauth.skceclient.common.common.calculateHMAC;
+import static com.strongauth.skceclient.common.common.calculateMD5;
 import com.strongauth.skfe.client.interfaces.FIDOClientAuthenticate;
 import com.strongauth.skfe.fido2.Fido2TokenSim;
 import com.strongauth.skfe.tokensim.FIDOU2FTokenSimulator;
@@ -49,6 +51,10 @@ import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -64,6 +70,16 @@ import javax.json.JsonReader;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParserFactory;
 import org.apache.commons.codec.DecoderException;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 public class RestFidoU2FAuthenticate implements FIDOClientAuthenticate {
 
@@ -71,41 +87,91 @@ public class RestFidoU2FAuthenticate implements FIDOClientAuthenticate {
     public String u2fAuthenticate(String REST_URI, 
             String fidoprotocol, 
             String skcedid, 
-            String svcuser, 
-            String svcpass, 
+            String accesskey, 
+            String secretkey, 
             String accountname, 
             String origin,
             int auth_counter,
             boolean goodisg) 
     {
-        HttpURLConnection conn = null;
-        String response, authresponse = "";
+        String authresponse = "";
         try {
             System.out.println("Authentication test");
             System.out.println("*******************************");
 
-            //  Build svcinfo
-            String svcinfo = Json.createObjectBuilder()
-                    .add("did", skcedid)
-                    .add("svcusername", svcuser)
-                    .add("svcpassword", svcpass)
-                    .add("protocol", fidoprotocol)
-                    .build().toString();
-            
-            //  Build payload
-            String payload = Json.createObjectBuilder()
-                    .add(Constants.JSON_KEY_SERVLET_INPUT_USERNAME, accountname)
-                    .build().toString();
+//            //  Build svcinfo
+//            String svcinfo = Json.createObjectBuilder()
+//                    .add("did", skcedid)
+//                    .add("svcusername", svcuser)
+//                    .add("svcpassword", svcpass)
+//                    .add("protocol", fidoprotocol)
+//                    .build().toString();
+//            
+//            //  Build payload
+//            String payload = Json.createObjectBuilder()
+//                    .add(Constants.JSON_KEY_SERVLET_INPUT_USERNAME, accountname)
+//                    .build().toString();
+
+            // Build payload
+            List<NameValuePair> nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("username", accountname));
+            nvps.add(new BasicNameValuePair("protocol", fidoprotocol));
+            HttpEntity body = new UrlEncodedFormEntity(nvps);
+
+            String contentType = "application/x-www-form-urlencoded";
+            String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
+            String contentMD5 = calculateMD5(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+
+            String resourceLoc = REST_URI + "/domains/" + skcedid + Constants.PRE_AUTH_ENDPOINT;
+
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost(resourceLoc);
+            httpPost.setEntity(body);
+            String requestToHmac = httpPost.getMethod() + "\n"
+                    + contentMD5 + "\n"
+                    + contentType + "\n"
+                    + currentDate + "\n"
+                    + httpPost.getURI().getPath();
+
+            String hmac = calculateHMAC(secretkey, requestToHmac);
+            httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
+            httpPost.addHeader("Content-MD5", contentMD5);
+            httpPost.addHeader("content-type", contentType);
+            httpPost.addHeader("Date", currentDate);
 
             //  Make SKFE rest call and get response from the server
-            System.out.println("\nCalling preauthenticate @ " 
-                    + REST_URI + Constants.PRE_AUTH_ENDPOINT);
-            response = common.callSKFERestApi(REST_URI, Constants.PRE_AUTH_ENDPOINT, 
-                                            svcinfo, payload);
-            System.out.println(" Response : " + response);
+            System.out.println("\nCalling preauthorize @ " + resourceLoc);
+            CloseableHttpResponse response = httpclient.execute(httpPost);
+            String result;
+            try {
+                StatusLine responseStatusLine = response.getStatusLine();
+                HttpEntity entity = response.getEntity();
+                result = EntityUtils.toString(entity);
+                EntityUtils.consume(entity);
+
+                switch (responseStatusLine.getStatusCode()) {
+                    case 200:
+                        break;
+                    case 401:
+                        System.out.println("Error during pre-authorize : 401 HMAC Authentication Failed");
+                        return null;
+                    case 404:
+                        System.out.println("Error during pre-authorize : 404 Resource not found");
+                        return null;
+                    case 400:
+                    case 500:
+                    default:
+                        System.out.println("Error during pre-authorize : " + responseStatusLine.getStatusCode() + " " + result);
+                        return null;
+                }
+            } finally {
+                response.close();
+            }
+
+            System.out.println(" Response : " + result);
 
             //  Build a json object out of response
-            StringReader s = new StringReader(response);
+            StringReader s = new StringReader(result);
             JsonReader jsonReader = Json.createReader(s);
             JsonObject responseJSON = jsonReader.readObject();
             jsonReader.close();
@@ -137,7 +203,6 @@ public class RestFidoU2FAuthenticate implements FIDOClientAuthenticate {
             }
             String nonce = resJsonObj.getString("challenge");
 
-
             System.out.println("\n Pre-Authentication Complete.");
             System.out.println("\n Generating Authentication response...\n");
             JsonObject input = null;
@@ -145,41 +210,45 @@ public class RestFidoU2FAuthenticate implements FIDOClientAuthenticate {
 
             if ("U2F_V2".compareTo(fidoprotocol) == 0) {
 
-            JsonArray jarray = resJsonObj.getJsonArray("registeredKeys");
-            String s2 = jarray.getJsonObject(0).toString();
-            s = new StringReader(s2);
-            JsonParser parser = factory.createParser(s);
-            while (parser.hasNext()) {
-                JsonParser.Event e = parser.next();
-                switch (e) {
-                    case KEY_NAME: {
-                        System.out.print("\t" + parser.getString() + " = ");
-                        break;
-                    }
-                    case VALUE_STRING: {
-                        System.out.println(parser.getString());
-                        break;
+                JsonArray jarray = resJsonObj.getJsonArray("registeredKeys");
+                String s2 = jarray.getJsonObject(0).toString();
+                s = new StringReader(s2);
+                JsonParser parser = factory.createParser(s);
+                while (parser.hasNext()) {
+                    JsonParser.Event e = parser.next();
+                    switch (e) {
+                        case KEY_NAME: {
+                            System.out.print("\t" + parser.getString() + " = ");
+                            break;
+                        }
+                        case VALUE_STRING: {
+                            System.out.println(parser.getString());
+                            break;
+                        }
                     }
                 }
-            }
-
-            try {
-                    input = FIDOU2FTokenSimulator.generateAuthenticationResponse(appid, nonce, s2, origin, auth_counter, goodisg);
-                } catch (NoSuchAlgorithmException
-                        | NoSuchProviderException
-                        | DecoderException
-                        | InvalidParameterSpecException
-                        | UnsupportedEncodingException
-                        | NoSuchPaddingException
-                        | InvalidKeyException
-                        | InvalidAlgorithmParameterException
-                        | ShortBufferException
-                        | IllegalBlockSizeException
-                        | BadPaddingException
-                        | InvalidKeySpecException
-                        | SignatureException ex) {
-                System.out.println("\n Exception : " + ex.getLocalizedMessage());
-            } 
+                System.out.println("appid: " + appid);
+                System.out.println("nonce: " + nonce);
+                System.out.println("s2: " + s2);
+                System.out.println("origin: " + origin);
+                System.out.println("auth_counter: " + auth_counter);
+                try {
+                        input = FIDOU2FTokenSimulator.generateAuthenticationResponse(appid, nonce, s2, origin, auth_counter, goodisg);
+                    } catch (NoSuchAlgorithmException
+                            | NoSuchProviderException
+                            | DecoderException
+                            | InvalidParameterSpecException
+                            | UnsupportedEncodingException
+                            | NoSuchPaddingException
+                            | InvalidKeyException
+                            | InvalidAlgorithmParameterException
+                            | ShortBufferException
+                            | IllegalBlockSizeException
+                            | BadPaddingException
+                            | InvalidKeySpecException
+                            | SignatureException ex) {
+                    System.out.println("\n Exception : " + ex.getLocalizedMessage());
+                } 
             } else if ("FIDO20".compareTo(fidoprotocol) == 0) {
                 Fido2TokenSim sim = new Fido2TokenSim(origin);
                 JsonObjectBuilder in = Json.createObjectBuilder();
@@ -221,16 +290,66 @@ public class RestFidoU2FAuthenticate implements FIDOClientAuthenticate {
                     .add("last_used_location", "Bangalore, India")
                     .add(Constants.JSON_KEY_SERVLET_INPUT_USERNAME, accountname).
                     build();
-            payload = Json.createObjectBuilder()
-                    .add(Constants.JSON_KEY_SERVLET_INPUT_METADATA, auth_metadata)
-                    .add(Constants.JSON_KEY_SERVLET_INPUT_RESPONSE, input)
-                    .build().toString();
+//          // Build payload
+            nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("username", accountname));
+            nvps.add(new BasicNameValuePair("protocol", fidoprotocol));
+            nvps.add(new BasicNameValuePair("response", input.toString()));
+            nvps.add(new BasicNameValuePair("metadata", auth_metadata.toString()));
+
+            System.out.println(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+
+            body = new UrlEncodedFormEntity(nvps);
+
+            contentType = "application/x-www-form-urlencoded";
+            currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
+            contentMD5 = calculateMD5(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+
+            resourceLoc = REST_URI + "/domains/" + skcedid + Constants.AUTHORIZE_ENDPOINT;
+
+            httpclient = HttpClients.createDefault();
+            httpPost = new HttpPost(resourceLoc);
+            httpPost.setEntity(body);
+            requestToHmac = httpPost.getMethod() + "\n"
+                    + contentMD5 + "\n"
+                    + contentType + "\n"
+                    + currentDate + "\n"
+                    + httpPost.getURI().getPath();
+
+            hmac = calculateHMAC(secretkey, requestToHmac);
+            httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
+            httpPost.addHeader("Content-MD5", contentMD5);
+            httpPost.addHeader("content-type", contentType);
+            httpPost.addHeader("Date", currentDate);
 
             //  Make SKFE rest call and get response from the server
-            System.out.println("\nCalling authenticate @ " 
-                    + REST_URI + Constants.AUTHENTICATE_ENDPOINT);
-            authresponse = common.callSKFERestApi(REST_URI, Constants.AUTHENTICATE_ENDPOINT, 
-                                            svcinfo, payload);
+            System.out.println("\nCalling authorize @ " + resourceLoc);
+            response = httpclient.execute(httpPost);
+            try {
+                StatusLine responseStatusLine = response.getStatusLine();
+                HttpEntity entity = response.getEntity();
+                authresponse = EntityUtils.toString(entity);
+                EntityUtils.consume(entity);
+
+                switch (responseStatusLine.getStatusCode()) {
+                    case 200:
+                        break;
+                    case 401:
+                        System.out.println("Error during authorize : 401 HMAC Authentication Failed");
+                        return null;
+                    case 404:
+                        System.out.println("Error during authorize : 404 Resource not found");
+                        return null;
+                    case 400:
+                    case 500:
+                    default:
+                        System.out.println("Error during authorize : " + responseStatusLine.getStatusCode() + " " + result);
+                        return null;
+                }
+            } finally {
+                response.close();
+            }
+
             System.out.println(" Response   : " + authresponse);
 
             System.out.println("\nAuthentication Complete.");
@@ -240,10 +359,8 @@ public class RestFidoU2FAuthenticate implements FIDOClientAuthenticate {
             Logger.getLogger(RestFidoU2FAuthenticate.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(RestFidoU2FAuthenticate.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if ( conn != null ) {
-                conn.disconnect();
-            }
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(RestFidoU2FAuthenticate.class.getName()).log(Level.SEVERE, null, ex);
         }
         return authresponse;
     }

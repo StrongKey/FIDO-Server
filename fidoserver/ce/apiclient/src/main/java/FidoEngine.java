@@ -194,9 +194,9 @@ public class FidoEngine {
                     origin = args[7];
                 }
             }
-            if(args.length == 10){
-                origin = args[8];
-                auth_counter = Integer.parseInt(args[9]);
+            if(args.length >= 9){
+                origin = args[7];
+                auth_counter = Integer.parseInt(args[8]);
             }
             hostport = hostport + Constants.REST_SUFFIX;
         } else {

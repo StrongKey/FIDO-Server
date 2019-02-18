@@ -168,14 +168,14 @@ public class FIDOReturnObject {
                 responseJSON = Json.createObjectBuilder()
                 .add(skfeConstants.JSON_KEY_SERVLET_RETURN_CHALLENGE, "")
                 .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error).
-                build();
+                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
+                .build();
             } else {
                 responseJSON = Json.createObjectBuilder()
                 .add(skfeConstants.JSON_KEY_SERVLET_RETURN_CHALLENGE, challenge)
                 .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error).
-                build();   
+                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
+                .build();   
             }
         } else if ( method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_REGISTER) || 
                 method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_AUTHENTICATE) ||
@@ -185,21 +185,21 @@ public class FIDOReturnObject {
             responseJSON = Json.createObjectBuilder()
             .add(skfeConstants.JSON_KEY_SERVLET_RETURN_RESPONSE, response)
             .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-            .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error).
-            build();
+            .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
+            .build();
         } else if ( method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_GETKEYSINFO)) {
             if ( challenge == null ) { 
                 responseJSON = Json.createObjectBuilder()
                 .add(skfeConstants.JSON_KEY_SERVLET_RETURN_RESPONSE, "")
                 .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error).
-                build();
+                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
+                .build();
             } else {
                 responseJSON = Json.createObjectBuilder()
                 .add(skfeConstants.JSON_KEY_SERVLET_RETURN_RESPONSE, challenge)
                 .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error).
-                build();   
+                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
+                .build();   
             }
         }
         

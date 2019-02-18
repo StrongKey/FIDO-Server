@@ -175,8 +175,7 @@ public class RestFidoU2FRegister implements FIDOClientRegister {
             JsonObject resJsonObj = responseJSON.getJsonObject("Challenge");
             
             System.out.println("\n Pre-Registration Complete.");
-            if (true)
-                return null;
+
             System.out.println("\n Generating Registration response...\n");
             
             JsonObject input = null;
@@ -187,46 +186,46 @@ public class RestFidoU2FRegister implements FIDOClientRegister {
             if ("U2F_V2".compareTo(fidoprotocol) == 0) {
                 
                 System.out.println("\n Registration Parameters:\n");
-            JsonArray jarray = resJsonObj.getJsonArray("registerRequests");
-            String s2 = jarray.getJsonObject(0).toString();
-            s = new StringReader(s2);
-                parser = factory.createParser(s);
-            while (parser.hasNext()) {
-                JsonParser.Event e = parser.next();
-                switch (e) {
-                    case KEY_NAME: {
-                        System.out.print("\t" + parser.getString() + " = ");
-                        break;
-                    }
-                    case VALUE_STRING: {
-                        System.out.println(parser.getString());
-                        break;
+                JsonArray jarray = resJsonObj.getJsonArray("registerRequests");
+                String s2 = jarray.getJsonObject(0).toString();
+                s = new StringReader(s2);
+                    parser = factory.createParser(s);
+                while (parser.hasNext()) {
+                    JsonParser.Event e = parser.next();
+                    switch (e) {
+                        case KEY_NAME: {
+                            System.out.print("\t" + parser.getString() + " = ");
+                            break;
+                        }
+                        case VALUE_STRING: {
+                            System.out.println(parser.getString());
+                            break;
+                        }
                     }
                 }
-            }
-            
-                String appidfromserver = resJsonObj.getString("appId");
-            
-            try {
-                    input = FIDOU2FTokenSimulator.generateRegistrationResponse(appidfromserver, s2, origin, goodsig);
-                } catch (NoSuchAlgorithmException
-                        | NoSuchProviderException
-                        | KeyStoreException
-                        | InvalidParameterSpecException
-                        | DecoderException
-                        | IOException
-                        | CertificateException
-                        | InvalidAlgorithmParameterException
-                        | InvalidKeyException
-                        | SignatureException
-                        | NoSuchPaddingException
-                        | IllegalBlockSizeException
-                        | BadPaddingException
-                        | ShortBufferException
-                        | UnrecoverableKeyException
-                        | InvalidKeySpecException ex) {
-                System.out.println("\n Exception : " + ex.getLocalizedMessage());
-            }
+                
+                    String appidfromserver = resJsonObj.getString("appId");
+                
+                try {
+                        input = FIDOU2FTokenSimulator.generateRegistrationResponse(appidfromserver, s2, origin, goodsig);
+                    } catch (NoSuchAlgorithmException
+                            | NoSuchProviderException
+                            | KeyStoreException
+                            | InvalidParameterSpecException
+                            | DecoderException
+                            | IOException
+                            | CertificateException
+                            | InvalidAlgorithmParameterException
+                            | InvalidKeyException
+                            | SignatureException
+                            | NoSuchPaddingException
+                            | IllegalBlockSizeException
+                            | BadPaddingException
+                            | ShortBufferException
+                            | UnrecoverableKeyException
+                            | InvalidKeySpecException ex) {
+                    System.out.println("\n Exception : " + ex.getLocalizedMessage());
+                }
             
             } else if ("FIDO20".compareTo(fidoprotocol) == 0) {
                 
@@ -311,17 +310,73 @@ public class RestFidoU2FRegister implements FIDOClientRegister {
                     .add("create_location", "Sunnyvale, CA")
                     .add(Constants.JSON_KEY_SERVLET_INPUT_USERNAME, accountname)
                     .build();
-//            payload = Json.createObjectBuilder()
-//                    .add(Constants.JSON_KEY_SERVLET_INPUT_METADATA, reg_metadata)
-//                    .add(Constants.JSON_KEY_SERVLET_INPUT_RESPONSE, input)
-//                    .build().toString();
-//
-//            //  Make SKFE rest call and get response from the server
-//            System.out.println("\nCalling register @ " 
-//                    + REST_URI + Constants.REGISTER_ENDPOINT);
-//            regresponse = common.callSKFERestApi(REST_URI, Constants.REGISTER_ENDPOINT, 
-//                                                    svcinfo, payload);
-//            System.out.println(" Response   : " + regresponse);
+
+            //  Make SKFE rest call and get response from the server
+            System.out.println("\nCalling register @ " 
+                    + REST_URI + Constants.REGISTER_ENDPOINT);
+
+
+            // Build payload
+            nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("username", accountname));
+            nvps.add(new BasicNameValuePair("protocol", fidoprotocol));
+            nvps.add(new BasicNameValuePair("response", input.toString()));
+            nvps.add(new BasicNameValuePair("metadata", reg_metadata.toString()));
+
+            System.out.println(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+
+            body = new UrlEncodedFormEntity(nvps);
+
+            contentType = "application/x-www-form-urlencoded";
+            currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
+            contentMD5 = calculateMD5(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+
+            resourceLoc = REST_URI + "/domains/" + skcedid + Constants.REGISTER_ENDPOINT;
+
+            httpclient = HttpClients.createDefault();
+            httpPost = new HttpPost(resourceLoc);
+            httpPost.setEntity(body);
+            requestToHmac = httpPost.getMethod() + "\n"
+                    + contentMD5 + "\n"
+                    + contentType + "\n"
+                    + currentDate + "\n"
+                    + httpPost.getURI().getPath();
+
+            hmac = calculateHMAC(secretkey, requestToHmac);
+            httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
+            httpPost.addHeader("Content-MD5", contentMD5);
+            httpPost.addHeader("content-type", contentType);
+            httpPost.addHeader("Date", currentDate);
+
+            //  Make SKFE rest call and get response from the server
+            System.out.println("\nCalling preregister @ " + resourceLoc);
+            response = httpclient.execute(httpPost);
+            try {
+                StatusLine responseStatusLine = response.getStatusLine();
+                HttpEntity entity = response.getEntity();
+                regresponse = EntityUtils.toString(entity);
+                EntityUtils.consume(entity);
+
+                switch (responseStatusLine.getStatusCode()) {
+                    case 200:
+                        break;
+                    case 401:
+                        System.out.println("Error during pre-register : 401 HMAC Authentication Failed");
+                        return null;
+                    case 404:
+                        System.out.println("Error during pre-register : 404 Resource not found");
+                        return null;
+                    case 400:
+                    case 500:
+                    default:
+                        System.out.println("Error during pre-register : " + responseStatusLine.getStatusCode() + " " + result);
+                        return null;
+                }
+            } finally {
+                response.close();
+            }
+            
+            System.out.println(" Response   : " + regresponse);
             
             System.out.println("\n Registration Complete.");
             System.out.println("*******************************");

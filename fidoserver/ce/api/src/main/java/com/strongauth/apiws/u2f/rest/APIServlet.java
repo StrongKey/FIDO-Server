@@ -101,26 +101,30 @@ public class APIServlet {
      * @param requestbody - String The full body for auth purposes
      * @param did - Long value of the domain to service this request
      * @param protocol - String value of the protocol to use
+     * @param response - String 
+     * @param metadata - String
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Response' : String, with a simple message telling if the process was
      * successful or not. 2. 'Message' : String, with a list of messages that
      * explain the process. 3. 'Error' : String, with error message incase
      * something went wrong. Will be empty if successful.
      */
-//    @POST
-//    @Path("")
-//    @Consumes({"application/x-www-form-urlencoded"})
-//    @Produces({"application/json"})
-//    public Response register(String requestbody,
-//                             @PathParam("did") Long did,
-//                             @FormParam("protocol") String protocol) {
-//
-//        if (!authRest.execute(did, request, requestbody)) {
-//            return Response.status(Response.Status.UNAUTHORIZED).build();
-//        }
-//        
-//        return u2fHelperBean.register(did, protocol, payload);
-//    }
+    @POST
+    @Path("")
+    @Consumes({"application/x-www-form-urlencoded"})
+    @Produces({"application/json"})
+    public Response register(String requestbody,
+                             @PathParam("did") Long did,
+                             @FormParam("protocol") String protocol,
+                             @FormParam("response") String response,
+                             @FormParam("metadata") String metadata) {
+
+        if (!authRest.execute(did, request, requestbody)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        return u2fHelperBean.register(did, protocol, response, metadata);
+    }
 
     /**
      * Step-1 for fido authenticator authentication. This methods generates a

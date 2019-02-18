@@ -348,7 +348,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity( skfeCommon.getMessageProperty("FIDO-ERR-0001") + ex.getMessage()).build();
             } catch (IllegalArgumentException ex) {
                 skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0001", ex.getMessage());
-                return Response.status(Response.Status.BAD_REQUEST).entity( skfeCommon.getMessageProperty("FIDO-ERR-0008") + ex.getMessage()).build();
+                return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
             }
 
             JsonObject combined_regresponse;
@@ -392,8 +392,8 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
                             .build();
                 }
             } catch (Exception ex) {
-                skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0014", ex.getMessage());
-                return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-0014") + ex.getMessage()).build();
+                skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0001", ex.getMessage());
+                return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-0001") + ex.getMessage()).build();
             }
 
             // Build the output json object
@@ -461,12 +461,8 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      *
      * @param did - FIDO domain id
      * @param protocol
-     * @param payload - A stringified json with registrationresponse and
-     * reistration metadata embedded into it.
-     *
-     * Example: { "response": { "clientData": "...", "sessionId": "...",
-     * "registrationData": "..." }, "metadata": { "version": "1.0",
-     * "create_location": "Sunnyvale, CA" } }
+     * @param response
+     * @param metadata
      *
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Response' : String, with a simple message telling if the process was
@@ -475,7 +471,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * something went wrong. Will be empty if successful.
      */
     @Override
-    public String register(String did, String protocol, String payload) {
+    public Response register(Long did, String protocol, String response, String metadata) {
 
         Date in = new Date();
         Date out;
@@ -485,61 +481,49 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0003", "[TXID=" + ID + "]"
                 + "\n did=" + did
                 + "\n protocol=" + protocol
-                + "\n payload=" + payload);
+                + "\n response=" + response
+                + "\n metadata=" + metadata);
 
         //  2. Input checks
-        if (payload == null || payload.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0004", " payload");
-            return skfeCommon.buildRegisterResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0004")
-                    + " payload");
-        }
-        if (!skfeCommon.isValidJsonObject(payload)) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0014", " Invalid json");
-            return skfeCommon.buildRegisterResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0014")
-                    + " Invalid json");
-        }
-
-        //  3. Retrieve data from payload
-        //  fetch response and metadata fields from payload
-        JsonObject response = (JsonObject) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_RESPONSE, "JsonObject");
         if (response == null || response.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0004", "");
-            return skfeCommon.buildRegisterResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0004"));
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-0004")).build();
         }
 
-        JsonObject metadata = (JsonObject) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_METADATA, "JsonObject");
         if (metadata == null || metadata.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0016", "");
-            return skfeCommon.buildRegisterResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0016"));
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-0016")).build();
         }
 
-        //  based on the structure of the regresponse, decide the protocol version.
-        if (protocol == null || protocol.trim().isEmpty()) {
-            protocol = skfeConstants.FIDO_PROTOCOL_VERSION_U2F_V2;
+        if (protocol == null || protocol.isEmpty()) {
+            skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0002", " protocol");
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " protocol").build();
         }
-
-        String registrationresponse = response.toString();
-        String registrationmetadata = metadata.toString();
+        if (!skfeCommon.isFIDOProtocolSupported(protocol)) {
+            skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-5002"), protocol);
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-5002") + protocol).build();
+        }
 
         String responseJSON;
-
-        //begine u2f code
-        if (protocol.equalsIgnoreCase(skfeConstants.FIDO_PROTOCOL_VERSION_U2F_V2)) {
-            responseJSON = U2FRegejb.execute(Long.parseLong(did), registrationresponse, registrationmetadata, protocol);
-        } else {
-            responseJSON = FIDO2Regejb.execute(Long.parseLong(did), registrationresponse, registrationmetadata);
+        try {
+            if (protocol.equalsIgnoreCase(skfeConstants.FIDO_PROTOCOL_VERSION_U2F_V2)) {
+                responseJSON = U2FRegejb.execute(did, response, metadata, protocol);
+            } else {
+                responseJSON = FIDO2Regejb.execute(did, response, metadata);
+            }
+        } catch (IllegalArgumentException ex) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        } catch (Exception ex) {
+            skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0001", ex.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-0001") + ex.getMessage()).build();
         }
-        //  9.  Build the output json object
-
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, "FIDO-MSG-0037", "");
 
         out = new Date();
         long rt = out.getTime() - in.getTime();
-        //  10. Print output and Return
+        //  1. Print output and Return
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0004", "[TXID=" + ID + ", START=" + in.getTime() + ", FINISH=" + out.getTime() + ", TTC=" + rt + "]" + "\nResponse = " + responseJSON);
-        return responseJSON;
+        return Response.ok().entity(responseJSON).build();
     }
 
     /*
@@ -1805,11 +1789,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * de-register keys.
      *
      * @param did - FIDO domain id
-     * @param protocol - U2F protocol version to comply with.
-     * @param payload - A stringified json with username whose keys information
-     * has to be fetched.
-     *
-     * Example: { "username": "johndoe" }
+     * @param username - String username to search keys for
      *
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Response' : A Json array, each entry signifying metadata of a key

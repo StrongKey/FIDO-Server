@@ -148,6 +148,7 @@ public class RestFidoU2FGetKeysInfo implements FIDOClientGetKeysInfo {
         } catch (IOException ex) {
             Logger.getLogger(RestFidoU2FGetKeysInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("GetKeys response : " + gkresponse);
         return gkresponse;
     }
 }

@@ -43,7 +43,7 @@ public interface u2fServletHelperBeanLocal {
     
     Response preregister(Long did, String protocol, String username, String displayName, String options, String extensions);
 
-    String register(String did, String protocol,String payload);
+    Response register(Long did, String protocol, String response, String metadata);
 
     String preauthenticate(Long did, String protocol, String username);
 

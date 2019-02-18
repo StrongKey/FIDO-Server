@@ -52,7 +52,7 @@ public interface u2fAuthenticateBeanLocal {
      * @throws SKFEException 
      *                  - In case of any error
      */
-    FEreturn execute(String did, 
+    FEreturn execute(Long did, 
                     String protocol,
                     String authresponseJson, 
                     String userPublicKey,

@@ -73,7 +73,7 @@ public class u2fAuthenticateBean implements u2fAuthenticateBeanLocal, u2fAuthent
      *                  - In case of any error
      */
     @Override
-    public FEreturn execute(String did, 
+    public FEreturn execute(Long did, 
                             String protocol,
                             String authresponseJson, 
                             String userpublickey,
@@ -123,7 +123,7 @@ public class u2fAuthenticateBean implements u2fAuthenticateBeanLocal, u2fAuthent
     }
     
     @Override
-    public FEreturn remoteExecute(String did, 
+    public FEreturn remoteExecute(Long did, 
                                 String protocol,
                                 String authresponseJson, 
                                 String userpublickey,

@@ -51,7 +51,7 @@ public interface u2fAuthenticateBeanRemote {
      * @throws SKFEException 
      *                  - In case of any error
      */
-    public FEreturn remoteExecute(String did, 
+    public FEreturn remoteExecute(Long did, 
                                 String protocol,
                                 String authresponseJson, 
                                 String userpublickey,

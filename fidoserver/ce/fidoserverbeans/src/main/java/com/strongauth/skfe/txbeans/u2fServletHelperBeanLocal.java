@@ -47,11 +47,11 @@ public interface u2fServletHelperBeanLocal {
 
     String preauthenticate(Long did, String protocol, String username);
 
-    String authenticate(String did, String protocol, String payload);
+    String authenticate(Long did, String protocol, String payload);
 
-    String preauthorize(Long did, String protocol, String username, String options, String extensions);
+    Response preauthorize(Long did, String protocol, String username, String options, String extensions);
 
-    String authorize(String did, String protocol, String payload);
+    Response authorize(Long did, String protocol, String response, String metadata);
 
     String deregister(String did, String protocol, String payload);
 

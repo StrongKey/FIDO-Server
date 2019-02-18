@@ -1,37 +1,8 @@
-/*
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License, as published by the Free
- * Software Foundation and available at
- * http://www.fsf.org/licensing/licenses/lgpl.html, version 2.1 or above.
+/**
+ * Copyright StrongAuth, Inc. All Rights Reserved.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * Copyright (c) 2001-2019 StrongAuth, Inc.
- *
- * $Date$ $Revision$
- * $Author$ $URL:
- * https://svn.strongauth.com/repos/jade/trunk/skce/skfe/src/main/java/com/strongauth/skfews/u2f/rest/SKFEServlet.java
- * $
- *
- * *********************************************
- *                    888
- *                    888
- *                    888
- *  88888b.   .d88b.  888888  .d88b.  .d8888b
- *  888 "88b d88""88b 888    d8P  Y8b 88K
- *  888  888 888  888 888    88888888 "Y8888b.
- *  888  888 Y88..88P Y88b.  Y8b.          X88
- *  888  888  "Y88P"   "Y888  "Y8888   88888P'
- *
- * *********************************************
- *
- * Servlet for FIDO U2F protocol based functionality. This servlet exposes REST
- * (Representational State Transfer) based web services to the calling
- * applications.
- *
+ * Use of this source code is governed by the Gnu Lesser General Public License 2.3.
+ * The license can be found at https://github.com/StrongKey/FIDO-Server/LICENSE
  */
 package com.strongauth.apiws.u2f.rest;
 
@@ -50,6 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -67,177 +40,55 @@ import javax.ws.rs.core.Response;
  *
  */
 @Stateless
-@Path("")
+@Path("/domains/{did}/fidokeys")
 public class APIServlet {
 
-    @javax.ws.rs.core.Context
-    private HttpServletRequest request;
-
-    /*
-     * Enterprise Java Beans used in this servlet.
-     */
+    @javax.ws.rs.core.Context private HttpServletRequest request;
     @EJB u2fServletHelperBeanLocal u2fHelperBean;
-    @EJB authorizeLdapUserBeanLocal authorizebean;
     @EJB authenticateRestRequestBeanLocal authRest;
 
-    // CTOR
     public APIServlet() {
     }
     
-    /**
-     * Basic null checks before the compound input objects are accessed.
-     * 
-     * @param svcinfo String; Json string with service credentials information
-     * 
-     * @return SKCEServiceInfoType; if all checks passed
-     * @throws SKCEException; in case any check fails
-     */
-    private SKCEServiceInfoType basicInputChecks(String methodname,
-            String svcinfo) throws SKCEException {
-        String prefix = methodname + " web-service; ";
-
-        if (svcinfo == null || svcinfo.trim().isEmpty()) {
-            strongkeyLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "SKCEWS-ERR-3014",
-                    "svcinfo");
-            throw new SKCEException(skfeCommon.getMessageProperty("SKCEWS-ERR-3014")
-                    .replace("{0}", "") + prefix + "svcinfo");
-        } else if (!skfeCommon.isValidJsonObject(svcinfo)) {
-            strongkeyLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0014",
-                    prefix + "Invalid json; svcinfo");
-            throw new SKCEException(skfeCommon.getMessageProperty("FIDO-ERR-0014")
-                    .replace("{0}", "") + prefix + "Invalid json; svcinfo");
-        }
-
-        try {
-            //  Parse out the needed key-values from json
-            String did = (String) applianceCommon.getJsonValue(svcinfo, "did", "String");
-            String svcusername = (String) applianceCommon.getJsonValue(svcinfo, "svcusername", "String");
-            String svcpassword = (String) applianceCommon.getJsonValue(svcinfo, "svcpassword", "String");
-            String protocol = (String) applianceCommon.getJsonValue(svcinfo, "protocol", "String");
-
-            //  Construct serviceinfo object
-            SKCEServiceInfoType si = new SKCEServiceInfoType();
-            si.setDid(Integer.parseInt(did));
-            si.setSvcusername(svcusername);
-            si.setSvcpassword(svcpassword);
-            if (protocol != null && !protocol.trim().isEmpty()) {
-                si.setProtocol(protocol);
-            }
-            return si;
-
-        } catch (Exception ex) {
-            strongkeyLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "SKCEWS-ERR-3053",
-                    "svcinfo");
-            throw new SKCEException(skfeCommon.getMessageProperty("SKCEWS-ERR-3053")
-                    .replace("{0}", "") + prefix + "svcinfo");
-        }
-
-    }
-
-    /*
-     ************************************************************************
-     *                                                        d8b          888                     
-     *                                                        Y8P          888                     
-     *                                                                     888                     
-     *    88888b.  888d888  .d88b.  888d888  .d88b.   .d88b.  888 .d8888b  888888  .d88b.  888d888 
-     *    888 "88b 888P"   d8P  Y8b 888P"   d8P  Y8b d88P"88b 888 88K      888    d8P  Y8b 888P"   
-     *    888  888 888     88888888 888     88888888 888  888 888 "Y8888b. 888    88888888 888     
-     *    888 d88P 888     Y8b.     888     Y8b.     Y88b 888 888      X88 Y88b.  Y8b.     888     
-     *    88888P"  888      "Y8888  888      "Y8888   "Y88888 888  88888P'  "Y888  "Y8888  888     
-     *    888                                             888                                      
-     *    888                                        Y8b d88P                                      
-     *    888                                         "Y88P"                                      
-     ************************************************************************
-     */
     /**
      * Step-1 for fido authenticator registration. This methods generates a
      * challenge and returns the same to the caller, which typically is a
      * Relying Party (RP) application.
      *
-     * @param svcinfo - Object that carries SKCE service information.
-     * Information bundled is :
-     * 
-     * (1) did - Unique identifier for a SKCE encryption domain (2) svcusername
-     * - SKCE service credentials : username requesting the service. The service
-     * credentials are looked up in the 'service' setup of authentication system
-     * based on LDAP / AD. The user should be authorized to encrypt. (3)
-     * svcpassword - SKCE service credentials : password of the service username
-     * specified above (4) protocol - U2F protocol version to comply with.
-     * 
-     * @param payload
+     * @param requestbody - String The full body for auth purposes
+     * @param did - Long value of the domain to service this request
+     * @param protocol - String value of the protocol to use
+     * @param username - String user for which to create the pre-registration
+     * request
+     * @param displayname - String user for which to create the pre-registration
+     * request
+     * @param options - String json value of options to use for FIDO2
+     * @param extensions - String json value of extensions to use for FIDO2
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Challenge' : 'U2F Reg Challenge parameters; a json again' 2.
      * 'Message' : String, with a list of messages that explain the process. 3.
      * 'Error' : String, with error message incase something went wrong. Will be
      * empty if successful.
      */
-//    @POST
-//    @Path("/domains/{did}/fidokeys/challenge")
-//    @Consumes({"application/x-www-form-urlencoded"})
-//    @Produces({"application/json"})
-//    public Response preregister(@FormParam("svcinfo") String svcinfo,
-//                                @FormParam("payload") String payload) {
-//        //  Local variables       
-//        //  Service credentials
-//        String did;
-//        String svcusername;
-//        String svcpassword;
-//        String protocol;
-//        
-//        //  SKCE domain id validation
-//        try {
-//            SKCEServiceInfoType si = basicInputChecks("preregister", svcinfo);
-//            
-//            did = Integer.toString(si.getDid());
-//            svcusername = si.getSvcusername();
-//            svcpassword = si.getSvcpassword();
-//            protocol = si.getProtocol();
-//
-////            skfeCommon.inputValidateSKCEDid(did);
-//        } catch (SKCEException ex) {
-//            return skfeCommon.buildPreRegisterResponse(null, "", ex.getLocalizedMessage());
-//        }
-//        
-//        //  Service credentials input checks
-//        if (svcusername == null || svcusername.isEmpty()) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " svcusername");
-//            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " svcusername");
-//        }
-//        if (svcpassword == null) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " svcpassword");
-//            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " svcpassword");
-//        }
-//        
-//        // Service credentials' authentication and authorization
-//        boolean isAuthorized;
-//        try {
-//            isAuthorized = authorizebean.execute(Long.parseLong(did), svcusername, svcpassword, skfeConstants.LDAP_ROLE_FIDO);
-//        } catch (SKCEException ex) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0003"), ex.getMessage());
-//            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0003") + ex.getMessage());
-//        }
-//        if (!isAuthorized) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0033", "");
-//            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0033"));
-//        }
-//        return u2fHelperBean.preregister(did, protocol, payload);
-//    }
+    @POST
+    @Path("/challenge")
+    @Consumes({"application/x-www-form-urlencoded"})
+    @Produces({"application/json"})
+    public Response preregister(String requestbody,
+                                @PathParam("did") Long did,
+                                @FormParam("protocol") String protocol,
+                                @FormParam("username") String username,
+                                @FormParam("displayname") String displayname,
+                                @FormParam("options") String options,
+                                @FormParam("extensions") String extensions) {
+        
+        if (!authRest.execute(did, request, requestbody)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        return u2fHelperBean.preregister(did, protocol, username, displayname, options, extensions);
+    }
 
-    /*
-     ************************************************************************
-     *                                d8b          888                     
-     *                                Y8P          888                     
-     *                                             888                     
-     *      888d888  .d88b.   .d88b.  888 .d8888b  888888  .d88b.  888d888 
-     *      888P"   d8P  Y8b d88P"88b 888 88K      888    d8P  Y8b 888P"   
-     *      888     88888888 888  888 888 "Y8888b. 888    88888888 888     
-     *      888     Y8b.     Y88b 888 888      X88 Y88b.  Y8b.     888     
-     *      888      "Y8888   "Y88888 888  88888P'  "Y888  "Y8888  888     
-     *                            888                                      
-     *                       Y8b d88P                                      
-     *                        "Y88P"                                
-     *************************************************************************
-     */
     /**
      * Step-2 or last step of fido authenticator registration process. This
      * method receives the u2f registration response parameters which is
@@ -247,18 +98,9 @@ public class APIServlet {
      * should happen with in a certain time limit after the preregister is
      * finished; otherwise, the user session would be invalidated.
      *
-     * @param svcinfo - Object that carries SKCE service information.
-     * Information bundled is :
-     * 
-     * (1) did - Unique identifier for a SKCE encryption domain (2) svcusername
-     * - SKCE service credentials : username requesting the service. The service
-     * credentials are looked up in the 'service' setup of authentication system
-     * based on LDAP / AD. The user should be authorized to encrypt. (3)
-     * svcpassword - SKCE service credentials : password of the service username
-     * specified above
-     * 
-     * @param payload - U2F Registration Response parameters in Json form.
-     * Should contain sessionid, browserData and enrollData.
+     * @param requestbody - String The full body for auth purposes
+     * @param did - Long value of the domain to service this request
+     * @param protocol - String value of the protocol to use
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Response' : String, with a simple message telling if the process was
      * successful or not. 2. 'Message' : String, with a list of messages that
@@ -266,70 +108,20 @@ public class APIServlet {
      * something went wrong. Will be empty if successful.
      */
 //    @POST
-//    @Path("/domains/{did}/fidokeys")
+//    @Path("")
 //    @Consumes({"application/x-www-form-urlencoded"})
 //    @Produces({"application/json"})
-//    public Response register(@FormParam("svcinfo") String svcinfo,
-//            @FormParam("payload") String payload) {
-//        //  Local variables       
-//        //  Service credentials
-//        String did;
-//        String svcusername;
-//        String svcpassword;
-//        String protocol;
-//        
-//        //  SKCE domain id validation
-//        try {
-//            SKCEServiceInfoType si = basicInputChecks("register", svcinfo);
-//            did = Integer.toString(si.getDid());
-//            svcusername = si.getSvcusername();
-//            svcpassword = si.getSvcpassword();
-//            protocol = si.getProtocol();
-//            
-////            skfeCommon.inputValidateSKCEDid(did);
-//        } catch (SKCEException ex) {
-//            return skfeCommon.buildRegisterResponse(null, "", ex.getLocalizedMessage());
-//        }
-//        
-//        if (svcusername == null || svcusername.isEmpty()) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " svcusername");
-//            return skfeCommon.buildRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " svcusername");
-//        }
-//        if (svcpassword == null) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " svcpassword");
-//            return skfeCommon.buildRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " svcpassword");
-//        }
-//        //authenticate
-//        boolean isAuthorized;
-//        try {
-//            isAuthorized = authorizebean.execute(Long.parseLong(did), svcusername, svcpassword, skfeConstants.LDAP_ROLE_FIDO);
-//        } catch (SKCEException ex) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0003"), ex.getMessage());
-//            return skfeCommon.buildRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0003") + ex.getMessage());
-//        }
-//        if (!isAuthorized) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0033", "");
-//            return skfeCommon.buildRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0033"));
+//    public Response register(String requestbody,
+//                             @PathParam("did") Long did,
+//                             @FormParam("protocol") String protocol) {
+//
+//        if (!authRest.execute(did, request, requestbody)) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
 //        }
 //        
 //        return u2fHelperBean.register(did, protocol, payload);
 //    }
 
-    /*
-     *************************************************************************
-     *                                                888    888      
-     *                                                888    888      
-     *                                                888    888      
-     *    88888b.  888d888  .d88b.   8888b.  888  888 888888 88888b.  
-     *    888 "88b 888P"   d8P  Y8b     "88b 888  888 888    888 "88b 
-     *    888  888 888     88888888 .d888888 888  888 888    888  888 
-     *    888 d88P 888     Y8b.     888  888 Y88b 888 Y88b.  888  888 
-     *    88888P"  888      "Y8888  "Y888888  "Y88888  "Y888 888  888 
-     *    888                                                         
-     *    888                                                         
-     *    888                                                      
-     ************************************************************************
-     */
     /**
      * Step-1 for fido authenticator authentication. This methods generates a
      * challenge and returns the same to the caller.
@@ -401,19 +193,6 @@ public class APIServlet {
 //        return u2fHelperBean.preauthenticate(did, protocol, payload);
 //    }
 
-    /*
-     ************************************************************************
-     *                        888    888                        888    d8b                   888             
-     *                        888    888                        888    Y8P                   888             
-     *                        888    888                        888                          888             
-     *       8888b.  888  888 888888 88888b.   .d88b.  88888b.  888888 888  .d8888b  8888b.  888888  .d88b.  
-     *          "88b 888  888 888    888 "88b d8P  Y8b 888 "88b 888    888 d88P"        "88b 888    d8P  Y8b 
-     *      .d888888 888  888 888    888  888 88888888 888  888 888    888 888      .d888888 888    88888888 
-     *      888  888 Y88b 888 Y88b.  888  888 Y8b.     888  888 Y88b.  888 Y88b.    888  888 Y88b.  Y8b.     
-     *      "Y888888  "Y88888  "Y888 888  888  "Y8888  888  888  "Y888 888  "Y8888P "Y888888  "Y888  "Y8888  
-     *
-     ************************************************************************
-     */
     /**
      * Step-2 or last step of fido authenticator authentication process. This
      * method receives the u2f authentication response parameters which is
@@ -491,21 +270,6 @@ public class APIServlet {
 //        return u2fHelperBean.authenticate(did, protocol, payload);
 //    }
 
-    /*
-     ************************************************************************
-     *                                                888    888                       d8b                   
-     *                                                888    888                       Y8P                   
-     *                                               888    888                                             
-     *    88888b.  888d888  .d88b.   8888b.  888  888 888888 88888b.   .d88b.  888d888 888 88888888  .d88b.  
-     *    888 "88b 888P"   d8P  Y8b     "88b 888  888 888    888 "88b d88""88b 888P"   888    d88P  d8P  Y8b 
-     *    888  888 888     88888888 .d888888 888  888 888    888  888 888  888 888     888   d88P   88888888 
-     *    888 d88P 888     Y8b.     888  888 Y88b 888 Y88b.  888  888 Y88..88P 888     888  d88P    Y8b.     
-     *    88888P"  888      "Y8888  "Y888888  "Y88888  "Y888 888  888  "Y88P"  888     888 88888888  "Y8888  
-     *    888                                                                                                
-     *    888                                                                                                
-     *    888                                                                                                
-     ************************************************************************
-     */
     /**
      * Step-1 for fido based transaction confirmation using u2f authenticator.
      * This methods generates a challenge and returns the same to the caller.
@@ -528,7 +292,7 @@ public class APIServlet {
      * empty if successful.
      */
 //    @POST
-//    @Path("/domains/{did}/fidokeys/authenticate/challenge")
+//    @Path("/authenticate/challenge")
 //    @Consumes({"application/x-www-form-urlencoded"})
 //    @Produces({"application/json"})
 //    public Response preauthorize(@FormParam("svcinfo") String svcinfo,
@@ -577,19 +341,6 @@ public class APIServlet {
 //        return u2fHelperBean.preauthorize(did, protocol, payload);
 //    }
 
-    /*
-     ************************************************************************
-     *                      888    888                       d8b                   
-     *                      888    888                       Y8P                   
-     *                      888    888                                             
-     *     8888b.  888  888 888888 88888b.   .d88b.  888d888 888 88888888  .d88b.  
-     *        "88b 888  888 888    888 "88b d88""88b 888P"   888    d88P  d8P  Y8b 
-     *    .d888888 888  888 888    888  888 888  888 888     888   d88P   88888888 
-     *    888  888 Y88b 888 Y88b.  888  888 Y88..88P 888     888  d88P    Y8b.     
-     *    "Y888888  "Y88888  "Y888 888  888  "Y88P"  888     888 88888888  "Y8888  
-     *
-     ************************************************************************
-     */
     /**
      * Step-2 or last step for fido based transaction confirmation using a u2f
      * authenticator. This method receives the u2f authentication response
@@ -606,7 +357,7 @@ public class APIServlet {
      * 
      * (1) did - Unique identifier for a SKCE encryption domain (2) svcusername
      * - SKCE service credentials : username requesting the service. The service
-     * credentials are looked up in the 'service' setup of authentication system
+     * credentials are looked up in thaf9dd4a68c94ab8383980042ebd479113dc23b21e 'service' setup of authentication system
      * based on LDAP / AD. The user should be authorized to encrypt. (3)
      * svcpassword - SKCE service credentials : password of the service username
      * specified above
@@ -619,7 +370,7 @@ public class APIServlet {
      * @return 
      */
 //    @POST
-//    @Path("/domains/{did}/fidokeys/authenticate")
+//    @Path("/authenticate")
 //    @Consumes({"application/x-www-form-urlencoded"})
 //    @Produces({"application/json"})
 //    public Response authorize(@FormParam("svcinfo") String svcinfo,
@@ -669,22 +420,6 @@ public class APIServlet {
 //        return u2fHelperBean.authorize(did, protocol, payload);
 //    }
 
-    /*
-     ************************************************************************
-     *        888                                    d8b          888                     
-     *        888                                    Y8P          888                     
-     *        888                                                 888                     
-     *    .d88888  .d88b.  888d888  .d88b.   .d88b.  888 .d8888b  888888  .d88b.  888d888 
-     *   d88" 888 d8P  Y8b 888P"   d8P  Y8b d88P"88b 888 88K      888    d8P  Y8b 888P"   
-     *   888  888 88888888 888     88888888 888  888 888 "Y8888b. 888    88888888 888     
-     *   Y88b 888 Y8b.     888     Y8b.     Y88b 888 888      X88 Y88b.  Y8b.     888     
-     *    "Y88888  "Y8888  888      "Y8888   "Y88888 888  88888P'  "Y888  "Y8888  888     
-     *                                           888                                      
-     *                                      Y8b d88P                                      
-     *                                      "Y88P"                                       
-     *
-     ************************************************************************
-     */
     /**
      * The process of deleting or de-registering an already registered fido
      * authenticator. The inputs needed are the name of the user and the random
@@ -710,7 +445,7 @@ public class APIServlet {
      * error message incase something went wrong. Will be empty if successful.
      */
 //    @DELETE
-//    @Path("/domains/{did}/fidokeys/{id}")
+//    @Path("/{id}")
 //    @Consumes({"application/x-www-form-urlencoded"})
 //    @Produces({"application/json"})
 //    public Response deregister(@FormParam("svcinfo") String svcinfo,
@@ -797,7 +532,7 @@ public class APIServlet {
      * message incase something went wrong. Will be empty if successful.
      */
 //    @PATCH
-//    @Path("/domains/{did}/fidokeys/{id}")
+//    @Path("/{id}")
 //    @Consumes({"application/x-www-form-urlencoded"})
 //    @Produces({"application/json"})
 //    public Response status(@FormParam("svcinfo") String svcinfo,
@@ -846,21 +581,6 @@ public class APIServlet {
 //        return u2fHelperBean.activate(did, protocol, payload);
 //    }
 
-    /*
-     ************************************************************************
-     *                        888    888                        d8b           .d888          
-     *                        888    888                        Y8P          d88P"           
-     *                        888    888                                     888             
-     *       .d88b.   .d88b.  888888 888  888  .d88b.  888  888 888 88888b.  888888  .d88b.  
-     *      d88P"88b d8P  Y8b 888    888 .88P d8P  Y8b 888  888 888 888 "88b 888    d88""88b 
-     *      888  888 88888888 888    888888K  88888888 888  888 888 888  888 888    888  888 
-     *      Y88b 888 Y8b.     Y88b.  888 "88b Y8b.     Y88b 888 888 888  888 888    Y88..88P 
-     *       "Y88888  "Y8888   "Y888 888  888  "Y8888   "Y88888 888 888  888 888     "Y88P"  
-     *           888                                        888                              
-     *      Y8b d88P                                   Y8b d88P                              
-     *       "Y88P"                                     "Y88P"                               
-     ************************************************************************
-     */
     /**
      * Method to return a list of user registered fido authenticator
      * information; In short, registered keys information. Information includes
@@ -879,13 +599,13 @@ public class APIServlet {
      * successful.
      */
     @GET
-    @Path("/domains/{did}/fidokeys")
+    @Path("")
     @Consumes({"application/x-www-form-urlencoded"})
     @Produces({"application/json"})
-    public Response getkeysinfo(@PathParam("did") String did,
+    public Response getkeysinfo(@PathParam("did") Long did,
                                 @QueryParam("username") String username) {
 
-        if (!authRest.execute(Long.parseLong(did), request, null)) {
+        if (!authRest.execute(did, request, null)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         

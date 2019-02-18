@@ -34,8 +34,8 @@
  */
 package com.strongauth.skfe.policybeans;
 
-import com.strongauth.skfe.utilities.SKFEException;
 import javax.ejb.Local;
+import javax.json.JsonObject;
 
 /**
  *
@@ -44,5 +44,5 @@ import javax.ejb.Local;
 @Local
 public interface generateFido2PreregisterChallengeLocal {
     
-    public String execute(Long did, String payload);
+    public String execute(Long did, String username, String displayName, JsonObject options, JsonObject extensions);
 }

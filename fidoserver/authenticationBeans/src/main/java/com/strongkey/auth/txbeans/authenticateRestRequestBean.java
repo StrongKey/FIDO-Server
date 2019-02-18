@@ -39,6 +39,7 @@ import com.strongauth.appliance.utilities.applianceInputChecks;
 import com.strongauth.appliance.utilities.strongkeyLogger;
 import com.strongauth.crypto.interfaces.initCryptoModule;
 import com.strongauth.crypto.utility.CryptoException;
+import com.strongauth.crypto.utility.cryptoCommon;
 import com.strongauth.skce.utilities.skceCommon;
 import com.strongauth.skce.utilities.skceConstants;
 import java.util.logging.Level;
@@ -76,9 +77,9 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
      * This method authenticates a credential - username and password - against
      *
      * @param did Long the domain identifier for which to authenticate to 
-     * @param accesskey String accesskey identifier for this request
-     * @param request String the request to be hmac'd 
-     * @param requestHmac String hmac from the client request to be checked
+     * @param request HttpServletRequest full request object in which to gather
+     * headers and other parts of the request
+     * @param requestBody String body of the request to be md5'd 
      * @return boolean value indicating either True (for authenticated) or False
      * (for unauthenticated or failure in processing)
      */
@@ -88,22 +89,35 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
             HttpServletRequest request,
             String requestBody) {
 
-        strongkeyLogger.entering(skceConstants.SKEE_LOGGER, classname, "execute");
-        strongkeyLogger.logp(skceConstants.SKEE_LOGGER, Level.FINE, classname, "execute", skceCommon.getMessageProperty("SKCE-MSG-5001"),
+        strongkeyLogger.logp(skceConstants.SKEE_LOGGER, Level.FINE, classname, "execute", "APPL-MSG-1051",
                 "\n EJB name=" + classname +
-                "\n did=" + did +
-                "\n request=" + request +
-                "\n requestBody=" + requestBody);
+                "\n did=" + did);
 
-        String requestToHmac = request.getMethod() + "\n"
-                + "\n"
-                + "\n"
-                + request.getHeader("Date") + "\n"
-                + request.getRequestURI() + "?" + request.getQueryString();
+        // Input checks
+        try {
+            applianceInputChecks.checkDid(did);
+        } catch (NullPointerException | IllegalArgumentException ex){
+            return false;
+        }
+
+        String generatedmd5 = "";
+        String contenttype = "";
+
+        if (requestBody != null) {
+            String contentmd5  = request.getHeader("Content-MD5");
+            contenttype = request.getHeader("content-type");
+
+            generatedmd5 = cryptoCommon.calculateMD5(requestBody);
+
+            if (!generatedmd5.equals(contentmd5)) {
+                strongkeyLogger.logp(skceConstants.SKFE_LOGGER, Level.SEVERE, classname, "execute", "APPL-ERR-1041", "Received: " + contentmd5 + " Expected: " + generatedmd5);
+                return false;
+            }
+        }
 
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null) {
-            strongkeyLogger.log(skceConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0040", "");
+            strongkeyLogger.logp(skceConstants.SKFE_LOGGER, Level.SEVERE, classname, "execute", "APPL-ERR-1040", "");
             return false;
         }
 
@@ -116,22 +130,35 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
             accessKey = m.group(1);
             requestHmac = m.group(2);
         } else {
-            strongkeyLogger.log(skceConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0039", authHeader);
+            strongkeyLogger.logp(skceConstants.SKFE_LOGGER, Level.SEVERE, classname, "execute", "APPL-ERR-1039", authHeader);
             return false;
         }
 
-        // Input checks
-        try {
-            applianceInputChecks.checkDid(did);
-        } catch (NullPointerException | IllegalArgumentException ex){
-            strongkeyLogger.exiting(skceConstants.SKEE_LOGGER, classname, "execute");
-            return false;
+        String queryParams = request.getQueryString();
+        if (queryParams != null) {
+            queryParams = "?" + queryParams;
+        } else {
+            queryParams = "";
         }
+        
+        String requestToHmac = request.getMethod() + "\n"
+                + generatedmd5 + "\n"
+                + contenttype + "\n"
+                + request.getHeader("Date") + "\n"
+                + request.getRequestURI() + queryParams;
+
+        strongkeyLogger.logp(skceConstants.SKFE_LOGGER, Level.FINE, classname, "execute", "APPL-MSG-1054", "\n" + requestToHmac);
+
         try {
             String hmac = initCryptoModule.getCryptoModule().hmacRequest(signingKeystorePassword, accessKey, requestToHmac);
-            strongkeyLogger.logp(skceConstants.SKEE_LOGGER, Level.FINE, classname, "execute", skceCommon.getMessageProperty("SKCE-MSG-1015"), hmac);
-            strongkeyLogger.exiting(skceConstants.SKEE_LOGGER, classname, "execute");
-            return (requestHmac == null ? hmac == null : requestHmac.equals(hmac));
+            strongkeyLogger.logp(skceConstants.SKEE_LOGGER, Level.FINE, classname, "execute", "APPL-MSG-1015", hmac);
+            if (requestHmac.equals(hmac)) {
+                strongkeyLogger.logp(skceConstants.SKEE_LOGGER, Level.FINER, classname, "execute", "APPL-MSG-1016", "");
+                return true;
+            } else {
+                strongkeyLogger.logp(skceConstants.SKEE_LOGGER, Level.WARNING, classname, "execute", "APPL-ERR-1016", "Expected HMAC: " + requestHmac + " Produced HMAC: " + hmac);
+                return false;
+            }
             
         } catch (CryptoException ex) {
             return false;

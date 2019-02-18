@@ -188,10 +188,10 @@ public class FidoEngine {
             }
             if (args.length == 8) {
                 if (command.equalsIgnoreCase("DA") || command.equalsIgnoreCase("AC") || command.equalsIgnoreCase("DR")) {
-                    randomid = args[8];
+                    randomid = args[7];
                 }
                 if(command.equalsIgnoreCase("R") ){
-                    origin = args[8];
+                    origin = args[7];
                 }
             }
             if(args.length == 10){

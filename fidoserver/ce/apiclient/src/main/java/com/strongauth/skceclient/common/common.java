@@ -58,7 +58,10 @@ import org.apache.http.HttpException;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -183,28 +186,30 @@ public final class common {
         }
     }
 
-    public static String makeHTTPCallUsingHMAC(String baseuri, String methodname, String username, String accesskey, String secretkey) throws HttpException, IOException, NoSuchAlgorithmException {
+    public static String makePOSTCallUsingHMAC(String baseuri, String methodname, String body, String accesskey, String secretkey) throws HttpException, IOException, NoSuchAlgorithmException {
 //        String contentToEncode = "{" +
 //                                    "\"username\" : \"" + username + "\"" +
 //                                 "}";
-//        String contentType = "application/x-www-form-urlencoded";
-        String contentMD5 = "";
-        String contentType = "";
+        String contentType = "application/x-www-form-urlencoded";
         String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
-//        String contentMd5 = calculateMD5(contentToEncode);
+        String contentMD5 = calculateMD5(body);
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(baseuri + methodname + "?username=" + username);
-        String requestToHmac = httpGet.getMethod() + "\n" + 
+        HttpPost httpPost = new HttpPost(baseuri + methodname);
+        StringEntity data = new StringEntity(body, ContentType.APPLICATION_FORM_URLENCODED); //create(contentType));
+        httpPost.setEntity(data);
+        String requestToHmac = httpPost.getMethod() + "\n" + 
                         contentMD5 + "\n" +
                         contentType + "\n" + 
                         currentDate + "\n" +
-                        httpGet.getURI().getPath() + "?" + httpGet.getURI().getQuery();
+                        httpPost.getURI().getPath();
 
         String hmac = calculateHMAC(secretkey, requestToHmac);
-        httpGet.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
-        httpGet.addHeader("Date", currentDate);
-        CloseableHttpResponse response = httpclient.execute(httpGet);
+        httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
+        httpPost.addHeader("Content-MD5", contentMD5);
+        httpPost.addHeader("content-type", contentType);
+        httpPost.addHeader("Date", currentDate);
+        CloseableHttpResponse response = httpclient.execute(httpPost);
         try {
             StatusLine sl = response.getStatusLine();
             System.out.println(sl.getStatusCode());
@@ -215,28 +220,36 @@ public final class common {
         } finally {
             response.close();
         }
-
-//        HttpPost post = new HttpPost("http://localhost:9000/resources/rest/geo/comment");
-//        StringEntity data = new StringEntity(contentToEncode, ContentType.APPLICATION_FORM_URLENCODED); //create(contentType));
-//        post.setEntity(data);
-
-//        String verb = post.getMethod();
-//        String contentMd5 = calculateMD5(contentToEncode);
-//        String toSign = verb + "\n" + contentMd5 + "\n"
-//                + data.getContentType().getValue() + "\n" + currentDate + "\n"
-//                + post.getURI().getPath();
-//
-//        String hmac = calculateHMAC("secretsecret", toSign);
-//
-//        post.addHeader("Authorization", "abcd" + ":" + hmac);
-//        post.addHeader("Content-Md5", contentMd5);
-//        post.addHeader("Date", currentDate);
-//
-//        HttpClient client = new DefaultHttpClient();
-//        HttpResponse response = client.execute(post);
-
-//        System.out.println("client response:" + response.getStatusLine().getStatusCode());
     }
+
+//    public static String makeGETCallUsingHMAC(String baseuri, String methodname, String queryParams, String accesskey, String secretkey) throws HttpException, IOException, NoSuchAlgorithmException {
+//        String contentMD5 = "";
+//        String contentType = "";
+//        String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
+//
+//        CloseableHttpClient httpclient = HttpClients.createDefault();
+//        HttpGet httpGet = new HttpGet(baseuri + methodname + queryParams);
+//        String requestToHmac = httpGet.getMethod() + "\n" + 
+//                        contentMD5 + "\n" +
+//                        contentType + "\n" + 
+//                        currentDate + "\n" +
+//                        httpGet.getURI().getPath() + "?" + httpGet.getURI().getQuery();
+//
+//        String hmac = calculateHMAC(secretkey, requestToHmac);
+//        httpGet.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
+//        httpGet.addHeader("Date", currentDate);
+//        CloseableHttpResponse response = httpclient.execute(httpGet);
+//        try {
+//            StatusLine sl = response.getStatusLine();
+//            System.out.println(sl.getStatusCode());
+//            HttpEntity entity = response.getEntity();
+//            String result = EntityUtils.toString(entity);
+//            EntityUtils.consume(entity);
+//            return result;
+//        } finally {
+//            response.close();
+//        }
+//    }
 
     public static String calculateHMAC(String secret, String data) {
         try {

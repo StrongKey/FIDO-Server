@@ -58,7 +58,7 @@ public interface u2fPreregisterBeanRemote {
      * @throws SKFEException - 
      *                      Thrown in case of any error scenario.
      */
-    public FEreturn remoteExecute(String did, 
+    public FEreturn remoteExecute(Long did, 
                                 String protocol,
                                 String username) throws SKFEException;
 }

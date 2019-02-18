@@ -56,6 +56,6 @@ public interface u2fGetKeysInfoBeanRemote {
      *                  In success case, a simple msg saying that the process was
      *                  successful would be populated.
      */
-    public SKCEReturnObject remoteExecute(String did, 
+    public SKCEReturnObject remoteExecute(Long did, 
                                         String username);
 }

@@ -86,38 +86,16 @@ public class generateFido2PreregisterChallenge implements generateFido2Preregist
     getCachedFidoPolicyMDSLocal getpolicybean;
     
     @Override
-    public String execute(Long did, String payload) {   //TODO refactor method into smaller pieces
+    public String execute(Long did, String username, String displayName, JsonObject options, JsonObject extensions) {   //TODO refactor method into smaller pieces
         //  fetch the username
-        String username = (String) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_USERNAME, "String");
         if (username == null || username.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0002", " username");
             return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username");
         }
-        String displayName = (String) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_DISPLAY_NAME, "String");
         if (displayName == null || displayName.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0002", " username");
             return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username");
         }
-        
-        // fetch options inputs if they exist (TODO refactor when options are no longer in payload)
-        JsonObject authSelectCriteria = (JsonObject) applianceCommon.getJsonValue(payload,
-                            skfeConstants.FIDO2_PREREG_ATTR_AUTHENTICATORSELECT, "JsonObject");
-        String attestationPref = (String) applianceCommon.getJsonValue(payload,
-                            skfeConstants.FIDO2_PREREG_ATTR_ATTESTATION, "String");
-        JsonObjectBuilder optionsBuilder = Json.createObjectBuilder();
-        if(authSelectCriteria != null){
-            optionsBuilder.add(skfeConstants.FIDO2_PREREG_ATTR_AUTHENTICATORSELECT, authSelectCriteria);
-        }
-        if(attestationPref != null){
-            optionsBuilder.add(skfeConstants.FIDO2_PREREG_ATTR_ATTESTATION, attestationPref);
-        }
-        JsonObject options = optionsBuilder.build();
-        
-        // fetch extension inputs if they exist
-        JsonObject extensions = (JsonObject) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_EXTENSIONS, "JsonObject");
         
         //Gather useful information
         FidoPolicyObject fidoPolicy = getpolicybean.getPolicyByDidUsername(did, username);

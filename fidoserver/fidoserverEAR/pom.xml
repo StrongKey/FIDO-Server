@@ -38,15 +38,15 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>com.strongauth</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>crypto</artifactId>
             <version>4.0</version>
             <type>jar</type>
         </dependency>
 
         <dependency>
-            <groupId>com.strongauth</groupId>
-            <artifactId>Common</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>common</artifactId>
             <version>4.0</version>
             <type>jar</type>
         </dependency>

@@ -66,13 +66,11 @@ public interface u2fPreauthBeanLocal {
      * @return          - FEReturn object that binds the U2F registration challenge
      *                      parameters in addition to a set of messages that explain
      *                      the series of actions happened during the process.
-     * @throws SKFEException - 
-     *                      Thrown in case of any error scenario.
      */
-    FEreturn execute(String did, 
+    FEreturn execute(Long did, 
                     String protocol,
                     String username, 
                     String KeyHandle,
-                            String appidfromDB,
-                            JsonArray transports) throws SKFEException;
+                    String appidfromDB,
+                    JsonArray transports);
 }

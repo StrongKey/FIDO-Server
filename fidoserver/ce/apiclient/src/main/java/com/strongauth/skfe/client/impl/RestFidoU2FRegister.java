@@ -33,7 +33,8 @@
 package com.strongauth.skfe.client.impl;
 
 import com.strongauth.skceclient.common.Constants;
-import com.strongauth.skceclient.common.common;
+import static com.strongauth.skceclient.common.common.calculateHMAC;
+import static com.strongauth.skceclient.common.common.calculateMD5;
 import com.strongauth.skfe.client.interfaces.FIDOClientRegister;
 import com.strongauth.skfe.fido2.Fido2TokenSim;
 import com.strongauth.skfe.tokensim.FIDOU2FTokenSimulator;
@@ -51,6 +52,10 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -66,6 +71,16 @@ import javax.json.JsonReader;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParserFactory;
 import org.apache.commons.codec.DecoderException;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 public class RestFidoU2FRegister implements FIDOClientRegister {
 
@@ -73,66 +88,95 @@ public class RestFidoU2FRegister implements FIDOClientRegister {
     public String u2fRegister(String REST_URI, 
                             String fidoprotocol, 
                             String skcedid, 
-                            String svcuser, 
-                            String svcpass, 
+                            String accesskey, 
+                            String secretkey, 
                             String accountname, 
                             String origin,
                             boolean goodsig) 
     {
         // Local variables
         HttpURLConnection conn = null;
-        String response, regresponse="";
+        String regresponse="";
         
         try {
             System.out.println("Registration test");
             System.out.println("*******************************");
 
-            //  Build svcinfo
-            String svcinfo = Json.createObjectBuilder()
-                    .add("did", skcedid)
-                    .add("svcusername", svcuser)
-                    .add("svcpassword", svcpass)
-                    .add("protocol", fidoprotocol)
-                    .build().toString();
-            
-            //  Build payload
-            JsonObjectBuilder builder = Json.createObjectBuilder();
+            // Build payload
+            List<NameValuePair> nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("username", accountname));
+            nvps.add(new BasicNameValuePair("protocol", fidoprotocol));
 
-            builder.add(Constants.JSON_KEY_SERVLET_INPUT_USERNAME, accountname);
-            
             if ("FIDO20".compareTo(fidoprotocol) == 0) {
-                    builder.add("displayName", accountname);
+                nvps.add(new BasicNameValuePair("displayName", accountname));
             }
-        
-            String payload = builder.build().toString();
+//            System.out.println(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+
+            HttpEntity body = new UrlEncodedFormEntity(nvps);
+
+            String contentType = "application/x-www-form-urlencoded";
+            String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
+            String contentMD5 = calculateMD5(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+
+            String resourceLoc = REST_URI + "/domains/" + skcedid + Constants.PRE_REGISTER_ENDPOINT;
+            
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost(resourceLoc);
+            httpPost.setEntity(body);
+            String requestToHmac = httpPost.getMethod() + "\n"
+                    + contentMD5 + "\n"
+                    + contentType + "\n"
+                    + currentDate + "\n"
+                    + httpPost.getURI().getPath();
+
+            String hmac = calculateHMAC(secretkey, requestToHmac);
+            httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
+            httpPost.addHeader("Content-MD5", contentMD5);
+            httpPost.addHeader("content-type", contentType);
+            httpPost.addHeader("Date", currentDate);
 
             //  Make SKFE rest call and get response from the server
-            System.out.println("\nCalling preregister @ " 
-                    + REST_URI + Constants.PRE_REGISTER_ENDPOINT);
-            response = common.callSKFERestApi(REST_URI, Constants.PRE_REGISTER_ENDPOINT,
-                                              svcinfo, payload);
-            System.out.println(" Response : " + response);
+            System.out.println("\nCalling preregister @ " + resourceLoc);
+            CloseableHttpResponse response = httpclient.execute(httpPost);
+            String result;
+            try {
+                StatusLine responseStatusLine = response.getStatusLine();
+                HttpEntity entity = response.getEntity();
+                result = EntityUtils.toString(entity);
+                EntityUtils.consume(entity);
+
+                switch (responseStatusLine.getStatusCode()) {
+                    case 200:
+                        break;
+                    case 401:
+                        System.out.println("Error during pre-register : 401 HMAC Authentication Failed");
+                        return null;
+                    case 404:
+                        System.out.println("Error during pre-register : 404 Resource not found");
+                        return null;
+                    case 400:
+                    case 500:
+                    default:
+                        System.out.println("Error during pre-register : " + responseStatusLine.getStatusCode() + " " + result);
+                        return null;
+                }
+            } finally {
+                response.close();
+            }
+
+            System.out.println(" Response : " + result);
             
             //  Build a json object out of response
-            StringReader s = new StringReader(response);
+            StringReader s = new StringReader(result);
             JsonReader jsonReader = Json.createReader(s);
             JsonObject responseJSON = jsonReader.readObject();
             jsonReader.close();
             
-            //  Check to see if there is any
-            try {
-                String error = responseJSON.getString("Error");
-                if ( error != null && !error.equalsIgnoreCase("")) {
-                    System.out.println("*******************************");
-                    return " Error during preregister : " + error;
-                }
-            } catch (Exception ex) {
-                //  continue since there is no error
-            }
-            
             JsonObject resJsonObj = responseJSON.getJsonObject("Challenge");
             
             System.out.println("\n Pre-Registration Complete.");
+            if (true)
+                return null;
             System.out.println("\n Generating Registration response...\n");
             
             JsonObject input = null;
@@ -267,17 +311,17 @@ public class RestFidoU2FRegister implements FIDOClientRegister {
                     .add("create_location", "Sunnyvale, CA")
                     .add(Constants.JSON_KEY_SERVLET_INPUT_USERNAME, accountname)
                     .build();
-            payload = Json.createObjectBuilder()
-                    .add(Constants.JSON_KEY_SERVLET_INPUT_METADATA, reg_metadata)
-                    .add(Constants.JSON_KEY_SERVLET_INPUT_RESPONSE, input)
-                    .build().toString();
-
-            //  Make SKFE rest call and get response from the server
-            System.out.println("\nCalling register @ " 
-                    + REST_URI + Constants.REGISTER_ENDPOINT);
-            regresponse = common.callSKFERestApi(REST_URI, Constants.REGISTER_ENDPOINT, 
-                                                    svcinfo, payload);
-            System.out.println(" Response   : " + regresponse);
+//            payload = Json.createObjectBuilder()
+//                    .add(Constants.JSON_KEY_SERVLET_INPUT_METADATA, reg_metadata)
+//                    .add(Constants.JSON_KEY_SERVLET_INPUT_RESPONSE, input)
+//                    .build().toString();
+//
+//            //  Make SKFE rest call and get response from the server
+//            System.out.println("\nCalling register @ " 
+//                    + REST_URI + Constants.REGISTER_ENDPOINT);
+//            regresponse = common.callSKFERestApi(REST_URI, Constants.REGISTER_ENDPOINT, 
+//                                                    svcinfo, payload);
+//            System.out.println(" Response   : " + regresponse);
             
             System.out.println("\n Registration Complete.");
             System.out.println("*******************************");
@@ -285,6 +329,8 @@ public class RestFidoU2FRegister implements FIDOClientRegister {
         } catch (MalformedURLException ex) {
             Logger.getLogger(RestFidoU2FRegister.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(RestFidoU2FRegister.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(RestFidoU2FRegister.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if ( conn != null ) {

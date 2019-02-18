@@ -214,8 +214,13 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * authenticator has been registered for this username).
      *
      * @param did - FIDO domain id
-     * @param protocol - U2F protocol version to comply with.
-     * @param payload - A stringified json with username field embedded into it.
+     * @param protocol - String value of the protocol to use
+     * @param username - String user for which to create the pre-registration
+     * request
+     * @param displayname - String user for which to create the pre-registration
+     * request
+     * @param options - String json value of options to use for FIDO2
+     * @param extensions - String json value of extensions to use for FIDO2
      *
      * Example: { "username" : "johndoe" }
      *
@@ -226,10 +231,9 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * empty if successful.
      */
     @Override
-    @SuppressWarnings("null")
-    public String preregister(String did, String protocol, String payload) {
+    public Response preregister(Long did, String protocol, String username, String displayname, String options, String extensions) {
 
-        String appid = getdomainejb.byDid(Long.parseLong(did)).getSkfeAppid();
+        String appid = getdomainejb.byDid(did).getSkfeAppid();
         Date in = new Date();
         Date out;
         long thId = Thread.currentThread().getId();
@@ -238,34 +242,26 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0001", "[TXID=" + ID + "]"
                 + "\n did=" + did
                 + "\n protocol=" + protocol
-                + "\n payload=" + payload);
-
-        if (payload == null || payload.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " payload");
-            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " payload");
-        }
-        if (!skfeCommon.isValidJsonObject(payload)) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0014"), " Invalid json");
-            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0014") + " Invalid json");
-        }
+                + "\n username=" + username
+                + "\n displayname=" + displayname
+                + "\n options=" + options
+                + "\n extensions=" + extensions);
 
         if (protocol == null || protocol.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " protocol");
-            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " protocol");
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " protocol").build();
         }
         if (!skfeCommon.isFIDOProtocolSupported(protocol)) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-5002"), protocol);
-            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-5002") + protocol);
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-5002") + protocol).build();
         }
 
-//check for protocol and call separate EJB
+        //check for protocol and call separate EJB
         if (protocol.equalsIgnoreCase(skfeConstants.FIDO_PROTOCOL_VERSION_U2F_V2)) {
             //  fetch the username
-            String username = (String) applianceCommon.getJsonValue(payload,
-                    skfeConstants.JSON_KEY_SERVLET_INPUT_USERNAME, "String");
             if (username == null || username.isEmpty()) {
                 skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " username");
-                return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username");
+                return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username").build();
             }
 
             //  3. Do processing - Do not do it here.. instead call preauthenticate on every key handle
@@ -283,7 +279,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
                     if (regChallenge == null) {
                         //  Chould not generate registration nonce.
                         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0025"), "");
-                        return skfeCommon.buildPreRegisterResponse(null, logs, skfeCommon.getMessageProperty("FIDO-ERR-0025") + "");
+                        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(skfeCommon.getMessageProperty("FIDO-ERR-0025") + "").build();
                     } else {
                         //  Fetch sessionid, nonce & appid from the Challenge object
                         //  then store it in the sessionMap for further use.
@@ -310,7 +306,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
                 }
             } catch (SKFEException ex) {
                 skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0003"), ex.getMessage());
-                return skfeCommon.buildPreRegisterResponse(null, logs, skfeCommon.getMessageProperty("FIDO-ERR-0003") + ex.getMessage());
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(skfeCommon.getMessageProperty("FIDO-ERR-0003") + ex.getMessage()).build();
             } catch (NoSuchAlgorithmException | NoSuchProviderException | UnsupportedEncodingException ex) {
                 Logger.getLogger(u2fServletHelperBean.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -320,7 +316,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
             String[] authresponses = null;
             try {
                 skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-0031"), "");
-                Collection<FidoKeys> kh_coll = getkeybean.getByUsername(Long.parseLong(did), username);
+                Collection<FidoKeys> kh_coll = getkeybean.getByUsername(did, username);
                 if (kh_coll != null) {
                     authresponses = new String[kh_coll.size()];
                     Iterator it = kh_coll.iterator();
@@ -348,9 +344,11 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
                     skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-0033"), "");
                 }
             } catch (SKFEException ex) {
-                skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0008", ex.getMessage());
-                return skfeCommon.buildPreRegisterResponse(null, "",
-                        skfeCommon.getMessageProperty("FIDO-ERR-0008") + ex.getMessage());
+                skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0001", ex.getMessage());
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity( skfeCommon.getMessageProperty("FIDO-ERR-0001") + ex.getMessage()).build();
+            } catch (IllegalArgumentException ex) {
+                skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0001", ex.getMessage());
+                return Response.status(Response.Status.BAD_REQUEST).entity( skfeCommon.getMessageProperty("FIDO-ERR-0008") + ex.getMessage()).build();
             }
 
             JsonObject combined_regresponse;
@@ -395,8 +393,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
                 }
             } catch (Exception ex) {
                 skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0014", ex.getMessage());
-                return skfeCommon.buildPreRegisterResponse(null, "",
-                        skfeCommon.getMessageProperty("FIDO-ERR-0014") + ex.getMessage());
+                return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.getMessageProperty("FIDO-ERR-0014") + ex.getMessage()).build();
             }
 
             // Build the output json object
@@ -408,15 +405,29 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
             //  4. Log output and return
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0002", "[TXID=" + ID + ", START=" + in.getTime() + ", FINISH=" + out.getTime() + ", TTC=" + rt + "]"
                     + "\nU2FRegistration Challenge parameters = " + response);
-            return response;
+            return Response.ok().entity(response).build();
         } else {
-            String response = fido2preregbean.execute(Long.parseLong(did), payload);
+            JsonObject jsonOptions = null;
+            if (options != null && !options.isEmpty()) {
+                StringReader stringreader = new StringReader(options);
+                JsonReader jsonreader = Json.createReader(stringreader);
+                jsonOptions = jsonreader.readObject();
+            }
+
+            JsonObject jsonExtensions = null;
+            if (options != null && !options.isEmpty()) {
+                StringReader stringreader = new StringReader(extensions);
+                JsonReader jsonreader = Json.createReader(stringreader);
+                jsonExtensions = jsonreader.readObject();
+            }
+
+            String response = fido2preregbean.execute(did, username, displayname, jsonOptions, jsonExtensions);
             out = new Date();
             long rt = out.getTime() - in.getTime();
             //  4. Log output and return
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.INFO, "FIDO-MSG-0002", "[TXID=" + ID + ", START=" + in.getTime() + ", FINISH=" + out.getTime() + ", TTC=" + rt + "]"
                     + "\nFIDO2Registration Challenge parameters = " + response);
-            return response;
+            return Response.ok().entity(response).build();
         }
     }
 
@@ -569,7 +580,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * empty if successful.
      */
     @Override
-    public String preauthenticate(String did, String protocol, String payload) {
+    public String preauthenticate(Long did, String protocol, String payload) {
 
         Date in = new Date();
         Date out;
@@ -739,8 +750,8 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         return responseJSON;
     }
 
-    private String twofpreauth(String did, String protocol, String username, JsonObject options, JsonObject extensions, String method) {
-        String appid = applianceMaps.getDomain(Long.parseLong(did)).getSkfeAppid();
+    private String twofpreauth(Long did, String protocol, String username, JsonObject options, JsonObject extensions, String method) {
+        String appid = applianceMaps.getDomain(did).getSkfeAppid();
         String logs = "";
         String errmsg = "";
         JsonObject jsonObject = null;
@@ -758,7 +769,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
             try {
                 skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, "FIDO-MSG-0031", "");
                 Collection<FidoKeys> kh_coll
-                        = getkeybean.getByUsernameStatus(Long.parseLong(did), username, applianceConstants.ACTIVE_STATUS);
+                        = getkeybean.getByUsernameStatus(did, username, applianceConstants.ACTIVE_STATUS);
                 if (kh_coll == null || kh_coll.size() <= 0) {
                     skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0007", "");
                     return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0007"));
@@ -871,16 +882,12 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
                                 build();
                     }
                 }
-            } catch (SKFEException ex) {
-                skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0009", ex.getMessage());
-                return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0009") + ex.getMessage());
             } catch (NoSuchAlgorithmException | NoSuchProviderException | UnsupportedEncodingException ex) {
                 Logger.getLogger(u2fServletHelperBean.class.getName()).log(Level.SEVERE, null, ex);
             }
             responseJSON = skfeCommon.buildPreAuthResponse(jsonObject, logs, errmsg);
-        }
-        else{
-            responseJSON = fido2preauthbean.execute(Long.parseLong(did), username, options, extensions);
+        } else {
+            responseJSON = fido2preauthbean.execute(did, username, options, extensions);
         }
 
         // Build the output json object
@@ -1176,7 +1183,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      *
      * @param did - FIDO domain id
      * @param protocol - U2F protocol version to comply with.
-     * @param payload - A stringified json with username field embedded into it.
+     * @param username - A stringified json with username field embedded into it.
      *
      * Example: { "username" : "johndoe" }
      *
@@ -1187,7 +1194,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * empty if successful.
      */
     @Override
-    public String preauthorize(String did, String protocol, String payload) {
+    public String preauthorize(Long did, String protocol, String username, String options, String extensions) {
 
         Date in = new Date();
         Date out;
@@ -1197,21 +1204,11 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0013", "[TXID=" + ID + "]"
                 + "\n did=" + did
                 + "\n protocol=" + protocol
-                + "\n payload=" + payload);
+                + "\n username=" + username
+                + "\n options=" + options
+                + "\n extensions" + extensions);
 
         //  2. Input checks
-        if (payload == null || payload.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " payload");
-            return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002")
-                    + " payload");
-        }
-        if (!skfeCommon.isValidJsonObject(payload)) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0014",
-                    " Invalid json");
-            return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0014")
-                    + " Invalid json");
-        }
-
         if (protocol == null || protocol.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " protocol");
             return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002")
@@ -1222,22 +1219,6 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
             return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-5002")
                     + " protocol");
         }
-
-        //  3. Retrieve data from payload
-        //  fetch the username
-        String username = (String) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_USERNAME, "String");
-        JsonObject extensions = (JsonObject) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_EXTENSIONS, "JsonObject");
-        
-        // fetch options inputs if they exist (TODO refactor when options are no longer in payload)
-        String userVerification = (String) applianceCommon.getJsonValue(payload,
-                skfeConstants.FIDO2_ATTR_USERVERIFICATION, "String");
-        JsonObjectBuilder optionsBuilder = Json.createObjectBuilder();
-        if (userVerification != null) {
-            optionsBuilder.add(skfeConstants.FIDO2_ATTR_USERVERIFICATION, userVerification);
-        }
-        JsonObject options = optionsBuilder.build();
         
         if (username == null || username.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " username");
@@ -1245,11 +1226,25 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
                     + " username");
         }
 
-        String responseJSON = twofpreauth(did, protocol, username, options, extensions, "preauthorize");
+        JsonObject jsonOptions = null;
+        if (options != null && !options.isEmpty()) {
+            StringReader stringreader = new StringReader(options);
+            JsonReader jsonreader = Json.createReader(stringreader);
+            jsonOptions = jsonreader.readObject();
+        }
+
+        JsonObject jsonExtensions = null;
+        if (options != null && !options.isEmpty()) {
+            StringReader stringreader = new StringReader(extensions);
+            JsonReader jsonreader = Json.createReader(stringreader);
+            jsonExtensions = jsonreader.readObject();
+        }
+
+        String responseJSON = twofpreauth(did, protocol, username, jsonOptions, jsonExtensions, "preauthorize");
 
         out = new Date();
         long rt = out.getTime() - in.getTime();
-        //  4. Print output and Return
+        //  43 Print output and Return
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0014", "[TXID=" + ID + ", START=" + in.getTime() + ", FINISH=" + out.getTime() + ", TTC=" + rt + "]"
                 + "\nU2FAuthorization Challenge parameters = " + responseJSON);
         return responseJSON;
@@ -1825,7 +1820,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * successful.
      */
     @Override
-    public Response getkeysinfo(String did, String username) {
+    public Response getkeysinfo(Long did, String username) {
 
         Date in = new Date();
         Date out;

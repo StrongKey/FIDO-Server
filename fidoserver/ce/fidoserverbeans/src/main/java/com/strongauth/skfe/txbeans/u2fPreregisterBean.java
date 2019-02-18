@@ -81,7 +81,7 @@ public class u2fPreregisterBean implements u2fPreregisterBeanLocal, u2fPreregist
      *                      Thrown in case of any error scenario.
      */
     @Override
-    public FEreturn execute(String did, 
+    public FEreturn execute(Long did, 
                             String protocol,
                             String username) throws SKFEException  {
         
@@ -104,7 +104,7 @@ public class u2fPreregisterBean implements u2fPreregisterBeanLocal, u2fPreregist
     }
     
     @Override
-    public FEreturn remoteExecute(String did, 
+    public FEreturn remoteExecute(Long did, 
                                 String protocol,
                                 String username) throws SKFEException {
         return execute(did, protocol, username);

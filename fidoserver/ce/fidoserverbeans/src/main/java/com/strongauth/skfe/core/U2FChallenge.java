@@ -39,7 +39,6 @@ package com.strongauth.skfe.core;
 
 import com.strongauth.appliance.utilities.applianceCommon;
 import com.strongauth.skfe.utilities.skfeConstants;
-import com.strongauth.skfe.utilities.SKFEException;
 import com.strongauth.skfe.utilities.skfeCommon;
 import com.strongauth.skfe.utilities.skfeLogger;
 import java.io.Serializable;
@@ -76,25 +75,25 @@ public class U2FChallenge implements Serializable {
      * @param u2fversion - Version of the U2F protocol being communicated in; 
      *                      example : "U2F_V2"
      * @param username   - any non-empty username
-     * @throws SKFEException 
+     * @throws IllegalArgumentException 
      *                   - In case of any error
      */
-    public U2FChallenge(String u2fversion, String username) throws SKFEException {
+    public U2FChallenge(String u2fversion, String username) throws IllegalArgumentException {
 
         //  Input checks
         if ( u2fversion==null || u2fversion.trim().isEmpty() ) {
             skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "U2FChallenge", skfeCommon.getMessageProperty("FIDO-ERR-5001"), " protocol");
-            throw new SKFEException(skfeCommon.getMessageProperty("FIDO-ERR-5001") + " protocol");
+            throw new IllegalArgumentException(skfeCommon.getMessageProperty("FIDO-ERR-5001") + " protocol");
         }
         
-        if ( username==null || username.trim().isEmpty() ) {
+        if (username==null || username.trim().isEmpty() ) {
             skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "U2FChallenge", skfeCommon.getMessageProperty("FIDO-ERR-5001"), " username");
-            throw new SKFEException(skfeCommon.getMessageProperty("FIDO-ERR-5001") + " username");
+            throw new IllegalArgumentException(skfeCommon.getMessageProperty("FIDO-ERR-5001") + " username");
         }
         
         if (username.trim().length() > Integer.parseInt(applianceCommon.getApplianceConfigurationProperty("appliance.cfg.maxlen.256charstring"))) {
             skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "U2FChallenge", skfeCommon.getMessageProperty("FIDO-ERR-0027"), " username should be limited to 256 characters");
-            throw new SKFEException(skfeCommon.getMessageProperty("FIDO-ERR-0027") + " username should be limited to 256 characters");
+            throw new IllegalArgumentException(skfeCommon.getMessageProperty("FIDO-ERR-0027") + " username should be limited to 256 characters");
         }
                
         //  u2f version specific code
@@ -103,7 +102,7 @@ public class U2FChallenge implements Serializable {
 //            sessionid = U2FUtility.generateSessionid(this.nonce);
         } else {
             skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "U2FChallenge", skfeCommon.getMessageProperty("FIDO-ERR-5002"), " protocol passed=" + u2fversion);
-            throw new SKFEException(skfeCommon.getMessageProperty("FIDO-ERR-5002") + " protocol passed=" + u2fversion);
+            throw new IllegalArgumentException(skfeCommon.getMessageProperty("FIDO-ERR-5002") + " protocol passed=" + u2fversion);
         }
     }
     

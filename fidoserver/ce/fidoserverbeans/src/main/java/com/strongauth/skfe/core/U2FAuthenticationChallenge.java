@@ -42,8 +42,6 @@ package com.strongauth.skfe.core;
 import com.strongauth.skfe.utilities.skfeLogger;
 import com.strongauth.skfe.utilities.skfeCommon;
 import com.strongauth.skfe.utilities.skfeConstants;
-import com.strongauth.skfe.utilities.skfeConstants;
-import com.strongauth.skfe.utilities.SKFEException;
 import java.io.Serializable;
 import java.util.logging.Level;
 import javax.json.Json;
@@ -77,13 +75,13 @@ public class U2FAuthenticationChallenge extends U2FChallenge implements Serializ
      * one unique fido authenticator (key handle).
      * @param appidfromDB
      * @param transport_list
-     * @throws SKFEException - In case of any error
+     * @throws IllegalArgumentException - In case of any error
      */
-    public U2FAuthenticationChallenge(String u2fversion, String username, String keyhandlefromDB, String appidfromDB, JsonArray transport_list) throws SKFEException {
+    public U2FAuthenticationChallenge(String u2fversion, String username, String keyhandlefromDB, String appidfromDB, JsonArray transport_list) throws IllegalArgumentException {
         super(u2fversion, username);
 
         if (keyhandlefromDB == null || keyhandlefromDB.trim().isEmpty()) {
-            throw new SKFEException("keyhandle cannot be null or empty");
+            throw new IllegalArgumentException("keyhandle cannot be null or empty");
         }
 
         keyhandle = keyhandlefromDB;

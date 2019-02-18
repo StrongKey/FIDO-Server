@@ -63,7 +63,7 @@ public interface u2fPreregisterBeanLocal {
      * @throws SKFEException - 
      *                      Thrown in case of any error scenario.
      */
-    FEreturn execute(String did, 
+    FEreturn execute(Long did, 
                     String protocol, 
                     String username) throws SKFEException;
 }

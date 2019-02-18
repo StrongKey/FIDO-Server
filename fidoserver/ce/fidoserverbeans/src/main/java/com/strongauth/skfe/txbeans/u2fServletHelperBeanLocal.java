@@ -41,15 +41,15 @@ import javax.ws.rs.core.Response;
 @Local
 public interface u2fServletHelperBeanLocal {
     
-    String preregister(String did, String protocol, String payload);
+    Response preregister(Long did, String protocol, String username, String displayName, String options, String extensions);
 
     String register(String did, String protocol,String payload);
 
-    String preauthenticate(String did, String protocol, String username);
+    String preauthenticate(Long did, String protocol, String username);
 
     String authenticate(String did, String protocol, String payload);
 
-    String preauthorize(String did, String protocol, String username);
+    String preauthorize(Long did, String protocol, String username, String options, String extensions);
 
     String authorize(String did, String protocol, String payload);
 
@@ -59,5 +59,5 @@ public interface u2fServletHelperBeanLocal {
 
     String deactivate(String did, String protocol, String payload);
 
-    Response getkeysinfo(String did, String username);
+    Response getkeysinfo(Long did, String username);
 }

@@ -99,7 +99,7 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
      *                  successful would be populated.
      */
     @Override
-    public SKCEReturnObject execute(String did, 
+    public SKCEReturnObject execute(Long did, 
                                     String username) {
         
         //  Log the entry and inputs
@@ -112,7 +112,7 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
         SKCEReturnObject skcero = new SKCEReturnObject();
         
         //  input checks
-        if (did == null || Long.parseLong(did) < 1) {
+        if (did == null || did < 1) {
             skcero.setErrorkey("FIDO-ERR-0002");
             skcero.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " did=" + did);
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " did=" + did);
@@ -139,7 +139,7 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
         //  With the username, fetch all the keys registered for the account.   
         JsonArrayBuilder keysArrayBuilder = Json.createArrayBuilder();
         try { 
-            Collection<FidoKeys> kh_coll = getkeybean.getByUsername(Long.parseLong(did),username);
+            Collection<FidoKeys> kh_coll = getkeybean.getByUsername(did, username);
             if (!kh_coll.isEmpty()) {
                 Iterator it = kh_coll.iterator();
                 
@@ -232,7 +232,7 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
     }
     
     @Override
-    public SKCEReturnObject remoteExecute(String did, 
+    public SKCEReturnObject remoteExecute(Long did, 
                                         String username) {
         return execute(did, username);
     }

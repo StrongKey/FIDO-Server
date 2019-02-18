@@ -48,6 +48,7 @@ import java.net.UnknownHostException;
 import java.security.AlgorithmParameters;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
@@ -92,6 +93,7 @@ import org.bouncycastle.crypto.EntropySourceProvider;
 import org.bouncycastle.crypto.fips.FipsDRBG;
 import org.bouncycastle.crypto.util.BasicEntropySourceProvider;
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+import org.bouncycastle.util.encoders.Base64;
 
 @SuppressWarnings("StaticNonFinalUsedInInitialization")
 public final class cryptoCommon {
@@ -453,6 +455,17 @@ public final class cryptoCommon {
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509", "BCFIPS");
             return (X509Certificate) certFactory.generateCertificate(instr);
         } catch (CertificateException | NoSuchProviderException ex) {
+            logp(Level.SEVERE, classname, "generateX509FromBytes", "CRYPTO-MSG-1000", printStackTrace(ex));
+        }
+        return null;
+    }
+
+    public static String calculateMD5(String contentToEncode) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            digest.update(contentToEncode.getBytes());
+            return Base64.toBase64String(digest.digest());
+        } catch (NoSuchAlgorithmException ex) {
             logp(Level.SEVERE, classname, "generateX509FromBytes", "CRYPTO-MSG-1000", printStackTrace(ex));
         }
         return null;

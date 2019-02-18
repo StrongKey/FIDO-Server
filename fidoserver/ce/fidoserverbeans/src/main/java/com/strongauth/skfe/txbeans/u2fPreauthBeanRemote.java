@@ -61,13 +61,11 @@ public interface u2fPreauthBeanRemote {
      * @return          - FEReturn object that binds the U2F registration challenge
      *                      parameters in addition to a set of messages that explain
      *                      the series of actions happened during the process.
-     * @throws SKFEException - 
-     *                      Thrown in case of any error scenario.
      */
-    public FEreturn remoteExecute(String did, 
+    public FEreturn remoteExecute(Long did, 
                                 String protocol,
                                 String username, 
                                 String keyhandle,
-                            String appidfromDB,
-                            JsonArray transports) throws SKFEException;
+                                String appidfromDB,
+                                JsonArray transports);
 }

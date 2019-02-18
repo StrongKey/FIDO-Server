@@ -78,7 +78,6 @@ public class RestFidoU2FGetKeysInfo implements FIDOClientGetKeysInfo {
             String contentMD5 = "";
             String contentType = "";
             String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
-//        String contentMd5 = calculateMD5(contentToEncode);
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
             HttpGet httpGet = new HttpGet(resourceLoc);

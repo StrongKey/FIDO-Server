@@ -61,6 +61,6 @@ public interface u2fGetKeysInfoBeanLocal {
      *                  In success case, a simple msg saying that the process was
      *                  successful would be populated.
      */
-    SKCEReturnObject execute(String did, 
+    SKCEReturnObject execute(Long did, 
                             String username);
 }

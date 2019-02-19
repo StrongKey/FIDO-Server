@@ -108,7 +108,7 @@ public class RestFidoU2FRegister implements FIDOClientRegister {
             nvps.add(new BasicNameValuePair("protocol", fidoprotocol));
 
             if ("FIDO20".compareTo(fidoprotocol) == 0) {
-                nvps.add(new BasicNameValuePair("displayName", accountname));
+                nvps.add(new BasicNameValuePair("displayname", accountname));
             }
 //            System.out.println(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
 

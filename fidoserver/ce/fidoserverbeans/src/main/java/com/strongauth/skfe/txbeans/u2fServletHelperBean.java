@@ -415,7 +415,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
             }
 
             JsonObject jsonExtensions = null;
-            if (options != null && !options.isEmpty()) {
+            if (jsonExtensions != null && !jsonExtensions.isEmpty()) {
                 StringReader stringreader = new StringReader(extensions);
                 JsonReader jsonreader = Json.createReader(stringreader);
                 jsonExtensions = jsonreader.readObject();
@@ -564,7 +564,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * empty if successful.
      */
     @Override
-    public String preauthenticate(Long did, String protocol, String payload) {
+    public Response preauthenticate(Long did, String protocol, String username, String options, String extensions) {
 
         Date in = new Date();
         Date out;
@@ -574,62 +574,54 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0005", "[TXID=" + ID + "]"
                 + "\n did=" + did
                 + "\n protocol=" + protocol
-                + "\n payload=" + payload);
+                + "\n username=" + username
+                + "\n options=" + options
+                + "\n extensions" + extensions);
 
         //  2. Input checks
-        if (payload == null || payload.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " payload");
-            return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002")
-                    + " payload");
-        }
-        if (!skfeCommon.isValidJsonObject(payload)) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0014", " Invalid json");
-            return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0014")
-                    + " Invalid json");
-        }
-
         if (protocol == null || protocol.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " protocol");
-            return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002")
-                    + " protocol");
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002")
+                    + " protocol")).build();
         }
         if (!skfeCommon.isFIDOProtocolSupported(protocol)) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-5002", protocol);
-            return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-5002")
-                    + protocol);
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-5002")
+                    + protocol)).build();
         }
 
         //  3. Retrieve data from payload
         //  fetch the username
         //  fetch extensions (if they exist)
-        String username = (String) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_USERNAME, "String");
-        JsonObject extensions = (JsonObject) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_EXTENSIONS, "JsonObject");
-        // fetch options inputs if they exist (TODO refactor when options are no longer in payload)
-        String userVerification = (String) applianceCommon.getJsonValue(payload,
-                                skfeConstants.FIDO2_ATTR_USERVERIFICATION, "String");
-        JsonObjectBuilder optionsBuilder = Json.createObjectBuilder();
-        if (userVerification != null) {
-            optionsBuilder.add(skfeConstants.FIDO2_ATTR_USERVERIFICATION, userVerification);
+        JsonObject jsonOptions = null;
+        if (options != null && !options.isEmpty()) {
+            StringReader stringreader = new StringReader(options);
+            JsonReader jsonreader = Json.createReader(stringreader);
+            jsonOptions = jsonreader.readObject();
         }
-        JsonObject options = optionsBuilder.build();
+
+        JsonObject jsonExtensions = null;
+        if (extensions != null && !extensions.isEmpty()) {
+            StringReader stringreader = new StringReader(extensions);
+            JsonReader jsonreader = Json.createReader(stringreader);
+            jsonExtensions = jsonreader.readObject();
+        }
         
         if (username == null || username.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " username");
-            return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002")
-                    + " username");
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002")
+                    + " username")).build();
         }
         
         //  4. Process pre-authentication
-        String responseJSON = twofpreauth(did, protocol, username, options, extensions, "preauthenticate");
+        String responseJSON = twofpreauth(did, protocol, username, jsonOptions, jsonExtensions, "preauthenticate");
 
         out = new Date();
         long rt = out.getTime() - in.getTime();
         //  5. Print output and Return
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0006", "[TXID=" + ID + ", START=" + in.getTime() + ", FINISH=" + out.getTime() + ", TTC=" + rt + "]"
                 + "\nU2FAuthentication Challenge parameters = " + responseJSON);
-        return responseJSON;
+        return Response.ok().entity(responseJSON).build();
     }
 
     /*
@@ -671,7 +663,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * something went wrong. Will be empty if successful.
      */
     @Override
-    public String authenticate(Long did, String protocol, String payload) {
+    public Response authenticate(Long did, String protocol, String response, String metadata) {
 
         Date in = new Date();
         Date out;
@@ -681,57 +673,38 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0007", "[TXID=" + ID + "]"
                 + "\n did=" + did
                 + "\n protocol=" + protocol
-                + "\n payload=" + payload);
+                + "\n response=" + response
+                + "\n metadata=" + metadata);
 
         //  2. Input checks
-        if (payload == null || payload.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0010", " payload");
-            return skfeCommon.buildAuthenticateResponse("", "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0010") + " payload");
-        }
-        if (!skfeCommon.isValidJsonObject(payload)) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0014", " Invalid json");
-            return skfeCommon.buildAuthenticateResponse("", "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0014") + " Invalid json");
-        }
-
-        //  3. Retrieve data from payload
-        //  fetch response and metadata fields from payload
-        JsonObject response = (JsonObject) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_RESPONSE, "JsonObject");
         if (response == null || response.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0010", "");
-            return skfeCommon.buildAuthenticateResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0010"));
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildAuthenticateResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0010"))).build();
         }
 
-        JsonObject metadata = (JsonObject) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_METADATA, "JsonObject");
         if (metadata == null || metadata.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0017", "");
-            return skfeCommon.buildAuthenticateResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0017"));
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildAuthenticateResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0017"))).build();
         }
-
-        String authenticationresponse = response.toString();
-        String authenticationmetadata = metadata.toString();
 
         //  4. Finish authentication
         String responseJSON;
         try {
             responseJSON = twofauthenticate(did,
-                    authenticationresponse,
-                    authenticationmetadata,
+                    response,
+                    metadata,
                     protocol,
                     "authentication");
         } catch (SKFEException ex) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0034", "");
-            return skfeCommon.buildAuthenticateResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0034"));
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildAuthenticateResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0034"))).build();
         }
 
         out = new Date();
         long rt = out.getTime() - in.getTime();
         //  5. Print output and Return
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0008", "[TXID=" + ID + ", START=" + in.getTime() + ", FINISH=" + out.getTime() + ", TTC=" + rt + "]" + "\nResponse = " + responseJSON);
-        return responseJSON;
+        return Response.ok().entity(responseJSON).build();
     }
 
     private String twofpreauth(Long did, String protocol, String username, JsonObject options, JsonObject extensions, String method) {
@@ -1218,7 +1191,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         }
 
         JsonObject jsonExtensions = null;
-        if (options != null && !options.isEmpty()) {
+        if (extensions != null && !extensions.isEmpty()) {
             StringReader stringreader = new StringReader(extensions);
             JsonReader jsonreader = Json.createReader(stringreader);
             jsonExtensions = jsonreader.readObject();

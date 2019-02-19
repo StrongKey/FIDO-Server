@@ -126,74 +126,73 @@ public class APIServlet {
         return u2fHelperBean.register(did, protocol, response, metadata);
     }
 
-//    /**
-//     * Step-1 for fido authenticator authentication. This methods generates a
-//     * challenge and returns the same to the caller.
-//     *
-//     * @param requestbody - String The full body for auth purposes
-//     * @param did - Long value of the domain to service this request
-//     * @param protocol - String value of the protocol to use
-//     * @return - A Json in String format. The Json will have 3 key-value pairs;
-//     * 1. 'Challenge' : 'U2F Auth Challenge parameters; a json again' 2.
-//     * 'Message' : String, with a list of messages that explain the process. 3.
-//     * 'Error' : String, with error message incase something went wrong. Will be
-//     * empty if successful.
-//     */
-//    @POST
-//    @Path("/authenticate/challenge")
-//    @Consumes({"application/x-www-form-urlencoded"})
-//    @Produces({"application/json"})
-//    public Response preauthenticate(String requestbody,
-//                                    @PathParam("did") Long did,
-//                                    @FormParam("protocol") String protocol,
-//                                    @FormParam("username") String username,
-//                                    @FormParam("options") String options,
-//                                    @FormParam("extensions") String extensions) {
-//
-//        if (!authRest.execute(did, request, requestbody)) {
-//            return Response.status(Response.Status.UNAUTHORIZED).build();
-//        }
-//
-//        return u2fHelperBean.preauthenticate(did, protocol, username, options, extensions);
-//    }
+    /**
+     * Step-1 for fido authenticator authentication. This methods generates a
+     * challenge and returns the same to the caller.
+     *
+     * @param requestbody - String The full body for auth purposes
+     * @param did - Long value of the domain to service this request
+     * @param protocol - String value of the protocol to use
+     * @return - A Json in String format. The Json will have 3 key-value pairs;
+     * 1. 'Challenge' : 'U2F Auth Challenge parameters; a json again' 2.
+     * 'Message' : String, with a list of messages that explain the process. 3.
+     * 'Error' : String, with error message incase something went wrong. Will be
+     * empty if successful.
+     */
+    @POST
+    @Path("/authenticate/challenge")
+    @Consumes({"application/x-www-form-urlencoded"})
+    @Produces({"application/json"})
+    public Response preauthenticate(String requestbody,
+                                    @PathParam("did") Long did,
+                                    @FormParam("protocol") String protocol,
+                                    @FormParam("username") String username,
+                                    @FormParam("options") String options,
+                                    @FormParam("extensions") String extensions) {
 
-//    /**
-//     * Step-2 or last step of fido authenticator authentication process. This
-//     * method receives the u2f authentication response parameters which is
-//     * processed and the authentication result is notified back to the caller.
-//     *
-//     * Both preauthenticate and authenticate methods are time linked. Meaning,
-//     * authenticate should happen with in a certain time limit after the
-//     * preauthenticate is finished; otherwise, the user session would be
-//     * invalidated.
-//     *
-//     * @param requestbody - String The full body for auth purposes
-//     * @param did - Long value of the domain to service this request
-//     * @param protocol - String value of the protocol to use
-//     * 
-//     * @return - A Json in String format. The Json will have 3 key-value pairs;
-//     * 1. 'Response' : String, with a simple message telling if the process was
-//     * successful or not. 2. 'Message' : String, with a list of messages that
-//     * explain the process. 3. 'Error' : String, with error message incase
-//     * something went wrong. Will be empty if successful.
-//     */
-//    @POST
-//    @Path("/authenticate")
-//    @Consumes({"application/x-www-form-urlencoded"})
-//    @Produces({"application/json"})
-//    public Response authenticate(String requestbody,
-//                                 @PathParam("did") Long did,
-//                                 @FormParam("protocol") String protocol,
-//                                 @FormParam("username") String username,
-//                                 @FormParam("options") String options,
-//                                 @FormParam("extensions") String extensions) {
-//
-//        if (!authRest.execute(did, request, requestbody)) {
-//            return Response.status(Response.Status.UNAUTHORIZED).build();
-//        }
-//
-//        return u2fHelperBean.authenticate(did, protocol, username, options, extensions);
-//    }
+        if (!authRest.execute(did, request, requestbody)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        return u2fHelperBean.preauthenticate(did, protocol, username, options, extensions);
+    }
+
+    /**
+     * Step-2 or last step of fido authenticator authentication process. This
+     * method receives the u2f authentication response parameters which is
+     * processed and the authentication result is notified back to the caller.
+     *
+     * Both preauthenticate and authenticate methods are time linked. Meaning,
+     * authenticate should happen with in a certain time limit after the
+     * preauthenticate is finished; otherwise, the user session would be
+     * invalidated.
+     *
+     * @param requestbody - String The full body for auth purposes
+     * @param did - Long value of the domain to service this request
+     * @param protocol - String value of the protocol to use
+     * 
+     * @return - A Json in String format. The Json will have 3 key-value pairs;
+     * 1. 'Response' : String, with a simple message telling if the process was
+     * successful or not. 2. 'Message' : String, with a list of messages that
+     * explain the process. 3. 'Error' : String, with error message incase
+     * something went wrong. Will be empty if successful.
+     */
+    @POST
+    @Path("/authenticate")
+    @Consumes({"application/x-www-form-urlencoded"})
+    @Produces({"application/json"})
+    public Response authenticate(String requestbody,
+                                 @PathParam("did") Long did,
+                                 @FormParam("protocol") String protocol,
+                                 @FormParam("response") String response,
+                                 @FormParam("metadata") String metadata) {
+
+        if (!authRest.execute(did, request, requestbody)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        return u2fHelperBean.authenticate(did, protocol, response, metadata);
+    }
 
     /**
      * Step-1 for fido based transaction confirmation using u2f authenticator.

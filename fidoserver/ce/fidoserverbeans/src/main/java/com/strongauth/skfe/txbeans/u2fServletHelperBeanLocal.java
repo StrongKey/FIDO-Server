@@ -45,9 +45,9 @@ public interface u2fServletHelperBeanLocal {
 
     Response register(Long did, String protocol, String response, String metadata);
 
-    String preauthenticate(Long did, String protocol, String username);
+    Response preauthenticate(Long did, String protocol, String username, String options, String extensions);
 
-    String authenticate(Long did, String protocol, String payload);
+    Response authenticate(Long did, String protocol, String response, String metadata);
 
     Response preauthorize(Long did, String protocol, String username, String options, String extensions);
 

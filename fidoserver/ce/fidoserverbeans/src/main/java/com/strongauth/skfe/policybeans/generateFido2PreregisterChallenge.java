@@ -134,14 +134,14 @@ public class generateFido2PreregisterChallenge implements generateFido2Preregist
         if(fidoPolicy.getTimeout() != null){
             returnObjectBuilder.add(skfeConstants.FIDO2_PREREG_ATTR_TIMEOUT, fidoPolicy.getTimeout());
         }
-        JsonObject authSelect = generateAuthenticatorSelection(regOp, options);
-        if(authSelect != null){
-            returnObjectBuilder.add(skfeConstants.FIDO2_PREREG_ATTR_AUTHENTICATORSELECT, authSelect);
-        }
-        String attestPref = generateAttestationConveyancePreference(regOp, options);
-        if(attestPref != null){
-            returnObjectBuilder.add(skfeConstants.FIDO2_PREREG_ATTR_ATTESTATION, attestPref);
-        }
+            JsonObject authSelect = generateAuthenticatorSelection(regOp, options);
+            if(authSelect != null){
+                returnObjectBuilder.add(skfeConstants.FIDO2_PREREG_ATTR_AUTHENTICATORSELECT, authSelect);
+            }
+            String attestPref = generateAttestationConveyancePreference(regOp, options);
+            if(attestPref != null){
+                returnObjectBuilder.add(skfeConstants.FIDO2_PREREG_ATTR_ATTESTATION, attestPref);
+            }
         
         JsonObject extensionsJson = generateExtensions(fidoPolicy.getExtensionsOptions(), extensions);
         if (!extensionsJson.isEmpty()) {

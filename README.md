@@ -11,17 +11,9 @@ The following links provide some background on FIDO, the Fido Alliance, and WebA
 * [The FIDO2 Project](https://fidoalliance.org/fido2/)
 
 
-## Getting Started
-Begin by downloading the installation package [here](https://github.com/StrongKey/FIDO-Server/tree/v2_api/fidoserver/fidoserverInstall/src) and saving it. From there, execute the following steps:
-1. Open a terminal and login as *root*.
-2. Type the following at the prompt:
-    ``Code here``
-3. Type the following at the prompt:
-    ``Code here``
-4. Type the following at the prompt:
-    ``Code here``
-5. Type the following at the prompt:
-    ``Code here``
+## Installation
+Download the installation package [here](https://github.com/StrongKey/FIDO-Server/tree/v2_api/fidoserver/fidoserverInstall/src) and saving it.
+From there follow [these instructions](https://github.com/StrongKey/FIDO-Server/blob/master/docs/StrongKey_FIDO_Server_Installation_Guide_Linux_Scripted.md).
 
 Congratulations! Installation is complete. To see it in action, sample code is provided in the links below.
 

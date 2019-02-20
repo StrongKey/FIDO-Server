@@ -101,7 +101,7 @@ cp $strongauth/fidoserverEAR/target/fidoserver.ear $strongauth/jade
 
 # Create archives
 echo "-Packaging jade..."
-tar zcf FIDOSERVER-${version}.tgz -C $strongauth jade
+tar zcf FIDOServer-${version}.tgz -C $strongauth jade
 tar zcf fidolib.tgz -C $strongauth/jade lib
 
 # Remove jade

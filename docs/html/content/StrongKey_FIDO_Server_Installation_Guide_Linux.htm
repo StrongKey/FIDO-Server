@@ -1,0 +1,377 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<title>StrongKey FIDO Server (SKFS) Installation Guide for Linux</title>
+	<meta name="classification" content="Installation Guide for Linux"/>
+	<meta name="Organization" content="StrongKey"/>
+	<meta name="Product_Group" content=""/>
+	<meta name="Product" content="StrongKey FIDO Server"/>
+	<meta name="Abbr" content="SKFS"/>
+	<meta name="Version_Major" content="0"/>
+	<meta name="Version_Minor" content="9"/>
+	<meta name="Version_Patch" content="0"/>
+	<meta name="Version_Build" content="0"/>
+	<meta name="Scripted" content=""/>
+	
+	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+	<link rel="stylesheet" href="../style/sk_style.css">
+	<script type="text/javascript" src="../includes/toc.js"></script>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+
+<body class="strongkey" lang="en-US" text="#004054" link="#00c4d9" dir="ltr" onload="SKDocTitle()">
+	<font face="Montserrat">
+	<div align="center" valign="middle" class="print-only">
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<img src="../images/STR.Horizontal1_LightUSB_TM.png" alt="StrongKey Home" class="floating">
+		<p class="like_h1" id="doctitle_print">
+	</div>
+	
+	<div class="strongkey__nav break screen-only">
+		<p class="like_h1 print-only">Contents</p>
+		<a href="https://www.strongkey.com" target="_blank"><img src="../images/STR.Horizontal1_LightUSB_TM.png" alt="StrongKey Home" class="floating screen-only"></a></li>
+		<p class="strongkey__toc_title screen-only" id="doctitle_screen"></p>
+	</div>
+	
+	<div id="generated-toc" class="strongkey__toc2"></div>
+	
+	
+	<div class="strongkey__nav_bottom">
+		<p class="fineprint screen-only"><a href="#__N_legal_stuff">Copyrights and Notices</a></p>
+		<p class="fineprint screen-only"><a href="mailto:techpubs@strongkey.com?subject=Found a Typo">Report typographic errors.</a></p>
+	</div>
+	
+	<div class="break print-only"></div>
+	
+	<div class="strongkey__right">
+	    <div class="strongkey__html">			
+
+			<p class="box_blue_outline">This document will walk through extracting and installing StrongKey FIDO Server and its components&mdash;often via yum&mdash; into an example folder structure on a CentOS VM. If you have other Linux versions, the delivery method for installation packages may differ. It is HIGHLY RECOMMENDED to install StrongKey products and dependent software in specified directories to avoid configuration issues during installation. If you decide to use another folder, please make note of it and replace it accordingly during installation steps.</p>
+
+			<hr>
+
+		<h1 id="—download-strongkey-fido-server">Download StrongKey FIDO Server</h1>
+		
+			<p>Make sure you have the following set up and/or ready to run before you begin installation.</p>
+			<p>Please create the following directories on the Linux server where you are about to install.
+				
+				<ul>
+					<li><em>/usr/local/workspace</li>
+					<li>/usr/local/strongkey</li>
+					<li>/usr/local/strongkey/skfs</li>
+					<li>/usr/local/strongkey/skfs/etc</li>
+					<li>/usr/local/strongkey/skfs/keystores</li>
+					<li>/usr/local/strongkey/jade/</em></li>
+				</ul>
+			</p>
+			
+			<p>Ensure the logged in account has <em>read/write/execute</em> privileges on the <em>/strongkey</em> directory. Failing to have privileges on <em>/strongkey</em> directory will lead to many problems in the further steps of installation.<br>
+			<code>chmod 755 /usr/local/strongkey/</code></p>
+			
+			<p class="box_blue_outline"><strong>NOTE:</strong> It is highly recommended to perform the installation as a user other than <em>root</em>. Specific instructions in the installation process will need <em>root</em> access and those instructions explicitly state so. Right after executing them, exit out of the <em>root</em> session and continue.</p>
+
+			<ol>
+				<li><p>Download the binary distribution file <a href="https://github.com/StrongKey/FIDO-Server" target="_blank">FIDOServer-v#.#.tgz</a>.</p></li>
+				<li><p><strong>Extract the downloaded file</strong> to <em>/usr/local/strongkey</em>.<br>
+					<code> tar xvzf FIDOServer-v#.#.tgz -C /usr/local/strongkey/</code></p>
+				</li>
+				<li>
+					<p><strong>Verify the contents</strong> of the <em>jade</em> directory:<br>
+					<code>ls -l /usr/local/strongkey/jade/</code></p>
+				</li>
+				<li>
+					<p>Copy the following two files from <a href="https://github.com/StrongKey/FIDO-Server/tree/v2_api/fidoserver/fidoserverInstall/src">here</a> into <em>/usr/local/strongkey/skfs/keystores</em>:
+						<ul>
+							<li><p><em>signingkeystore.bcfks</em></p></li>
+							<li><p><em>signingtruststore.bcfks</em></p></li>
+						</ul>
+					</p>
+			</ol>
+			
+			<hr>
+			
+		<h1 id="—download-jdk-jce">Download and Install <em>Open Java Development Kit (JDK)</em></h1>
+			<p>As <em>root</em>, type the following command:<br>
+			<code>yum install java-1.8.0-openjdk</code></p>
+
+		<h1 id="—download-mariadb">Download and Install MariaDB</h1>
+			<p>As <em>root</em>, type the following commands:
+				<ol>
+					<li><code>yum install mariadb-server</code></li>
+					<li><code>systemctl start mariadb</code></li>
+					<li><code>systemctl enable mariadb</code></li>
+					<li><code>systemctl status mariadb</code></li>
+					<li><code>mysql_secure_installation</code></li>
+				</ol>
+			</p>
+			
+		<h2 id="—create-a-database-schema-for-skfs">Create a Database Schema for StrongKey FIDO Server</h2>
+			<ol>
+				<li>
+					<p><strong>Login</strong> to MariaDB as <em>root</em> via terminal and use the <em>mysql</em> database. This will open MariaDB access as <em>root</em>.<br>
+					<code>mysql -u root mysql -p&lt;PASSWORD&gt; mysql></code></p>
+				</li>
+				<li>
+					<p><strong>Create a database</strong> called <em>skfs</em> and a MariaDB user called <em>skfsdbuser</em> for the StrongKey FIDO Server application and grant privileges for the user on the new database. This document uses <em>AbracaDabra</em> as the password for the <em>skfsdbuser</em>.<br>
+					<code>mysql> create database skfs; mysql> grant all on skfs.* to skfsdbuser@localhost identified by '&lt;PASSWORD&gt;'; mysql> flush privileges;</code></p>
+				</li>
+				<li>
+					<p><strong>Log out</strong> of <em>root</em> from MariaDB.<br>
+					<code>mysql> exit;</code></p>
+				</li>
+				<li><p><strong>Create tables</strong> inside the <em>skfs</em> database. <strong>Login</strong> to MariaDB via terminal as <em>skfsdbuser</em> using the <em>skfs</em> database.<br>
+					<code>mysql -u skfsdbuser -p&lt;PASSWORD&gt; skfs</code></p>
+				</li>
+				<li>
+					<p><strong>Source</strong> the <em>create.txt</em> file to create tables. The output should not have any errors.<br>
+					<code>source /usr/local/strongkey/jade/sql/mysql/create.txt;</code></p>
+				</li>
+				<li>
+					<p>Use the <strong>show tables</strong> command in MariaDB to list the created tables.<br>
+					<code>show tables;</code></p>
+				</li>
+				<li>
+					<p>Add the default entries to the the SERVERS, DOMAINS, and FIDO_POLICIES tables:<br>
+					<code>insert into SERVERS values (1, '$(hostname)', 'Active', 'Both', 'Active', null, null);</code><br>
+					<code>insert into DOMAINS values (1,'SKFS','Active','Active','-----BEGIN CERTIFICATE-----\nMIIDizCCAnOgAwIBAgIENIYcAzANBgkqhkiG9w0BAQsFADBuMRcwFQYDVQQKEw5T\ndHJvbmdBdXRoIEluYzEjMCEGA1UECxMaU0tDRSBTaWduaW5nIENlcnRpZmljYXRl\nIDExEzARBgNVBAsTClNBS0EgRElEIDExGTAXBgNVBAMTEFNLQ0UgU2lnbmluZyBL\nZXkwHhcNMTkwMTMwMjI1NDAwWhcNMTkwNDMwMjI1NDAwWjBuMRcwFQYDVQQKEw5T\ndHJvbmdBdXRoIEluYzEjMCEGA1UECxMaU0tDRSBTaWduaW5nIENlcnRpZmljYXRl\nIDExEzARBgNVBAsTClNBS0EgRElEIDExGTAXBgNVBAMTEFNLQ0UgU2lnbmluZyBL\nZXkwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCH/W7ERX0U3a+2VLBY\nyjpCRTCdRtiuiLv+C1j64gLAyseF5sMH+tLNcqU0WgdZ3uQxb2+nl2y8Cp0B8Cs9\nvQi9V9CIC7zvMvgveQ711JqX8RMsaGBrn+pWx61E4B1kLCYCPSI48Crm/xkMydGM\nTKXHpfb+t9uo/uat/ykRrel5f6F764oo0o1KJkY6DjFEMh9TKMbJIeF127S2pFxl\nNNBhawTDGDaA1ag9GoWHGCWZ/bbCMMiwcH6q71AqRg8qby1EsBKA7E4DD8f+5X6b\nU3zcY3kudKlYxP4rix42PHCY3B4ZnpWS3A6lZRBot7NklsLvlxvDbKIiTcyDvSA0\nunfpAgMBAAGjMTAvMA4GA1UdDwEB/wQEAwIHgDAdBgNVHQ4EFgQUlSKnwxvmv8Bh\nlkFSMeEtAM7AyakwDQYJKoZIhvcNAQELBQADggEBAG2nosn6cTsZTdwRGws61fhP\n+tvSZXpE5mYk93x9FTnApbbsHJk1grWbC2psYxzuY1nYTqE48ORPngr3cHcNX0qZ\npi9JQ/eh7AaCLQcb1pxl+fJAjnnHKCKpicyTvmupv6c97IE4wa2KoYCJ4BdnJPnY\nnmnePPqDvjnAhuCTaxSRz59m7aW4Tyt9VPsoBShrCSBYzK5cH3FNIGffqB7zI3Jh\nXo0WpVD/YBE/OsWRbthZ0OquJIfxcpdXS4srCFocQlqNMhlQ7ZVOs73WrRx+uGIr\nhUYvIJrqgAc7+F0I7v2nAQLmxMBYheZDhN9DA9LuJRV93A8ELIX338DKxBKBPPU=\n-----END CERTIFICATE-----',NULL,'-----BEGIN CERTIFICATE-----\nMIIDizCCAnOgAwIBAgIENIYcAzANBgkqhkiG9w0BAQsFADBuMRcwFQYDVQQKEw5T\ndHJvbmdBdXRoIEluYzEjMCEGA1UECxMaU0tDRSBTaWduaW5nIENlcnRpZmljYXRl\nIDExEzARBgNVBAsTClNBS0EgRElEIDExGTAXBgNVBAMTEFNLQ0UgU2lnbmluZyBL\nZXkwHhcNMTkwMTMwMjI1NDAwWhcNMTkwNDMwMjI1NDAwWjBuMRcwFQYDVQQKEw5T\ndHJvbmdBdXRoIEluYzEjMCEGA1UECxMaU0tDRSBTaWduaW5nIENlcnRpZmljYXRl\nIDExEzARBgNVBAsTClNBS0EgRElEIDExGTAXBgNVBAMTEFNLQ0UgU2lnbmluZyBL\nZXkwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCH/W7ERX0U3a+2VLBY\nyjpCRTCdRtiuiLv+C1j64gLAyseF5sMH+tLNcqU0WgdZ3uQxb2+nl2y8Cp0B8Cs9\nvQi9V9CIC7zvMvgveQ711JqX8RMsaGBrn+pWx61E4B1kLCYCPSI48Crm/xkMydGM\nTKXHpfb+t9uo/uat/ykRrel5f6F764oo0o1KJkY6DjFEMh9TKMbJIeF127S2pFxl\nNNBhawTDGDaA1ag9GoWHGCWZ/bbCMMiwcH6q71AqRg8qby1EsBKA7E4DD8f+5X6b\nU3zcY3kudKlYxP4rix42PHCY3B4ZnpWS3A6lZRBot7NklsLvlxvDbKIiTcyDvSA0\nunfpAgMBAAGjMTAvMA4GA1UdDwEB/wQEAwIHgDAdBgNVHQ4EFgQUlSKnwxvmv8Bh\nlkFSMeEtAM7AyakwDQYJKoZIhvcNAQELBQADggEBAG2nosn6cTsZTdwRGws61fhP\n+tvSZXpE5mYk93x9FTnApbbsHJk1grWbC2psYxzuY1nYTqE48ORPngr3cHcNX0qZ\npi9JQ/eh7AaCLQcb1pxl+fJAjnnHKCKpicyTvmupv6c97IE4wa2KoYCJ4BdnJPnY\nnmnePPqDvjnAhuCTaxSRz59m7aW4Tyt9VPsoBShrCSBYzK5cH3FNIGffqB7zI3Jh\nXo0WpVD/YBE/OsWRbthZ0OquJIfxcpdXS4srCFocQlqNMhlQ7ZVOs73WrRx+uGIr\nhUYvIJrqgAc7+F0I7v2nAQLmxMBYheZDhN9DA9LuJRV93A8ELIX338DKxBKBPPU=\n-----END CERTIFICATE-----',NULL,'CN=SKFS Signing Key,OU=SAKA DID 1,OU=SKFS Signing Certificate 1,O=StrongKey Inc','https://localhost:8181',NULL);</code></p>
+					<code>insert into FIDO_POLICIES values (1,1,1,NOW(),NULL,'Default Policy','eyJzdG9yZVNpZ25hdHVyZXMiOmZhbHNlLCJleHRlbnNpb25zIjp7ImV4YW1wbGUuZXh0ZW5zaW9uIjp0cnVlfSwidXNlclNldHRpbmdzIjp0cnVlLCJjcnlwdG9ncmFwaHkiOnsiYXR0ZXN0YXRpb25fZm9ybWF0cyI6WyJmaWRvLXUyZiIsInBhY2tlZCIsInRwbSIsImFuZHJvaWQta2V5IiwiYW5kcm9pZC1zYWZldHluZXQiLCJub25lIl0sImVsbGlwdGljX2N1cnZlcyI6WyJzZWNwMjU2cjEiLCJzZWNwMzg0cjEiLCJzZWNwNTIxcjEiLCJjdXJ2ZTI1NTE5Il0sImFsbG93ZWRfcnNhX3NpZ25hdHVyZXMiOlsicnNhc3NhLXBrY3MxLXYxXzUtc2hhMSIsInJzYXNzYS1wa2NzMS12MV81LXNoYTI1NiIsInJzYXNzYS1wa2NzMS12MV81LXNoYTM4NCIsInJzYXNzYS1wa2NzMS12MV81LXNoYTUxMiIsInJzYXNzYS1wc3Mtc2hhMjU2IiwicnNhc3NhLXBzcy1zaGEzODQiLCJyc2Fzc2EtcHNzLXNoYTUxMiJdLCJhbGxvd2VkX2VjX3NpZ25hdHVyZXMiOlsiZWNkc2EtcDI1Ni1zaGEyNTYiLCJlY2RzYS1wMzg0LXNoYTM4NCIsImVjZHNhLXA1MjEtc2hhNTEyIiwiZWRkc2EiLCJlY2RzYS1wMjU2ay1zaGEyNTYiXSwiYXR0ZXN0YXRpb25fdHlwZXMiOlsiYmFzaWMiLCJzZWxmIiwiYXR0Y2EiLCJlY2RhYSIsIm5vbmUiXX0sInJlZ2lzdHJhdGlvbiI6eyJhdHRlc3RhdGlvbiI6WyJub25lIiwiaW5kaXJlY3QiLCJkaXJlY3QiXSwiZGlzcGxheU5hbWUiOiJyZXF1aXJlZCIsImF1dGhlbnRpY2F0b3JTZWxlY3Rpb24iOnsiYXV0aGVudGljYXRvckF0dGFjaG1lbnQiOlsicGxhdGZvcm0iLCJjcm9zcy1wbGF0Zm9ybSJdLCJ1c2VyVmVyaWZpY2F0aW9uIjpbInJlcXVpcmVkIiwicHJlZmVycmVkIiwiZGlzY291cmFnZWQiXSwicmVxdWlyZVJlc2lkZW50S2V5IjpbdHJ1ZSxmYWxzZV19LCJleGNsdWRlQ3JlZGVudGlhbHMiOiJlbmFibGVkIn0sImNvdW50ZXIiOnsicmVxdWlyZUluY3JlYXNlIjp0cnVlLCJyZXF1aXJlQ291bnRlciI6ZmFsc2V9LCJycCI6eyJuYW1lIjoiZGVtby5zdHJvbmdhdXRoLmNvbTo4MTgxIn0sImF1dGhlbnRpY2F0aW9uIjp7InVzZXJWZXJpZmljYXRpb24iOlsicmVxdWlyZWQiLCJwcmVmZXJyZWQiLCJkaXNjb3VyYWdlZCJdLCJhbGxvd0NyZWRlbnRpYWxzIjoiZW5hYmxlZCJ9fQ',1,'Active','',NOW(),NULL,NULL);</code>	
+				</li>
+				<li>
+					<p>Use the <strong>show tables</strong> command in MariaDB to list the created tables.<br>
+					<code>show tables;</code></p>
+				</li>
+				<li>
+					<p><strong>Exit MariaDB</strong>.<br>
+					<code>exit</code></p>
+				</li>
+				<li><p><strong>Close</strong> the terminal window.</p></li>
+			</ol>
+			
+			<p>MariaDB is now installed and configured for StrongKey FIDO Server.</p>
+			
+			<hr>
+			
+		<h1 id="—configure-stongkey-fido-server">Configure StrongKey FIDO Server</h1>
+			<p>The StrongKey FIDO Server is completely configurable to suit a specific enterprise environment. These settings must be altered before the software is deployed and run.</p>
+			
+		<h2 id="—configure-skfs-home-directory">Configure StrongKey FIDO Server HOME Directory</h2>
+			<p>In this section, we will configure the FIDOSERVER_HOME and set an environment variable to match.
+				<ol>
+					<li>
+						<p>Open a <strong>terminal window</strong>.</p>
+					</li>
+					<li>
+						<p><strong>Create a FIDOSERVER_HOME directory</strong> called <em>skfs</em>.
+						<br>
+						<em>/usr/local/strongkey/skfs</em> is the <strong>FIDOSERVER_HOME</strong> directory for this install.</p>
+						<code>mkdir -p /usr/local/strongkey/skfs/etc</code></p>
+					</li>
+					<li>
+						<p>You must be a <em>root</em> user to do this step. Edit the <em>/etc/bashrc</em> file and export the variables using the command below:<br>
+						<code>vi /etc/bashrc</code></p>
+					</li>
+					<li>
+						<p><strong>Add this lines</strong> at the end of the file.<br>
+						<code>export FIDOSERVER_HOME=/usr/local/strongkey/skfs</code></p>
+					</li>
+					<li>
+						<p><strong>Save</strong> and <strong>close</strong> the file and <strong>exit</strong> out of <em>root</em>.<br>
+						<code>:wq</code></p>
+					</li>
+				</ol>
+			</p>
+			
+		<h1 id="—install-and-configure-glassfish">Install and Configure Payara</h1>
+			
+			<p>The StrongKey FIDO Server is fully tested using Payara 4.1 application server.</p>
+			
+		<h2 id="—download-payara-4.1">Download and Install Payara 4.1</h2>
+			
+			<ol>
+				<li><p><strong>Download</strong> Payara 4.1 edition <a href="http://repo1.maven.org/maven2/fish/payara/blue/distributions/payara/4.1.2.181/payara-4.1.2.181.zip" target="_blank"><em>.ZIP</em> file (<em>payara-4.1.2.181.zip</em>)</a>. <strong>Save</strong> the file.</p></li>
+				<li><p>Open a <strong>terminal window</strong> and extract the download using the following command:<br><code>unzip payara-4.1.2.181.zip -d /usr/local/strongkey</code></p></li>
+				<li><p>Create the <em>GLASSFISH_HOME</em> <strong>environment variable</strong>:<br><code>GLASSFISH_HOME=/usr/local/strongkey/payara41/glassfish/ export GLASSFISH_HOME=/usr/local/strongkey/payara41/glassfish/ PATH=$GLASSFISH_HOME/bin:$PATH</code></p></li>
+				<li><p><strong>Download and copy</strong> the <a href="https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar" target="_blank">MariaDB JDBC driver <em>.JAR</em></a> file into the Payara <em>/lib</em> directory.<br><code>cp {jar-location}/mariadb-java-client-2.2.2.jar /usr/local/strongkey/payara41/glassfish/lib</code></p></li>
+				<li><p><strong>Start Payara</strong> application server using the command below and ensure that the server has started successfully.<br><code>/usr/local/strongkey/payara41/glassfish/bin/asadmin start-domain</code></li>
+			</ol>
+			
+			<p class="box_blue_outline"><strong>NOTE:</strong> To stop Payara, use the following command:
+			<br><code>/usr/local/strongkey/payara41/glassfish/bin/asadmin stop-domain</code></p>
+			
+		<h2 id="—configure-payara-4.1">Configure Payara 4.1</h2>
+			<ol>
+				<li><p>All configuration changes to Payara in this step can be done either on the command line using <em>asadmin</em> commands, or via a browser-based administration console for Payara. For simplicity and ease of use, this document explains how to configure Payara using the Payara administration console.</p></li>
+				<li><p>Open a web browser and type <strong>localhost:4848</strong> where <em>4848</em> is the default port for Payara. If your instance of Payara has been configured to use another port, use that port instead.</p></li>
+				<li><p>Enter <strong>admin</strong> as the username and <strong>adminadmin</strong> as the <em>password</em> (the Payara default admin credentials). Depending on how the Payara admin login credentials are configured, the first page shown might be the login page for the console or might be the console’s home page.</p></li>
+				<li><p>Clicking <strong>Login</strong> opens the console’s home page.</p></li>
+			</ol>
+		
+		<h2 id="—configure-thread-pool">Configure Thread Pool</h2>
+			<ol>
+				<li>
+					<p>On the left, expand the node <strong>Configurations -> server-config -> Thread Pools -> http-thread-pool</strong>.</p>
+				</li>
+				<li>
+					<p>Set <em>Max Thread Pool Size</em> to <strong>100</strong>.</p>
+				</li>
+				<li>
+					<p>Click <strong>Save</strong>.</p>
+				</li>
+			</ol>
+		<h2 id="—create-jdbc-resources">Create JDBC Resources</h2>
+			
+			<ol>
+				<li>
+					<p><strong>Copy</strong> the MariaDB JDBC Connector <em>.JAR</em> file into Payara.</p>
+				</li>
+				<li>
+					<p>On the left side, expand <strong>Resources -> JDBC -> JDBC Connection Pools</strong>.</p>
+				</li>
+				<li>
+					<p>Click <strong>New</strong>. A page opens to create a new JDBC connection pool. Enter the information as shown here:
+						<table>
+							<thead>
+								<tr class="grey">
+									<th class="table_header_right"><strong>Field</strong></th>
+									<th width="2%">
+									<th class="table_header_left"><strong>Value</strong></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="table_list_item_right"><em>Pool name</em></td>
+									<td width="2%">
+									<td class="table_contents_left"><strong>SKFSPool</strong></td>
+								</tr>
+								<tr>
+									<td class="table_list_item_right"><em>Resource Type</em></td>
+									<td width="2%">
+									<td class="table_contents_left"><strong>javax.sql.ConnectionPoolDataSource</strong></td>
+								</tr>
+								<tr>
+									<td class="table_list_item_right"><em>Database Driver Vendor</em></td>
+									<td width="2%">
+									<td class="table_contents_left"><strong>MariaDB</strong></td>
+								</tr>
+							</tbody>
+						</table>
+					<p>
+				</li>
+				<li>
+					<p>Click <strong>Next</strong>. On the next page, scroll down to the <em>Additional properties</em> section. This is where you must specify the <em>database name</em>, <em>hostname</em>, <em>port</em>, and <em>user credentials</em> for access. Delete all the existing values and add the new values as shown here:
+						<table>
+							<thead>
+								<tr class="grey">
+									<th class="table_header_right"><strong>Field</strong></th>
+									<th width="2%">
+									<th class="table_header_left"><strong>Value</strong></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="table_list_item_right"><em>user</em></td>
+									<td width="2%">
+									<td class="table_contents_left"><strong>skfsdbuser</strong></td>
+								</tr>
+								<tr>
+									<td class="table_list_item_right"><em>port</em></td>
+									<td width="2%">
+									<td class="table_contents_left"><strong>3306</strong></td>
+								</tr>
+								<tr>
+									<td class="table_list_item_right"><em>password</em></td>
+									<td width="2%">
+									<td class="table_contents_left"><strong>AbracaDabra</strong></td>
+								</tr>
+								<tr>
+									<td class="table_list_item_right"><em>ServerName</em></td>
+									<td width="2%">
+									<td class="table_contents_left"><strong>localhost</strong></td>
+								</tr>
+								<tr>
+									<td class="table_list_item_right"><em>DatabaseName</em></td>
+									<td width="2%">
+									<td class="table_contents_left"><strong>skfs</strong></td>
+								</tr>
+							</tbody>
+						</table>
+					</p>
+				</li>
+				<li>
+					<p>Click <strong>Finish</strong>. This will create the connection pool; but to test the connection, click <strong>ping</strong> and it should respond, “Ping succeeded”:</p>
+					<p class="box_blue_outline"><strong>NOTE:</strong> If the ping has failed, please verify you copied the JDBC driver <em>.JAR</em> file into the Payara <em>/lib</em> directory.</p>
+					<p><code>cp /usr/local/strongkey/jade/lib/mariadb-java-client-2.2.2.jar /usr/local/strongkey/payara41/glassfish/lib</code></p>
+				</li>
+				<li><p>Now, we need to create a JDBC resource that uses the connection pool we just created above.</p></li>
+				<li><p>On the left, expand <strong>Resources -> JDBC -> JDBC Resources</strong>.</p></li>
+				<li>
+					<p>Click <strong>New</strong> and enter the <strong>JDBC resource information</strong> as shown here.<br>
+					<em>JNDI Name</em> = <strong>jdbc/skfs</strong><br>
+					<em>Pool Name</em> = <strong>SKFSPool</strong></p>
+				</li>
+				<li><p>Click <strong>Ok</strong> to create the JDBC resource.</p></li>
+			</ol>
+			
+		<h2 id="—restart-payara-server">Restart Payara Server</h2>
+			<ol>
+				<li><p>To get all the configuration changes into efffect, the <strong>Payara server must be restarted</strong>.</p></li>
+				<li>
+					<p>On the <strong>terminal window</strong>, type the command below and press <strong>Enter</strong>.<br>
+					<code>/usr/local/strongkey/payara41/glassfish/bin/asadmin restart-domain</code></p>
+				</li>
+				<li>
+					<p>In case the server must be stopped or started for some reason, please use the commands below:<br>
+					<code>/usr/local/strongkey/payara41/glassfish/bin/asadmin stop-domain /usr/local/strongkey/payara41/glassfish/bin/asadmin start-domain</code></p>
+				</li>
+			</ol>
+			
+			<p>Payara 4.1 is now installed, configured, and started.</p>
+			
+			<hr>
+			
+		<h1 id="—deploy-skfs-on-payara">Deploy StrongKey FIDO Server on Payara</h1>
+		
+			<p>The StrongKey FIDO Server is ready to be deployed.
+				<ol>
+					<li><p>Open a <strong>terminal window</strong>.</p></li>
+					<li>
+						<p><strong>Deploy</strong> <em>skfs.ear</em> on Payara using the <em>asadmin</em> deploy command:<br>
+						<code>asadmin deploy /usr/local/strongkey/skfs.ear</code></p>
+						<p class="box_blue_outline"><strong>NOTE:</strong> If the deployment fails, verify the GLASSFISH_HOME is configured and check the server logs for errors:<br> <em>/usr/local/strongkey/payara41/glassfish/domains/domain1/logs/server.log</em></p>
+					</li>
+					<li><p><strong>Open a browser</strong> and type the URL:<br><em>https://localhost:8181/api/application.wadl</em><br>The StrongKey FIDO Server application WADL displays.</p></li>
+				</ol>
+			</p>
+			<p>This finishes deploying StrongKey FIDO Server. The software is now ready to be tested.</p>
+			
+			<hr>
+		
+		<h1 id="—test-skfs-using-the-sample-client-program">Test StrongKey FIDO Server</h1>
+			PLACEHOLDER CHAPTER	
+			<hr id="__N_legal_stuff">
+			
+			<div class="break print-only"></div>
+	
+			<p class="like_h1 screen-only" id="closing_title"></p>
+						
+			<object data="../includes/Back_Matter.htm" width="100%" height="100%"></object>
+			
+		</div>
+	</div>
+</body>
+</html>

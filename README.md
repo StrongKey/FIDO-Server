@@ -12,7 +12,7 @@ The following links provide some background on FIDO, the Fido Alliance, and WebA
 
 
 ## Getting Started
-Begin by downloading the installation package [here](link) and placing it in the /foo directory. From there, execute the following steps:
+Begin by downloading the installation package [here](https://github.com/StrongKey/FIDO-Server/tree/v2_api/fidoserver/fidoserverInstall/src) and saving it. From there, execute the following steps:
 1. Open a terminal and login as *root*.
 2. Type the following at the prompt:
     ``Code here``

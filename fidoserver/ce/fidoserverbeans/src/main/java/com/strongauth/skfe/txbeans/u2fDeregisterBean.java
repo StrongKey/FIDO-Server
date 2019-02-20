@@ -71,7 +71,7 @@ public class u2fDeregisterBean implements u2fDeregisterBeanLocal, u2fDeregisterB
      */
     @EJB getFidoKeysLocal         getkeybean;
     @EJB deleteFidoKeysLocal      deletekeybean;
-    @EJB updateFidoUserBeanLocal         updateldapbean;
+    @EJB updateFidoUserBeanLocal  updateldapbean;
     
     /*************************************************************************
                                                  888             
@@ -94,9 +94,7 @@ public class u2fDeregisterBean implements u2fDeregisterBeanLocal, u2fDeregisterB
      * ldap attribute of the user called 'FIDOKeysEnabled' is set to 'no'.
      * 
      * @param did       - FIDO domain id
-     * @param protocol  - U2F protocol version to comply with.
-     * @param username  - username
-     * @param randomid  - random id that is unique to one fido registered authenticator
+     * @param keyid  - random id that is unique to one fido registered authenticator
      *                      for the user.
      * @return          - returns SKCEReturnObject in both error and success cases.
      *                  In error case, an error key and error msg would be populated
@@ -104,172 +102,135 @@ public class u2fDeregisterBean implements u2fDeregisterBeanLocal, u2fDeregisterB
      *                  successful would be populated.
      */
     @Override
-    public SKCEReturnObject execute(String did, 
-                                    String protocol,
-                                    String username, 
-                                    String randomid) {
+    public SKCEReturnObject execute(Long did, 
+                                    String keyid) {
         
         //  Log the entry and inputs
         skfeLogger.entering(skfeConstants.SKFE_LOGGER,classname, "execute"); 
         skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", skfeCommon.getMessageProperty("FIDO-MSG-5001"), 
                         " EJB name=" + classname + 
                         " did=" + did + 
-                        " protocol=" + protocol + 
-                        " username=" + username +
-                        " randomid=" + randomid);
+                        " keyid=" + keyid);
         
         SKCEReturnObject rv = new SKCEReturnObject();
         
         //  input checks
-                if (did == null || Long.parseLong(did) < 1) {
+        if (did == null || did < 1) {
             rv.setErrorkey("FIDO-ERR-0002");
             rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " did=" + did);
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " did=" + did);
             skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
             return rv;
         }
-        if (username == null || username.isEmpty() ) {
+        
+        if (keyid == null || keyid.isEmpty() ) {
             rv.setErrorkey("FIDO-ERR-0002");
-            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username=" + username);
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " username=" + username);
+            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " keyid=" + keyid);
+            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " keyid=" + keyid);
             skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
             return rv;
         }
         
-        if (username.trim().length() > Integer.parseInt(applianceCommon.getApplianceConfigurationProperty("appliance.cfg.maxlen.256charstring"))) {
-            rv.setErrorkey("FIDO-ERR-0027");
-            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0027") + " username should be limited to 256 characters");
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0027", " username should be limited to 256 characters");
-            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-            return rv;
-        }
-        
-        if (randomid == null || randomid.isEmpty() ) {
-            rv.setErrorkey("FIDO-ERR-0002");
-            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " randomid=" + randomid);
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " randomid=" + randomid);
-            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-            return rv;
-        }
-        
-        if (protocol == null || protocol.isEmpty() ) {
-            rv.setErrorkey("FIDO-ERR-0002");
-            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " protocol=" + protocol);
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " protocol=" + protocol);
-            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-            return rv;
-        }
-        
-        if (!protocol.equalsIgnoreCase(skfeConstants.FIDO_PROTOCOL_VERSION_U2F_V2) && !protocol.equalsIgnoreCase(skfeConstants.FIDO_PROTOCOL_VERSION_2_0)) {
-            rv.setErrorkey("FIDO-ERR-5002");
-            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-5002") + " protocol version passed =" + protocol);
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-5002", " protocol version passed =" + protocol);
-            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-            return rv;
-        }
-        
+        Short sid_to_be_deleted = null;
+        String did_to_be_deactivated = null;
+        int userfkidhyphen;
+        String fidouser;
+        Long fkid_to_be_deleted = null;
+        try {
+            String[] mapvaluesplit = keyid.split("-", 3);
+            sid_to_be_deleted = Short.parseShort(mapvaluesplit[0]);
+            did_to_be_deactivated = mapvaluesplit[1];
+            userfkidhyphen = mapvaluesplit[2].lastIndexOf("-");
 
-            Short sid_to_be_deleted = null;
-            String did_to_be_deactivated = null;
-            int userfkidhyphen;
-            String fidouser;
-            Long fkid_to_be_deleted = null;
-            try {
-                String[] mapvaluesplit = randomid.split("-", 3);
-                sid_to_be_deleted = Short.parseShort(mapvaluesplit[0]);
-                did = mapvaluesplit[1];
-                userfkidhyphen = mapvaluesplit[2].lastIndexOf("-");
-
-                fidouser = mapvaluesplit[2].substring(0, userfkidhyphen);
-                fkid_to_be_deleted = Long.parseLong(mapvaluesplit[2].substring(userfkidhyphen + 1));
-            } catch (Exception ex) {
-                rv.setErrorkey("FIDO-ERR-0023");
-                rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0023") + "Invalid randomid= " + randomid);
-                skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0023"), "Invalid randomid= " + randomid);
-                skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-                return rv;
-            }
-            
-            String current_pk = sid_to_be_deleted + "-" + did + "-" + username + "-" + fkid_to_be_deleted;
-            if(!randomid.equalsIgnoreCase(current_pk)){
-                //user is not authorized to deactivate this key
-                //  throw an error and return.
-                rv.setErrorkey("FIDO-ERR-0035");
-                rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0035") + " username= " + username );
-                skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0035"), " username= " + username );
-                skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-                return rv;
-            }
-            if ( fkid_to_be_deleted != null ) {
-                if (fkid_to_be_deleted >= 0) {
+            fidouser = mapvaluesplit[2].substring(0, userfkidhyphen);
+            fkid_to_be_deleted = Long.parseLong(mapvaluesplit[2].substring(userfkidhyphen + 1));
+        } catch (Exception ex) {
+            rv.setErrorkey("FIDO-ERR-0023");
+            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0023") + "Invalid keyid= " + keyid);
+            skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0023"), "Invalid keyid= " + keyid);
+            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
+            return rv;
+        }
+        
+        String current_pk = sid_to_be_deleted + "-" + did + "-" + fidouser + "-" + fkid_to_be_deleted;
+        if(!keyid.equalsIgnoreCase(current_pk)){
+            //user is not authorized to deactivate this key
+            //  throw an error and return.
+            rv.setErrorkey("FIDO-ERR-0035");
+            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0035") + " username= " + fidouser );
+            skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0035"), " username= " + fidouser );
+            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
+            return rv;
+        }
+        if ( fkid_to_be_deleted != null ) {
+            if (fkid_to_be_deleted >= 0) {
+                
+                skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", 
+                        skfeCommon.getMessageProperty("FIDO-MSG-5005"), "");
+                try {
+                    //  if the fkid_to_be_deleted is valid, delete the entry from the database
+                    String jparesult = deletekeybean.execute(sid_to_be_deleted, did, fidouser, fkid_to_be_deleted);
+                    JsonObject jo;
+                    try (JsonReader jr = Json.createReader(new StringReader(jparesult))) {
+                        jo = jr.readObject();
+                    }
                     
-                    skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", 
-                            skfeCommon.getMessageProperty("FIDO-MSG-5005"), "");
-                    try {
-                        //  if the fkid_to_be_deleted is valid, delete the entry from the database
-                        String jparesult = deletekeybean.execute(sid_to_be_deleted, Long.parseLong(did), username, fkid_to_be_deleted);
-                        JsonObject jo;
-                        try (JsonReader jr = Json.createReader(new StringReader(jparesult))) {
-                            jo = jr.readObject();
-                        }
-                        
-                        Boolean status = jo.getBoolean(skfeConstants.JSON_KEY_FIDOJPA_RETURN_STATUS);
-                        if ( !status ) {
-                            //  error deleting user key
-                            //  throw an error and return.
-                            rv.setErrorkey("FIDO-ERR-0023");
-                            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0023") + " username= " + username + "   randomid= " + randomid);
-                            skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0023"), " username= " + username + "   randomid= " + randomid);
-                            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-                            return rv;
-                        } else {
-                            //  Successfully deleted key from the database
-                            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-0028"), "key id = " + fkid_to_be_deleted);
-                        }
-                        
-                        Collection<FidoKeys> keys = getkeybean.getByUsernameStatus(Long.parseLong(did),username, applianceConstants.ACTIVE_STATUS);
-                        if ( keys == null || keys.isEmpty() ) {
-                            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-5006"), "");
-                            //  Update the "FIDOKeysEnabled" attribute of the user to 'false'
-                            //  if the key that was just deleted is the last key registered
-                            //  for the user
-                            try {
-                                String result = updateldapbean.execute(Long.parseLong(did), username, skfeConstants.LDAP_ATTR_KEY_FIDOENABLED, "false", false);
-                                try (JsonReader jr = Json.createReader(new StringReader(result))) {
-                                    jo = jr.readObject();
-                                }
-                                status = jo.getBoolean(skfeConstants.JSON_KEY_FIDOJPA_RETURN_STATUS);
-                                if (status) {
-                                    skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-0029"), "false");
-                                } else {
-                                    skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0024"), "false");
-                                }
-                            } catch (SKFEException ex) {
-                                //  Do we need to return with an error at this point?
-                                //  Just throw an err msg and proceed.
-                                skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0024"), "false");
-                            }
-                        }
-                     } catch (Exception ex) {
+                    Boolean status = jo.getBoolean(skfeConstants.JSON_KEY_FIDOJPA_RETURN_STATUS);
+                    if ( !status ) {
                         //  error deleting user key
                         //  throw an error and return.
                         rv.setErrorkey("FIDO-ERR-0023");
-                        rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0023") + " username= " + username + "   randomid= " + randomid);
-                        skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0023"), " username= " + username + "   randomid= " + randomid);
+                        rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0023") + " username= " + fidouser + "   keyid= " + keyid);
+                        skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0023"), " username= " + fidouser + "   keyid= " + keyid);
                         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
                         return rv;
+                    } else {
+                        //  Successfully deleted key from the database
+                        skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-0028"), "key id = " + fkid_to_be_deleted);
                     }
-                }                
-            } else {
-                //  user key information does not exist or has been timed out (flushed away).
-                //  throw an error and return.
-                rv.setErrorkey("FIDO-ERR-0022");
-                rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0022") + " username= " + username + "   randomid= " + randomid);
-                skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0022"), " username= " + username + "   randomid= " + randomid);
-                skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
-                return rv;
-            }
-//        }
+                    
+                    Collection<FidoKeys> keys = getkeybean.getByUsernameStatus(did, fidouser, applianceConstants.ACTIVE_STATUS);
+                    if ( keys == null || keys.isEmpty() ) {
+                        skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-5006"), "");
+                        //  Update the "FIDOKeysEnabled" attribute of the user to 'false'
+                        //  if the key that was just deleted is the last key registered
+                        //  for the user
+                        try {
+                            String result = updateldapbean.execute(did, fidouser, skfeConstants.LDAP_ATTR_KEY_FIDOENABLED, "false", false);
+                            try (JsonReader jr = Json.createReader(new StringReader(result))) {
+                                jo = jr.readObject();
+                            }
+                            status = jo.getBoolean(skfeConstants.JSON_KEY_FIDOJPA_RETURN_STATUS);
+                            if (status) {
+                                skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-0029"), "false");
+                            } else {
+                                skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0024"), "false");
+                            }
+                        } catch (SKFEException ex) {
+                            //  Do we need to return with an error at this point?
+                            //  Just throw an err msg and proceed.
+                            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0024"), "false");
+                        }
+                    }
+                    } catch (Exception ex) {
+                    //  error deleting user key
+                    //  throw an error and return.
+                    rv.setErrorkey("FIDO-ERR-0023");
+                    rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0023") + " username= " + fidouser + "   keyid= " + keyid);
+                    skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0023"), " username= " + fidouser + "   keyid= " + keyid);
+                    skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
+                    return rv;
+                }
+            }                
+        } else {
+            //  user key information does not exist or has been timed out (flushed away).
+            //  throw an error and return.
+            rv.setErrorkey("FIDO-ERR-0022");
+            rv.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0022") + " username= " + fidouser + "   keyid= " + keyid);
+            skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.SEVERE, classname, "execute", skfeCommon.getMessageProperty("FIDO-ERR-0022"), " username= " + fidouser + "   keyid= " + keyid);
+            skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
+            return rv;
+        }
         
         rv.setReturnval("Successfully de-registered the key");
         
@@ -280,10 +241,7 @@ public class u2fDeregisterBean implements u2fDeregisterBeanLocal, u2fDeregisterB
     }
     
     @Override
-    public SKCEReturnObject remoteExecute(String did, 
-                                    String protocol,
-                                    String username, 
-                                    String randomid) {
-        return execute(did, protocol, username, randomid);
+    public SKCEReturnObject remoteExecute(Long did, String keyid) {
+        return execute(did, keyid);
     }
 }

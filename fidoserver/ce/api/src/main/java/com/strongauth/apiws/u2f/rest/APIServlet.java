@@ -302,68 +302,20 @@ public class APIServlet {
      * cryptographic work involved in de-registration 3. 'Error' : String, with
      * error message incase something went wrong. Will be empty if successful.
      */
-//    @DELETE
-//    @Path("/{id}")
-//    @Consumes({"application/x-www-form-urlencoded"})
-//    @Produces({"application/json"})
-//    public Response deregister(@FormParam("svcinfo") String svcinfo,
-//            @FormParam("payload") String payload) {
-//        //  Local variables       
-//        //  Service credentials
-//        String did;
-//        String svcusername;
-//        String svcpassword;
-//        String protocol;
-//        
-//        //  SKCE domain id validation
-//        try {
-//            SKCEServiceInfoType si = basicInputChecks("deregister", svcinfo);
-//            did = Integer.toString(si.getDid());
-//            svcusername = si.getSvcusername();
-//            svcpassword = si.getSvcpassword();
-//            protocol = si.getProtocol();
-//
-////            skfeCommon.inputValidateSKCEDid(did);
-//        } catch (SKCEException ex) {
-//            return skfeCommon.buildDeregisterResponse(null, "", ex.getLocalizedMessage());
-//        }
-//        
-//        //  2. Input checks
-//        if (svcusername == null || svcusername.isEmpty()) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " svcusername");
-//            return skfeCommon.buildDeregisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " svcusername");
-//        }
-//        if (svcpassword == null) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " svcpassword");
-//            return skfeCommon.buildDeregisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " svcpassword");
-//        }
-//        //authenticate
-//        boolean isAuthorized;
-//        try {
-//            isAuthorized = authorizebean.execute(Long.parseLong(did), svcusername, svcpassword, skfeConstants.LDAP_ROLE_FIDO);
-//        } catch (SKCEException ex) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0003"), ex.getMessage());
-//            return skfeCommon.buildDeregisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0003") + ex.getMessage());
-//        }
-//        if (!isAuthorized) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0033", "");
-//            return skfeCommon.buildDeregisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0033"));
-//        }
-//        return u2fHelperBean.deregister(did, protocol, payload);
-//    }
+    @DELETE
+    @Path("/{id}")
+    @Consumes({"application/x-www-form-urlencoded"})
+    @Produces({"application/json"})
+    public Response deregister(@PathParam("did") Long did,
+                               @PathParam("keyid") String keyid) {
 
-    /*
-     ************************************************************************
-     *                        888    d8b                   888             
-     *                        888    Y8P                   888             
-     *                        888                          888             
-     *       8888b.   .d8888b 888888 888 888  888  8888b.  888888  .d88b.  
-     *          "88b d88P"    888    888 888  888     "88b 888    d8P  Y8b 
-     *      .d888888 888      888    888 Y88  88P .d888888 888    88888888 
-     *      888  888 Y88b.    Y88b.  888  Y8bd8P  888  888 Y88b.  Y8b.     
-     *      "Y888888  "Y8888P  "Y888 888   Y88P   "Y888888  "Y888  "Y8888 
-     ************************************************************************
-     */
+        if (!authRest.execute(did, request, null)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        return u2fHelperBean.deregister(did, keyid);
+    }
+
     /**
      * The process of activating an already registerd but de-activated fido
      * authenticator. This process will turn the status of the key in the
@@ -467,10 +419,6 @@ public class APIServlet {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
-        try {
-            return u2fHelperBean.getkeysinfo(did, username);
-        } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("SKCE-ERR-1031: Request failed: " + ex.getLocalizedMessage()).build();
-        }
+        return u2fHelperBean.getkeysinfo(did, username);
     }
 }

@@ -102,28 +102,6 @@ public class applianceCommon {
 
     private static String localhost;
 
-    //locks
-    /**
-     * Lock for synchronizing the creation of symmetric keys
-     */
-    private static final Lock enclock = new ReentrantLock(true);
-    private static final Lock hmaclock = new ReentrantLock(true);
-    private static final Lock pwdlock = new ReentrantLock(true);
-    private static final Lock bblock = new ReentrantLock(true);
-
-    /**
-     * Lock for changing the state of replication
-     */
-    private static final Lock publock = new ReentrantLock(true);
-    private static final Lock sublock = new ReentrantLock(true);
-    private static final Lock acklock = new ReentrantLock(true);
-    private static final Lock blplock = new ReentrantLock(true);
-
-    private static final Long SYMKEY_LOCK_WAITTIME;
-    private static final Long REP_STATE_LOCK_WAITTIME;
-    private static final Long CHM_LOCK_WAITTIME;
-
-
     /*
 *****************************************
 d8b          d8b 888
@@ -138,10 +116,6 @@ Y8P          Y8P 888
      */
     static {
         setupMaxLenMap();
-
-        SYMKEY_LOCK_WAITTIME = Long.parseLong(getApplianceConfigurationProperty("appliance.cfg.property.symmmetrickeylock.waittime"));
-        REP_STATE_LOCK_WAITTIME = Long.parseLong(getApplianceConfigurationProperty("appliance.cfg.property.messaging.statechange.waittime"));
-        CHM_LOCK_WAITTIME = Long.parseLong(getApplianceConfigurationProperty("appliance.cfg.property.cryptomodule.lock.waittime"));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -443,73 +417,6 @@ Y8P          Y8P 888
         }
         strongkeyLogger.log(logger, Level.FINE, "Writing to file; returning the file path..", "");
         return fileFullPath;
-    }
-
-    /**
-     * Convenience method to get a lock for an operation
-     *
-     * @param locktype
-     * @return boolean - Returns true if the lock was acquired, false otherwise
-     *
-     * Bug ID 264 - When attempting to get a lock, threads rely on luck to
-     * determine the order in which locks are obtained. This creates situations
-     * where a particularly unlucky thread continuously fails to get a lock
-     * until it runs out of attempts.
-     *
-     * We have reworked the locking mechanism to ensure threads obtain locks in
-     * FIFO order. This introduces fairness to the lock and ensures no thread
-     * has to wait longer than need be.
-     */
-    public static boolean getLock(String locktype) {
-        try {
-            if (locktype.equalsIgnoreCase("PUB")) {
-                return publock.tryLock(REP_STATE_LOCK_WAITTIME, TimeUnit.SECONDS);
-            } else if (locktype.equalsIgnoreCase("SUB")) {
-                return sublock.tryLock(REP_STATE_LOCK_WAITTIME, TimeUnit.SECONDS);
-            } else if (locktype.equalsIgnoreCase("ACK")) {
-                return acklock.tryLock(REP_STATE_LOCK_WAITTIME, TimeUnit.SECONDS);
-            } else if (locktype.equalsIgnoreCase("BLP")) {
-                return blplock.tryLock(REP_STATE_LOCK_WAITTIME, TimeUnit.SECONDS);
-            } else if (locktype.equalsIgnoreCase("ENC")) {
-                return enclock.tryLock(SYMKEY_LOCK_WAITTIME, TimeUnit.SECONDS);
-            } else if (locktype.equalsIgnoreCase("HMAC")) {
-                return hmaclock.tryLock(SYMKEY_LOCK_WAITTIME, TimeUnit.SECONDS);
-            } else if (locktype.equalsIgnoreCase("PWD")) {
-                return pwdlock.tryLock(SYMKEY_LOCK_WAITTIME, TimeUnit.SECONDS);
-            } else if (locktype.equalsIgnoreCase("BB")) {
-                return bblock.tryLock(CHM_LOCK_WAITTIME, TimeUnit.SECONDS);
-            } else {
-                return false;
-            }
-        } catch (InterruptedException ex) {
-            strongkeyLogger.logp(applianceConstants.APPLIANCE_LOGGER, Level.SEVERE, classname, "getLock", "APPL-ERR-1096", locktype);
-            return false;
-        }
-    }
-
-    /**
-     * Convenience method to release a lock after completing the operation
-     *
-     * @param locktype
-     */
-    public static void releaseLock(String locktype) {
-        if (locktype.equalsIgnoreCase("ENC")) {
-            enclock.unlock();
-        } else if (locktype.equalsIgnoreCase("HMAC")) {
-            hmaclock.unlock();
-        } else if (locktype.equalsIgnoreCase("PWD")) {
-            pwdlock.unlock();
-        } else if (locktype.equalsIgnoreCase("BB")) {
-            bblock.unlock();
-        } else if (locktype.equalsIgnoreCase("PUB")) {
-            publock.unlock();
-        } else if (locktype.equalsIgnoreCase("SUB")) {
-            sublock.unlock();
-        } else if (locktype.equalsIgnoreCase("ACK")) {
-            acklock.unlock();
-        } else if (locktype.equalsIgnoreCase("BLP")) {
-            blplock.unlock();
-        }
     }
 
     /**

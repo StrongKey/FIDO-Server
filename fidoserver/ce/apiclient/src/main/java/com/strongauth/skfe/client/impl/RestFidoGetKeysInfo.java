@@ -34,7 +34,6 @@ package com.strongauth.skfe.client.impl;
 
 import com.strongauth.skceclient.common.Constants;
 import com.strongauth.skceclient.common.common;
-import com.strongauth.skfe.client.interfaces.FIDOClientGetKeysInfo;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -54,12 +53,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-public class RestFidoU2FGetKeysInfo implements FIDOClientGetKeysInfo {
+public class RestFidoGetKeysInfo {
 
-    @Override
-    public String u2fGetKeysInfo(String REST_URI, 
-                                String fidoprotocol, 
-                                String skcedid, 
+    public static String getKeysInfo(String REST_URI, 
+                                String did, 
                                 String accesskey, 
                                 String secretkey, 
                                 String accountname) 
@@ -71,7 +68,7 @@ public class RestFidoU2FGetKeysInfo implements FIDOClientGetKeysInfo {
             System.out.println("Get user keys information test");
             System.out.println("******************************************");
 
-            String resourceLoc = REST_URI + "/domains/" + skcedid + Constants.GETKEYSINFO_ENDPOINT + "?username=" + accountname;
+            String resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.GETKEYSINFO_ENDPOINT + "?username=" + accountname;
 
             System.out.println("\nCalling getkeysinfo @ " + resourceLoc);
             
@@ -142,11 +139,11 @@ public class RestFidoU2FGetKeysInfo implements FIDOClientGetKeysInfo {
             System.out.println("******************************************");
             
         } catch (MalformedURLException ex) {
-            Logger.getLogger(RestFidoU2FGetKeysInfo.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RestFidoGetKeysInfo.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ProtocolException ex) {
-            Logger.getLogger(RestFidoU2FGetKeysInfo.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RestFidoGetKeysInfo.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(RestFidoU2FGetKeysInfo.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RestFidoGetKeysInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("GetKeys response : " + gkresponse);
         return gkresponse;

@@ -182,7 +182,7 @@ public class updateFidoKeysStatus implements updateFidoKeysStatusLocal, updateFi
             errmsg = skfeCommon.getMessageProperty("FIDOJPA-ERR-1003") + " MODIFY LOCATION";
             retObj = Json.createObjectBuilder().add("status", outputstatus).add("message", errmsg).build();
             return retObj.toString();
-        } else if (modify_location.trim().length() > applianceCommon.getMaxLenProperty("appliance.cfg.maxlen.256charstring")) {
+        } else if (modify_location.trim().length() > 255) {
             outputstatus = false;
             skfeLogger.logp(skfeConstants.SKFE_LOGGER, Level.SEVERE, classname, "execute", "FIDOJPA-ERR-1002", "MODIFY LOCATION");
             errmsg = skfeCommon.getMessageProperty("FIDOJPA-ERR-1002") + " MODIFY LOCATION";

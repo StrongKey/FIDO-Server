@@ -50,8 +50,6 @@ public interface u2fDeregisterBeanRemote {
      * ldap attribute of the user called 'FIDOKeysEnabled' is set to 'no'.
      * 
      * @param did       - FIDO domain id
-     * @param protocol  - U2F protocol version to comply with.
-     * @param username  - username
      * @param randomid  - random id that is unique to one fido registered authenticator
      *                      for the user.
      * @return          - returns SKCEReturnObject in both error and success cases.
@@ -59,8 +57,6 @@ public interface u2fDeregisterBeanRemote {
      *                  In success case, a simple msg saying that the process was
      *                  successful would be populated.
      */
-    public SKCEReturnObject remoteExecute(String did, 
-                                    String protocol,
-                                    String username, 
-                                    String randomid);
+    public SKCEReturnObject remoteExecute(Long did, 
+                                          String randomid);
 }

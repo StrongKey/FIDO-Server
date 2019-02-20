@@ -35,36 +35,25 @@ package com.strongauth.skceclient.common;
 public class Constants {
 
     //Operation names - for the web service
-    public static final String REST_SUFFIX = "/api";
+    public static final String REST_SUFFIX = "/api/domains/";
     public static final String PRE_REGISTER_ENDPOINT = "/fidokeys/challenge";
     public static final String REGISTER_ENDPOINT = "/fidokeys";
     public static final String PRE_AUTH_ENDPOINT = "/fidokeys/authorize/challenge";
-    public static final String PRE_AUTHZ_ENDPOINT = "/fidokeys/authenticate";
-    public static final String AUTHENTICATE_ENDPOINT = "/fidokeys/authenticate";
     public static final String AUTHORIZE_ENDPOINT = "/fidokeys/authorize";
     public static final String GETKEYSINFO_ENDPOINT = "/fidokeys";
+    public static final String UPDATE_ENDPOINT = "/fidokeys";
     public static final String DEACTIVATE_ENDPOINT = "/fidokeys";
-    public static final String ACTIVATE_ENDPOINT = "/fidokeys";
-    public static final String DEREGISTER_ENDPOINT = "/fidokeys";
-
-    public static final String PROTOCOL_SOAP = "SOAP";
-    public static final String PROTOCOL_REST = "REST";
-    public static final String PROTOCOL_WEBSOCKET = "WS";
 
     public static final String COMMANDS_REG = "R";
     public static final String COMMANDS_AUTH = "A";
-    public static final String COMMANDS_AUTHZ = "AZ";
     public static final String COMMANDS_GETKEYS = "G";
-    public static final String COMMANDS_DEACT = "DA";
-    public static final String COMMANDS_ACT = "AC";
-    public static final String COMMANDS_DEREG = "DR";
+    public static final String COMMANDS_DEACT = "D";
+    public static final String COMMANDS_UP = "U";
 
     public static final String JSON_KEY_SERVLET_INPUT_USERNAME = "username";
     public static final String JSON_KEY_SERVLET_INPUT_REQUEST = "request";
     public static final String JSON_KEY_SERVLET_INPUT_RESPONSE = "response";
     public static final String JSON_KEY_SERVLET_INPUT_METADATA = "metadata";
-
-    public static final int TIMEOUT_VALUE = 30000;
 
     public static class WebAuthn {
 

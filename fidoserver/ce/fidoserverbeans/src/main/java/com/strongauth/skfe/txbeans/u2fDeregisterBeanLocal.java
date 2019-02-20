@@ -46,7 +46,7 @@ public interface u2fDeregisterBeanLocal {
     
     /**
      * This method is responsible for deleting the user registered key from the 
-     * persistent storage. This method first checks if the given ramdom id is
+     * persistent storage. This method first checks if the given random id is
      * mapped in memory to the specified user and if found yes, gets the registration
      * key id and deletes that entry from the database.
      * 
@@ -54,8 +54,6 @@ public interface u2fDeregisterBeanLocal {
      * ldap attribute of the user called 'FIDOKeysEnabled' is set to 'no'.
      * 
      * @param did       - FIDO domain id
-     * @param protocol  - U2F protocol version to comply with.
-     * @param username  - username
      * @param randomid  - random id that is unique to one fido registered authenticator
      *                      for the user.
      * @return          - returns SKCEReturnObject in both error and success cases.
@@ -63,8 +61,6 @@ public interface u2fDeregisterBeanLocal {
      *                  In success case, a simple msg saying that the process was
      *                  successful would be populated.
      */
-    SKCEReturnObject execute(String did, 
-                            String protocol,
-                            String username, 
-                            String randomid);
+    SKCEReturnObject execute(Long did, 
+                             String randomid);
 }

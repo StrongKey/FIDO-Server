@@ -53,7 +53,7 @@ public interface u2fServletHelperBeanLocal {
 
     Response authorize(Long did, String protocol, String response, String metadata);
 
-    String deregister(String did, String protocol, String payload);
+    Response deregister(Long did, String keyid);
 
     String activate(String did, String protocol, String payload);
 

@@ -1323,11 +1323,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * have to cache these random ids if they wish to de-register keys.
      *
      * @param did - FIDO domain id
-     * @param protocol - U2F protocol version to comply with.
-     * @param payload - A stringified json with deregistration request embedded
-     * into it.
-     *
-     * Example: { "request": { "username": "...", "randomid": "..." } }
+     * @param keyid - Identifier for this key
      *
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Response' : String, with a simple message telling if the process was
@@ -1336,7 +1332,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * error message incase something went wrong. Will be empty if successful.
      */
     @Override
-    public String deregister(String did, String protocol, String payload) {
+    public Response deregister(Long did, String keyid) {
 
         Date in = new Date();
         Date out;
@@ -1345,65 +1341,21 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         //  1. Receive request and print inputs
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0009", "[TXID=" + ID + "]"
                 + "\n did=" + did
-                + "\n payload=" + payload);
+                + "\n keyid=" + keyid);
 
-        //  2. Input checks
-        if (payload == null || payload.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " payload");
-            return skfeCommon.buildDeregisterResponse("", "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0002") + " payload");
-        }
-        if (!skfeCommon.isValidJsonObject(payload)) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0014", " Invalid json");
-            return skfeCommon.buildDeregisterResponse("", "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0014") + " Invalid json");
-        }
-
-        if (protocol == null || protocol.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " protocol");
-            return skfeCommon.buildDeregisterResponse("", "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0002") + " protocol");
-        }
-        if (!skfeCommon.isFIDOProtocolSupported(protocol)) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-5002", protocol);
-            return skfeCommon.buildDeregisterResponse("", "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-5002") + protocol);
-        }
-
-        //  3. fetch the deregistrationrequest
-        JsonObject request = (JsonObject) applianceCommon.getJsonValue(payload,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_REQUEST,
-                "JsonObject");
-        if (request == null || request.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0021", "");
-            return skfeCommon.buildDeregisterResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-0021"));
-        }
-
-        String deregistrationrequest = request.toString();
-
-        //  4. fetch uername and randomid from request.
-        String username = (String) applianceCommon.getJsonValue(
-                deregistrationrequest, skfeConstants.FIDO_JSON_KEY_USERNAME, "String");
-        if (username == null || username.trim().isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0020", " Missing 'username'");
-            return skfeCommon.buildDeregisterResponse("", "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0020") + " Missing 'username'");
-        }
-
-        String randomid = (String) applianceCommon.getJsonValue(
-                deregistrationrequest, skfeConstants.FIDO_JSON_KEY_RANDOMID, "String");
-        if (randomid == null || randomid.trim().isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0020", " Missing 'randomid'");
-            return skfeCommon.buildDeregisterResponse("", "",
-                    skfeCommon.getMessageProperty("FIDO-ERR-0020") + " Missing 'randomid'");
+        if (keyid == null || keyid.trim().isEmpty()) {
+            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0020", " Missing 'keyid'");
+            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildDeregisterResponse("", "",
+                    skfeCommon.getMessageProperty("FIDO-ERR-0020") + " Missing 'keyid'")).build();
         }
 
         //  5. handover the job to an ejb
         String responseJSON;
-        SKCEReturnObject skcero = u2fderegbean.execute(did, protocol, username, randomid);
+        SKCEReturnObject skcero = u2fderegbean.execute(did, keyid);
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, "FIDO-MSG-0046", skcero);
         if (skcero.getErrorkey() != null) {
             responseJSON = skfeCommon.buildDeregisterResponse("", "", skcero.getErrormsg());
+            return Response.status(Response.Status.BAD_REQUEST).entity(responseJSON).build();
         } else {
             // Build the output
             String response = "Successfully deleted user registered security key";
@@ -1415,7 +1367,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         long rt = out.getTime() - in.getTime();
         //  6. Print output and Return
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, "FIDO-MSG-0010", "[TXID=" + ID + ", START=" + in.getTime() + ", FINISH=" + out.getTime() + ", TTC=" + rt + "]" + "\nResponse" + responseJSON);
-        return responseJSON;
+        return Response.ok().entity(responseJSON).build();
     }
 
     /*

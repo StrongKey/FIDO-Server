@@ -12,7 +12,7 @@ The following links provide some background on FIDO, the Fido Alliance, and WebA
 
 
 ## Installation
-Download the installation package [here](https://github.com/StrongKey/FIDO-Server/tree/v2_api/fidoserver/fidoserverInstall/src) and saving it.
+Download the installation package [here](https://github.com/StrongKey/FIDO-Server/tree/v2_api/fidoserver/fidoserverInstall/src) and save it.
 
 For a quick, scripted, default installation, follow [the scripted instructions](https://github.com/StrongKey/FIDO-Server/blob/master/docs/StrongKey_FIDO_Server_Installation_Guide_Linux_Scripted.md).
 
@@ -38,4 +38,4 @@ If you would like to contribute to the FIDO2 Community Edition Server project, p
 ## Licensing
 This project is currently licensed under the [GNU Lesser General Public License v2.1](https://github.com/StrongKey/FIDO-Server/blob/master/LICENSE).
 
-Bouncy Castle Federal Information Processing Standards (BC FIPS) is included with permission from the Legion of the Bouncy Castle Inc. Source and other details for the module, as well as any updates, are available from the Legion's website at https://www.bouncycastle.org/fips-java 
+Bouncy Castle Federal Information Processing Standards (BC FIPS) is included with permission from the Legion of the Bouncy Castle, Inc. Source and other details for the module, as well as any updates, are available from the Legion's website at https://www.bouncycastle.org/fips-java.

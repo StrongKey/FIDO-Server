@@ -188,24 +188,14 @@ public class APIServlet {
     }
 
     /**
-     * The process of activating an already registerd but de-activated fido
+     * The process of activating an already registered but de-activated fido
      * authenticator. This process will turn the status of the key in the
      * database back to ACTIVE. The inputs needed are the name of the user and
      * the random id to point to a unique registered key for that user. This
      * random id can be obtained by calling getkeysinfo method.
      *
-     * @param svcinfo - Object that carries SKCE service information.
-     * Information bundled is :
-     * 
-     * (1) did - Unique identifier for a SKCE encryption domain (2) svcusername
-     * - SKCE service credentials : username requesting the service. The service
-     * credentials are looked up in the 'service' setup of authentication system
-     * based on LDAP / AD. The user should be authorized to encrypt. (3)
-     * svcpassword - SKCE service credentials : password of the service username
-     * specified above (4) protocol - U2F protocol version to comply with.
-     * 
-     * @param payload - U2F activation parameters in Json form. Should contain
-     * username and randomid.
+     * @param did - Long value of the domain to service this request
+     * @param kid - String value of the key to deregister
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Response' : String, with a simple message telling if the process was
      * successful or not. 2. 'Message' : Empty string since there is no
@@ -216,7 +206,7 @@ public class APIServlet {
     @Path("/{id}")
     @Consumes({"application/merge-patch+json"})
     @Produces({"application/json"})
-    public Response status(String requestbody,
+    public Response patchkey(String requestbody,
                            @PathParam("did") Long did,
                            @PathParam("kid") String kid) {
 

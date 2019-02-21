@@ -55,7 +55,7 @@ import org.apache.http.util.EntityUtils;
 
 public class RestFidoGetKeysInfo {
 
-    public static String getKeysInfo(String REST_URI, 
+    public static void getKeysInfo(String REST_URI, 
                                 String did, 
                                 String accesskey, 
                                 String secretkey, 
@@ -103,15 +103,15 @@ public class RestFidoGetKeysInfo {
                         break;
                     case 401:
                         System.out.println("Error during getkeysinfo : 401 HMAC Authentication Failed");
-                        return null;
+                        return;
                     case 404:
                         System.out.println("Error during getkeysinfo : 404 Resource not found");
-                        return null;
+                        return;
                     case 400:
                     case 500:
                     default:
                         System.out.println("Error during getkeysinfo : " + responseStatusLine.getStatusCode() + " " + result);
-                        return null;
+                        return;
                 }
 
             } finally {
@@ -127,12 +127,6 @@ public class RestFidoGetKeysInfo {
 
             //  Check to see if there is any
             try {
-                String error = responseJSON.getString("Error");
-                if (error != null && !error.equalsIgnoreCase("")) {
-                    System.out.println("*******************************");
-                    return " Error during getkeysinfo : " + error;
-                }
-
                 gkresponse = responseJSON.getJsonObject("Response").toString();
             } catch (Exception ex) {
                 //  continue since there is no error
@@ -149,6 +143,5 @@ public class RestFidoGetKeysInfo {
             Logger.getLogger(RestFidoGetKeysInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("GetKeys response : " + gkresponse);
-        return gkresponse;
     }
 }

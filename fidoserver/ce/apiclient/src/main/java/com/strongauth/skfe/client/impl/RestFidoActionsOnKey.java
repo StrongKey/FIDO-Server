@@ -32,8 +32,11 @@
  */
 package com.strongauth.skfe.client.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.strongauth.skceclient.common.Constants;
 import com.strongauth.skceclient.common.common;
+import com.strongauth.skfe.requests.PatchFidoKeyRequest;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,6 +45,8 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -63,14 +68,14 @@ public class RestFidoActionsOnKey {
         String resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.DEACTIVATE_ENDPOINT + "/" + keyid;
         System.out.println("\nCalling deactivate @ " + resourceLoc);
             
-        String contentMD5 = "";
+        String contentSHA = "";
         String contentType = "";
         String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpDelete httpDelete = new HttpDelete(resourceLoc);
         String requestToHmac = httpDelete.getMethod() + "\n"
-                + contentMD5 + "\n"
+                + contentSHA + "\n"
                 + contentType + "\n"
                 + currentDate + "\n"
                 + version + "\n"
@@ -114,12 +119,12 @@ public class RestFidoActionsOnKey {
         System.out.println("******************************************");
     }
 
-    public static void update(String REST_URI, 
+    public static void patch(String REST_URI, 
                             String did, 
                             String accesskey, 
                             String secretkey, 
                             String keyid,
-                            String status) throws IOException 
+                            String status) throws Exception 
     {
         System.out.println("Update key test");
         System.out.println("******************************************");
@@ -130,21 +135,32 @@ public class RestFidoActionsOnKey {
         String resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.UPDATE_ENDPOINT + "/" + keyid;
         System.out.println("\nCalling update @ " + resourceLoc);
 
-        String contentMD5 = "";
-        String contentType = "";
+        PatchFidoKeyRequest patch = new PatchFidoKeyRequest();
+        patch.setStatus(status);
+        patch.setModify_location("Sunnyvale, CA");
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(patch);
+
+        ContentType mimetype = ContentType.create("application/merge-patch+json");
+        StringEntity body = new StringEntity(json, mimetype);
+
         String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
+        String contentSHA = common.calculateSha256(json);
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPatch httpPatch = new HttpPatch(resourceLoc);
+        httpPatch.setEntity(body);
         String requestToHmac = httpPatch.getMethod() + "\n"
-                + contentMD5 + "\n"
-                + contentType + "\n"
+                + contentSHA + "\n"
+                + mimetype.getMimeType() + "\n"
                 + currentDate + "\n"
                 + version + "\n"
                 + httpPatch.getURI().getPath();
 
         String hmac = common.calculateHMAC(secretkey, requestToHmac);
         httpPatch.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
+        httpPatch.addHeader("strongkey-content-sha256", contentSHA);
+        httpPatch.addHeader("Content-Type", mimetype.getMimeType());
         httpPatch.addHeader("Date", currentDate);
         httpPatch.addHeader("strongkey-api-version", version);
         CloseableHttpResponse response = httpclient.execute(httpPatch);

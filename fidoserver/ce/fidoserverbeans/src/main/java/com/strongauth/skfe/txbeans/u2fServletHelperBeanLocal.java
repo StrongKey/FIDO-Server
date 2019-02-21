@@ -35,6 +35,7 @@
 package com.strongauth.skfe.txbeans;
 
 import com.strongauth.skfe.requests.AuthenticationRequest;
+import com.strongauth.skfe.requests.PatchFidoKeyRequest;
 import com.strongauth.skfe.requests.PreauthenticationRequest;
 import com.strongauth.skfe.requests.PreregistrationRequest;
 import com.strongauth.skfe.requests.RegistrationRequest;
@@ -55,7 +56,7 @@ public interface u2fServletHelperBeanLocal {
 
     Response deregister(Long did, String keyid);
 
-    Response patchFidoKey(Long did, String keyid, String fidokey);
+    Response patchfidokey(Long did, String keyid, PatchFidoKeyRequest fidokey);
 
     Response getkeysinfo(Long did, String username);
 }

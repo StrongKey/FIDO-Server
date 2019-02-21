@@ -10,33 +10,25 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
-public class RegistrationRequest {
+public class PatchFidoKeyRequest {
 
-    private String protocol;
-    private String response;
-    private String metadata;
+    private String status;
+    private String modify_location;
 
-    public String getProtocol() {
-        return protocol;
+    public String getStatus() {
+        return status;
     }
 
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getResponse() {
-        return response;
+    public String getModify_location() {
+        return modify_location;
     }
 
-    public void setResponse(String response) {
-        this.response = response;
+    public void setModify_location(String modify_location) {
+        this.modify_location = modify_location;
     }
 
-    public String getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
-    }
 }

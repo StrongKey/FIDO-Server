@@ -38,8 +38,7 @@
  */
 package com.strongauth.skfe.txbeans;
 
-import com.strongauth.appliance.utilities.applianceCommon;
-import com.strongauth.appliance.utilities.applianceConstants;
+import com.strongauth.skfe.requests.PatchFidoKeyRequest;
 import com.strongauth.skfe.utilities.skfeLogger;
 import com.strongauth.skfe.utilities.skfeCommon;
 import com.strongauth.skfe.utilities.skfeConstants;
@@ -51,7 +50,6 @@ import javax.ejb.Stateless;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.ws.rs.core.Response;
 
 /**
  * This EJB is responsible for executing the activation process of a specific
@@ -99,7 +97,7 @@ public class u2fActivateBean implements u2fActivateBeanLocal {
     @Override
     public SKCEReturnObject execute(Long did,
             String keyid,
-            String fidokey) {
+            PatchFidoKeyRequest fidokey) {
 
         //  Log the entry and inputs
         skfeLogger.entering(skfeConstants.SKFE_LOGGER, classname, "execute");
@@ -119,13 +117,6 @@ public class u2fActivateBean implements u2fActivateBeanLocal {
             skfeLogger.exiting(skfeConstants.SKFE_LOGGER, classname, "execute");
             return skcero;
         }
-        if (fidokey == null || fidokey.isEmpty()) {
-            skcero.setErrorkey("FIDO-ERR-0002");
-            skcero.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " fidokey=" + fidokey);
-            skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0002", " fidokey=" + fidokey);
-            skfeLogger.exiting(skfeConstants.SKFE_LOGGER, classname, "execute");
-            return skcero;
-        }
 
         if (keyid == null || keyid.isEmpty()) {
             skcero.setErrorkey("FIDO-ERR-0002");
@@ -136,8 +127,7 @@ public class u2fActivateBean implements u2fActivateBeanLocal {
         }
 
         //  3. fetch status and metadata fields from payload
-        String status = (String) applianceCommon.getJsonValue(fidokey,
-              "status", "String");
+        String status = fidokey.getStatus();
         if (status == null || status.isEmpty()) {
             skcero.setErrorkey("FIDO-ERR-0002");
             skcero.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " status=" + status);
@@ -146,8 +136,7 @@ public class u2fActivateBean implements u2fActivateBeanLocal {
             return skcero;
         }
         
-        String modifyloc = (String) applianceCommon.getJsonValue(fidokey,
-                skfeConstants.JSON_KEY_SERVLET_INPUT_REQUEST, "String");
+        String modifyloc = fidokey.getModify_location();
         if (modifyloc == null || modifyloc.isEmpty()) {
             skcero.setErrorkey("FIDO-ERR-0002");
             skcero.setErrormsg(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " modify_location=" + modifyloc);

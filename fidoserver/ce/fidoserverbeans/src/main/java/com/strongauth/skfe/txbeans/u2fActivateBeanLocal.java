@@ -34,6 +34,7 @@
  */
 package com.strongauth.skfe.txbeans;
 
+import com.strongauth.skfe.requests.PatchFidoKeyRequest;
 import com.strongauth.skfe.utilities.SKCEReturnObject;
 import javax.ejb.Local;
 
@@ -67,5 +68,5 @@ public interface u2fActivateBeanLocal {
      */
     SKCEReturnObject execute(Long did,
                              String keyid,
-                             String fidokey);
+                             PatchFidoKeyRequest fidokey);
 }

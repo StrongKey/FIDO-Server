@@ -8,6 +8,7 @@ package com.strongauth.apiws.u2f.rest;
 
 import com.strongauth.apiws.utility.PATCH;
 import com.strongauth.skfe.requests.AuthenticationRequest;
+import com.strongauth.skfe.requests.PatchFidoKeyRequest;
 import com.strongauth.skfe.requests.PreauthenticationRequest;
 import com.strongauth.skfe.requests.PreregistrationRequest;
 import com.strongauth.skfe.requests.RegistrationRequest;
@@ -18,7 +19,6 @@ import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -194,6 +194,7 @@ public class APIServlet {
      * the random id to point to a unique registered key for that user. This
      * random id can be obtained by calling getkeysinfo method.
      *
+     * @param patchkey - 
      * @param did - Long value of the domain to service this request
      * @param kid - String value of the key to deregister
      * @return - A Json in String format. The Json will have 3 key-value pairs;
@@ -203,17 +204,17 @@ public class APIServlet {
      * message incase something went wrong. Will be empty if successful.
      */
     @PATCH
-    @Path("/{id}")
+    @Path("/{kid}")
     @Consumes({"application/merge-patch+json"})
     @Produces({"application/json"})
-    public Response patchkey(String requestbody,
+    public Response patchkey(PatchFidoKeyRequest patchkey,
                            @PathParam("did") Long did,
                            @PathParam("kid") String kid) {
 
-        if (!authRest.execute(did, request, requestbody)) {
+        if (!authRest.execute(did, request, patchkey)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        return u2fHelperBean.patchFidoKey(did, kid, requestbody);
+        return u2fHelperBean.patchfidokey(did, kid, patchkey);
     }
 
     /**

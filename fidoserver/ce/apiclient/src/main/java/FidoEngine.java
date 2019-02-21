@@ -122,7 +122,7 @@ public class FidoEngine {
                     if (args.length != 7) 
                         System.out.println("Missing arguments...\n" + usage);
 
-                    RestFidoActionsOnKey.update(args[1], args[2], args[3], args[4], args[5], args[6]);
+                    RestFidoActionsOnKey.patch(args[1], args[2], args[3], args[4], args[5], args[6]);
                     System.out.println("\nDone with Update!\n");
                     break;
 

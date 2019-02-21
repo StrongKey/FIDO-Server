@@ -97,6 +97,7 @@ import com.strongauth.skfe.messaging.replicateSKFEObjectBeanLocal;
 import com.strongauth.skfe.policybeans.generateFido2PreauthenticateChallengeLocal;
 import com.strongauth.skfe.policybeans.generateFido2PreregisterChallengeLocal;
 import com.strongauth.skfe.requests.AuthenticationRequest;
+import com.strongauth.skfe.requests.PatchFidoKeyRequest;
 import com.strongauth.skfe.requests.PreauthenticationRequest;
 import com.strongauth.skfe.utilities.FEreturn;
 import com.strongauth.skfe.requests.PreregistrationRequest;
@@ -1130,8 +1131,8 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * activate / de-register keys.
      *
      * @param did - FIDO domain id
-     * @param protocol U2F protocol version to comply with.
-     * @param payload - A stringified json with activate request and metadata
+     * @param keyid U2F protocol version to comply with.
+     * @param fidokey - A stringified json with activate request and metadata
      * embedded into it.
      *
      * Example: { "request": { "username": "...", "randomid": "..." },
@@ -1144,7 +1145,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
      * message incase something went wrong. Will be empty if successful.
      */
     @Override
-    public Response patchFidoKey(Long did, String keyid, String fidokey) {
+    public Response patchfidokey(Long did, String keyid, PatchFidoKeyRequest fidokey) {
 
         Date in = new Date();
         Date out;
@@ -1154,19 +1155,13 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
         skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.INFO, skfeCommon.getMessageProperty("FIDO-MSG-0019"), "[TXID=" + ID + "]"
                 + "\n did=" + did
                 + "\n keyid=" + keyid
-                + "\n fidokey=" + fidokey);
+                + "\n fidokey=" + fidokey.toString());
 
         //  2. Input checks
         if (keyid == null || keyid.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " keyid");
             return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " keyid")).build();
         }
-
-        if (fidokey == null || fidokey.isEmpty()) {
-            skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " protocol");
-            return Response.status(Response.Status.BAD_REQUEST).entity(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " protocol")).build();
-        }
-
 
         //  6. handover job to an ejb
         String responseJSON;
@@ -1177,7 +1172,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
             return Response.status(Response.Status.BAD_REQUEST).entity(responseJSON).build();
         } else {
             // Build the output
-            String response = "Successfully activated user registered security key";
+            String response = "Successfully updated user registered security key";
             responseJSON = skfeCommon.buildReturn(response);
             skfeLogger.log(skfeConstants.SKFE_LOGGER,Level.FINE, "FIDO-MSG-0052", "");
         }

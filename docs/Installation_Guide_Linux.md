@@ -85,7 +85,6 @@ Ensure the logged in account has  _read/write/execute_  privileges on the  _/str
 4.  Copy the following two files from  [here](https://github.com/StrongKey/FIDO-Server/tree/v2_api/fidoserver/fidoserverInstall/src)  into  _/usr/local/strongkey/skfs/keystores_:
     
     -   _signingkeystore.bcfks_
-        
     -   _signingtruststore.bcfks_
         
 ----------
@@ -123,7 +122,7 @@ Edit _/etc/my.cnf_ to add this under mysqd, then restart the database:
 1.  **Login**  to MariaDB as  _root_  via terminal and use the  _mysql_  database. This will open MariaDB access as  _root_.  
     `mysql -u root mysql -p<PASSWORD> mysql>`
     
-2.  **Create a database**  called  _skfs_  and a MariaDB user called  _skfsdbuser_  for the StrongKey FIDO Server application and grant privileges for the user on the new database. This document uses  _AbracaDabra_  as the password for the  _skfsdbuser_.  
+2.  **Create a database** called _skfs_ and a MariaDB user called  _skfsdbuser_  for the StrongKey FIDO Server application and grant privileges for the user on the new database. This document uses  _AbracaDabra_  as the password for the _skfsdbuser_.  
     `mysql> create database skfs; mysql> grant all on skfs.* to skfsdbuser@localhost identified by '<PASSWORD>'; mysql> flush privileges;`
     
 3.  **Log out**  of  _root_  from MariaDB.  

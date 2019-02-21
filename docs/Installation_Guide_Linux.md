@@ -184,9 +184,9 @@ The StrongKey FIDO Server is completely configurable to suit a specific enterpri
     
     `vi /etc/bashrc`
     
-3  **Add this line** at the end of the file:
+3.  **Add this line** at the end of the file:
     
-   `export FIDOSERVER_HOME=/usr/local/strongkey/skfs`
+    `export FIDOSERVER_HOME=/usr/local/strongkey/skfs`
     
 4.  **Save** and **close** the file and **exit** out of _root_. 
     

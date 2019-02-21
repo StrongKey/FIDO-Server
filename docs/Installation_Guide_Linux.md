@@ -35,7 +35,7 @@ The following must be downloaded to the same folder (we recommend _/user/local/s
 5.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name.
 6.  **Download and Install** _Open Java Development Kit (JDK)_. Type the following command:
 
-   `sudo yum install java-1.8.0-openjdk`
+    `sudo yum install java-1.8.0-openjdk`
 
 7.  The installation script must be run using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. **Execute** the _install-skfs.sh_ script as follows:
 

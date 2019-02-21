@@ -82,7 +82,7 @@ Ensure the logged in account has _read/write/execute_ privileges on the _/strong
 3.  **Verify the contents** of the _jade_ directory:
     `ls -l /usr/local/strongkey/jade/`
     
-4.  Copy the following two files from [here](https://github.com/StrongKey/FIDO-Server/tree/v2_api/fidoserver/fidoserverInstall/src) into _/usr/local/strongkey/skfs/keystores_:
+4.  Copy the following two files from [here](https://github.com/StrongKey/FIDO-Server/tree/master/fidoserver/fidoserverInstall/src) into _/usr/local/strongkey/skfs/keystores_:
 
     -   _signingkeystore.bcfks_
     -   _signingtruststore.bcfks_

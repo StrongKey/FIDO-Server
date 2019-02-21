@@ -35,9 +35,9 @@
 
 package com.strongkey.fido2mds.jws;
 
-import com.strongauth.appliance.objects.JWT;
-import com.strongauth.crypto.utility.cryptoCommon;
-import com.strongauth.skce.utilities.PKIXChainValidation;
+import com.strongkey.appliance.objects.JWT;
+import com.strongkey.crypto.utility.cryptoCommon;
+import com.strongkey.skce.utilities.PKIXChainValidation;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertPath;

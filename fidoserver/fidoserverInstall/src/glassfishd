@@ -13,7 +13,7 @@
 
 export AS_JAVA=$JAVA_HOME
 
-PROGRAM="--user strongauth /usr/local/strongauth/payara41/glassfish/bin/asadmin"
+PROGRAM="--user strongkey /usr/local/strongkey/payara41/glassfish/bin/asadmin"
 
 prog="Glassfish 4 Application Server"
 

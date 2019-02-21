@@ -1,0 +1,91 @@
+/*
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, as published by the Free Software Foundation and
+ * available at http://www.fsf.org/licensing/licenses/lgpl.html,
+ * version 2.1 or above.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Copyright (c) 2001-2018 StrongAuth, Inc.
+ *
+ * $Date$
+ * $Revision$
+ * $Author$
+ * $URL$
+ *
+ * *********************************************
+ *                    888
+ *                    888
+ *                    888
+ *  88888b.   .d88b.  888888  .d88b.  .d8888b
+ *  888 "88b d88""88b 888    d8P  Y8b 88K
+ *  888  888 888  888 888    88888888 "Y8888b.
+ *  888  888 Y88..88P Y88b.  Y8b.          X88
+ *  888  888  "Y88P"   "Y888  "Y8888   88888P'
+ *
+ * *********************************************
+ *
+ */
+
+package com.strongkey.skfs.txbeans;
+
+import com.strongkey.skfs.utilities.skfsLogger;
+import com.strongkey.skfs.utilities.SKFEException;
+import com.strongkey.skfs.utilities.skfsCommon;
+import com.strongkey.skfs.utilities.skfsConstants;
+import com.strongkey.skfs.entitybeans.FidoUsers;
+import com.strongkey.skfs.pojos.FIDOUserMetadata;
+import java.util.logging.Level;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+
+@Stateless
+public class getFIDOUserinfoBean implements getFIDOUserinfoBeanLocal {
+
+    /*
+     * This class' name - used for logging
+     */
+    private final String classname = this.getClass().getName();
+    
+    @EJB
+    getFidoUserLocal getfidouserbean;
+     @EJB
+    addFidoUserBeanLocal addfidouserbean;
+     
+    @Override
+    public FIDOUserMetadata execute(Long did, String username) throws SKFEException {
+        //  Inputs check
+        skfsCommon.inputValidateSKCEDid(Long.toString(did));
+        if (username == null || username.trim().isEmpty()) {
+            skfsLogger.log(skfsConstants.SKFE_LOGGER,Level.WARNING, "SKCE-ERR-1000", "NULL or empty argument for username : " + username);
+            throw new SKFEException("NULL or empty argument for username : " + username);
+        }
+
+        FIDOUserMetadata authres = null;
+
+        FidoUsers FIDOUser = getfidouserbean.GetByUsername(did, username);
+        if (FIDOUser == null) {
+            addfidouserbean.execute(did, username);
+            FIDOUser = getfidouserbean.GetByUsername(did, username);
+        }
+        //  Build the auth result object
+        authres = new FIDOUserMetadata(username,
+                FIDOUser.getUserdn(),
+                FIDOUser.getRegisteredEmails(),
+                FIDOUser.getPrimaryEmail(),
+                FIDOUser.getRegisteredPhoneNumbers(),
+                FIDOUser.getPrimaryPhoneNumber(),
+                FIDOUser.getTwoStepTarget(),
+                FIDOUser.getFidoKeysEnabled(),
+                FIDOUser.getTwoStepVerification(),
+                did);
+
+        skfsLogger.exiting(skfsConstants.SKFE_LOGGER,classname, "execute");
+        return authres;
+    }
+}

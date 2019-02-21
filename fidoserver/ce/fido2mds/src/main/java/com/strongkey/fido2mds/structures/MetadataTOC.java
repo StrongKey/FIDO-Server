@@ -5,7 +5,7 @@
  */
 package com.strongkey.fido2mds.structures;
 
-import com.strongauth.appliance.objects.JWT;
+import com.strongkey.appliance.objects.JWT;
 
 /**
  *

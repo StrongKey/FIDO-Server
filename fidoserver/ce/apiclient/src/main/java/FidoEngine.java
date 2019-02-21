@@ -40,11 +40,11 @@
  *
  */
 
-import com.strongauth.skceclient.common.Constants;
-import com.strongauth.skfe.client.impl.RestFidoActionsOnKey;
-import com.strongauth.skfe.client.impl.RestFidoAuthenticate;
-import com.strongauth.skfe.client.impl.RestFidoGetKeysInfo;
-import com.strongauth.skfe.client.impl.RestFidoRegister;
+import com.strongkey.apiclient.common.Constants;
+import com.strongkey.apiclient.impl.RestFidoActionsOnKey;
+import com.strongkey.apiclient.impl.RestFidoAuthenticate;
+import com.strongkey.apiclient.impl.RestFidoGetKeysInfo;
+import com.strongkey.apiclient.impl.RestFidoRegister;
 import java.util.Calendar;
 
 public class FidoEngine {

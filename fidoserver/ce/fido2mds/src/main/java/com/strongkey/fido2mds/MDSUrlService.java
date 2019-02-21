@@ -6,8 +6,8 @@
 package com.strongkey.fido2mds;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.strongauth.appliance.objects.JWT;
-import com.strongauth.crypto.utility.cryptoCommon;
+import com.strongkey.appliance.objects.JWT;
+import com.strongkey.crypto.utility.cryptoCommon;
 import com.strongkey.fido2mds.data.Storage;
 import com.strongkey.fido2mds.jws.MDSJwtVerifier;
 import com.strongkey.fido2mds.structures.MetadataStatement;

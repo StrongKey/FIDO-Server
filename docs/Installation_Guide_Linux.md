@@ -30,6 +30,7 @@ The following must be installed and configured to run StrongKey FIDO Server:
 -   **Modify** the _COMPANY_ variable in _install-skfs.sh_. Otherwise, the default configuration should work on systems with at least 4 GB available.
 
 -  **Download and Install** _Open Java Development Kit (JDK)_. As _root_, type the following command:
+
    `yum install java-1.8.0-openjdk`
 
 ## Run the Installation Script
@@ -39,6 +40,7 @@ The installation script must be run as _root_. The script will create a _strongk
 **NOTE:** While the installation script allows for changing the default _strongkey_ home directory, the software has not be updated to recognize a non-default directory.
 
 1.  **Execute** the _[install-skfs.sh](http://install-skfs.sh)_ script.
+
     `>  **<path to download directory>**/install-skfs.sh`
 
 2.  If the script indicates a problem, **correct** the error and re-run the script.
@@ -70,6 +72,7 @@ Please create the following directories on the Linux server where you are about 
 -   _/usr/local/strongkey/skfs/keystores_
 
 Ensure the logged in account has _read/write/execute_ privileges on the _/strongkey_ directory. Failing to have privileges on _/strongkey_ directory will lead to many problems in the further steps of installation.
+
 `chmod 755 /usr/local/strongkey/`
 
 **NOTE:** It is highly recommended to perform the installation as a user other than _root_. Specific instructions in the installation process will need _root_ access and those instructions explicitly state so. Right after executing them, exit out of the _root_ session and continue.
@@ -77,9 +80,11 @@ Ensure the logged in account has _read/write/execute_ privileges on the _/strong
 1.  Download the binary distribution file [FIDOServer-v#.#.tgz](https://github.com/StrongKey/FIDO-Server).
 
 2.  **Extract the downloaded file** to _/usr/local/strongkey_:
+
     `tar xvzf FIDOServer-v#.#.tgz -C /usr/local/strongkey/`
 
 3.  **Verify the contents** of the _jade_ directory:
+
     `ls -l /usr/local/strongkey/jade/`
     
 4.  Copy the following two files from [here](https://github.com/StrongKey/FIDO-Server/tree/master/fidoserver/fidoserverInstall/src) into _/usr/local/strongkey/skfs/keystores_:

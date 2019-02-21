@@ -49,6 +49,7 @@ The installation script must be run as _root_. The script will create a _strongk
 
 **This ends the scripted install instructions.**
 ===============================================
+
 ===============================================
 # <a name="test_fido_server"></a>TEST STRONGKEY FIDO SERVER
 
@@ -57,6 +58,7 @@ PLACEHOLDER CHAPTER
 
 **This ends the testing instructions.**
 ===============================================
+
 ===============================================
 # <a name="unscripted"></a>MANUAL INSTALLATION
 

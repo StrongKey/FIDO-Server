@@ -36,7 +36,7 @@ The following must be installed and configured to run StrongKey FIDO Server:
 
 The installation script must be run as _root_ or using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by _strongkey_.
 
-**NOTE:** While the installation script allows for changing the default _strongkey_ home directory, the installed FIDO Sevrer will not recognize a non-default directory.
+**NOTE:** While the installation script allows for changing the default _strongkey_ home directory, the installed FIDO Server will not recognize a non-default directory.
 
 1.  **Execute** the _install-skfs.sh_ script.
 

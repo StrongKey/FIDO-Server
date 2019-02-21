@@ -140,7 +140,7 @@ Edit _/etc/my.cnf_ to add this under "mysqld," then restart the database:
     
     `mysql> exit;`
 
-4.  **Create tables** inside the _skfs_ database. **Login** to MariaDB via terminal as _skfsdbuser_ using the _skfs_ database.
+4.  **Change Directory** to _/usr/local/strongkey/jade/sql/mysql_. **Login** to MariaDB via terminal as _skfsdbuser_ using the _skfs_ database.
     
     `mysql -u skfsdbuser -p<PASSWORD> skfs`
 

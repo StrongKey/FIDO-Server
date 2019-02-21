@@ -15,8 +15,11 @@
 
 ## Installation
 
+## Downloads
+
 The following must be downloaded to the same folder (we recommend _/user/local/strongkey/_), installed, and configured to run StrongKey FIDO Server:
 
+1.  **Change directory** to the target download folder.
 1.  **Download [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server)** and **save it as _jade.tgz_**.
 2.  [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)
 3.  [mariadb-10.2.13-linux-x86_64.tar.gz](https://downloads.mariadb.org/mariadb/10.2.13/)
@@ -30,19 +33,11 @@ The following must be downloaded to the same folder (we recommend _/user/local/s
 
    `sudo yum install java-1.8.0-openjdk`
 
-## Run the Installation Script
+8.  The installation script must be run using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. **Execute** the _install-skfs.sh_ script as follows:
 
-The installation script must be run using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user.
-
-**NOTE:** While the installation script allows for changing the default _strongkey_ home directory, the installed FIDO Server will not recognize a non-default directory.
-
-1.  **Execute** the _install-skfs.sh_ script.
-
-    `>  **<path to download directory>**/install-skfs.sh`
-
-2.  If the script indicates a problem, **correct** the error and re-run the script.
-
-3.  When the script finishes, all software will have been deployed and a _strongkey_ user will have been been created. The default password for the _strongkey_ user is _ShaZam123_. Login as the _strongkey_ user.
+    `>  sudo **<path to download directory>**/install-skfs.sh`
+    
+9.  When the script finishes, all software will have been deployed and a _strongkey_ user will have been been created. The default password for the _strongkey_ user is _ShaZam123_. Login as the _strongkey_ user.
 
 ***This ends the scripted install instructions.***
 ===============================================

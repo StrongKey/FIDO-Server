@@ -13,28 +13,26 @@
 
 ----------------
 
-## Downloads
+## Installation
 
-The following must be installed and configured to run StrongKey FIDO Server:
+The following must be downloaded to the same folder (we recommend _/user/local/strongkey/_), installed, and configured to run StrongKey FIDO Server:
 
--   **Download the [Install Scripts Archive](https://github.com/StrongKey/FIDO-Server/tree/master/fidoserver/fidoserverInstall/src)** and place all the following downloads in it.
-    -   [FIDOServer-v#.#.tgz](https://github.com/StrongKey/FIDO-Server) **saved as _jade.tgz_**
-    -   [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)
-    -   [mariadb-10.2.13-linux-x86_64.tar.gz](https://downloads.mariadb.org/mariadb/10.2.13/)
-    -   [mariadb-java-client-2.2.2.jar](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar)
-    -   [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
+1.  **Download [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server) **saved as _jade.tgz_**.
+2.  [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)
+3.  [mariadb-10.2.13-linux-x86_64.tar.gz](https://downloads.mariadb.org/mariadb/10.2.13/)
+4.  [mariadb-java-client-2.2.2.jar](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar)
+5.  [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
     
-    StrongKey FIDO Server has been tested with the above software versions. StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames. The default configuration should work on systems with at least 4 GB available.
+    **NOTE:** StrongKey FIDO Server has been tested with the above software versions. StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
 
--   **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name. 
+6.   **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name.
+7.  **Download and Install** _Open Java Development Kit (JDK)_. Type the following command:
 
--  **Download and Install** _Open Java Development Kit (JDK)_. As _root_, type the following command:
-
-   `yum install java-1.8.0-openjdk`
+   `sudo yum install java-1.8.0-openjdk`
 
 ## Run the Installation Script
 
-The installation script must be run as _root_ or using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by _strongkey_.
+The installation script must be run using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user.
 
 **NOTE:** While the installation script allows for changing the default _strongkey_ home directory, the installed FIDO Server will not recognize a non-default directory.
 
@@ -44,7 +42,7 @@ The installation script must be run as _root_ or using _sudo_. The script will c
 
 2.  If the script indicates a problem, **correct** the error and re-run the script.
 
-3.  When the script finishes, all software will have been deployed and a _strongkey_ user has been created. **Log out** of _root_ and **login** to the _strongkey_ user for the next steps. The default password for the _strongkey_ user is _ShaZam123_.
+3.  When the script finishes, all software will have been deployed and a _strongkey_ user will have been been created. The default password for the _strongkey_ user is _ShaZam123_. Login as the _strongkey_ user.
 
 ***This ends the scripted install instructions.***
 ===============================================
@@ -84,9 +82,9 @@ Ensure the logged in account has _read/write/execute_ privileges on the _/strong
 
 `chmod 755 /usr/local/strongkey/`
 
-**NOTE:** It is highly recommended to perform the installation as a user other than _root_. Specific instructions in the installation process will need _root_ access and those instructions explicitly state so. Right after executing them, exit out of the _root_ session and continue.
+**NOTE:** It is highly recommended to perform the installation as a user other than _root_. Specific instructions in the installation process will require _sudo_ access and those instructions explicitly state so.
 
-1.  Download the binary distribution file [FIDOServer-v#.#.tgz](https://github.com/StrongKey/FIDO-Server).
+1.  Download the binary distribution file [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server).
 
 2.  **Extract the downloaded file** to _/usr/local/strongkey_:
 

@@ -1,79 +1,10 @@
-/*
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License, as published by the Free
- * Software Foundation and available at
- * http://www.fsf.org/licensing/licenses/lgpl.html, version 2.1 or above.
+/**
+ * Copyright StrongAuth, Inc. All Rights Reserved.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- *
- * Copyright (c) 2001-2018 StrongAuth, Inc.
- *
- * $Date$ $Revision$
- * $Author$ $URL:
- * https://svn.strongauth.com/repos/jade/trunk/skce/skcebeans/src/main/java/com/strongauth/skce/txbeans/u2fServletHelperBean.java
- * $
- *
- * *********************************************
- *                    888
- *                    888
- *                    888
- *  88888b.   .d88b.  888888  .d88b.  .d8888b
- *  888 "88b d88""88b 888    d8P  Y8b 88K
- *  888  888 888  888 888    88888888 "Y8888b.
- *  888  888 Y88..88P Y88b.  Y8b.          X88
- *  888  888  "Y88P"   "Y888  "Y8888   88888P'
- *
- * *********************************************
- *
- * Helper class for all seskcerolets that seskceroe u2f protocol methods. The
- * motive of this class is to centralize the processing of all methods, no
- * matter how many seskcerolets are there as a web seskceroice interface for
- * client applications to call. So, all the seskcerolets (SOAP based, REST based
- * or web sockets), for every request they receive will invoke this class object
- * and call the respective method.
- *
- * As the classname indicates, this class caters to functionality of fido u2f
- * protocol ONLY.
- *
- * The list of methods in this class are
- *
- * 1. preregister - Step-1 for fido authenticator registration. This methods
- * generates a challenge and returns the same to the caller. 2. register -
- * Step-2 or last step of fido authenticator registration process. This method
- * receives the u2f registration response parameters which is processed and the
- * registration result is notified back to the caller.
- *
- * Both preregister and register methods are time linked. Meaning, register
- * should happen with in a certain time limit after the preregister is finished;
- * otherwise, the user session would be invalidated.
- *
- * 3. preauth - Step-1 for fido authenticator authentication. This methods
- * generates a challenge and returns the same to the caller. 4. authenticate -
- * Step-2 or last step of fido authenticator authentication process. This method
- * receives the u2f authentication response parameters which is processed and
- * the authentication result is notified back to the caller.
- *
- * Both preauth and authenticate methods are time linked. Meaning, authenticate
- * should happen with in a certain time limit after the preauth is finished;
- * otherwise, the user session would be invalidated.
- *
- * 6. getkeysinfo - Method to return a list of user registered fido
- * authenticator information; In short, registered keys information.
- * 'Information' includes the meta data of the key like the place and time it
- * was registered and used (last modified) from, a random id (which has a
- * time-to-live) that has to be sent back as a token during de-registration.
- *
- * 5. deregister - The process of deleting or de-registering an already
- * registered fido authenticator. The inputs needed are the name of the user and
- * the randomid to point to a unique registered key for that user. This randomid
- * can be obtained by calling getkeysinfo method.
- *
- * 6. getseskceroerinfo - Not implemented yet. Added just as a placeholder
- *
+ * Use of this source code is governed by the Gnu Lesser General Public License 2.3.
+ * The license can be found at https://github.com/StrongKey/FIDO-Server/LICENSE
  */
+
 package com.strongkey.skfs.txbeans;
 
 import com.strongkey.appliance.utilities.applianceCommon;
@@ -147,9 +78,7 @@ public class u2fServletHelperBean implements u2fServletHelperBeanLocal {
     @EJB
     u2fDeregisterBeanLocal u2fderegbean;
     @EJB
-    u2fDeactivateBeanLocal u2fdeactbean;
-    @EJB
-    u2fActivateBeanLocal u2factbean;
+    u2fUpdateBeanLocal u2factbean;
     @EJB
     u2fGetKeysInfoBeanLocal u2fgetkeysbean;
     @EJB

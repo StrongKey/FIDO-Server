@@ -4,6 +4,7 @@
  * Use of this source code is governed by the Gnu Lesser General Public License 2.3.
  * The license can be found at https://github.com/StrongKey/FIDO-Server/LICENSE
  */
+
 package com.strongkey.apiclient.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

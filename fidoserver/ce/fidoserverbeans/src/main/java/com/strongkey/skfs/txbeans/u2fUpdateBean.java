@@ -1,41 +1,10 @@
 /**
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License, as published by the Free Software Foundation and
- * available at http://www.fsf.org/licensing/licenses/lgpl.html,
- * version 2.1 or above.
+ * Copyright StrongAuth, Inc. All Rights Reserved.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * Copyright (c) 2001-2018 StrongAuth, Inc.
- *
- * $Date$
- * $Revision$
- * $Author$
- * $URL$
- *
- * *********************************************
- *                    888
- *                    888
- *                    888
- *  88888b.   .d88b.  888888  .d88b.  .d8888b
- *  888 "88b d88""88b 888    d8P  Y8b 88K
- *  888  888 888  888 888    88888888 "Y8888b.
- *  888  888 Y88..88P Y88b.  Y8b.          X88
- *  888  888  "Y88P"   "Y888  "Y8888   88888P'
- *
- * *********************************************
- *
- * This EJB is responsible for executing the activation process of a specific
- * user registered key which ahs earlier been de-activated. FIDO U2F protocol
- * does not provide any specification for user key de-activation.
- *
- * This bean will just mark the specific key in the database to be ACTIVE.
- *
+ * Use of this source code is governed by the Gnu Lesser General Public License 2.3.
+ * The license can be found at https://github.com/StrongKey/FIDO-Server/LICENSE
  */
+
 package com.strongkey.skfs.txbeans;
 
 import com.strongkey.skfs.requests.PatchFidoKeyRequest;
@@ -56,7 +25,7 @@ import javax.json.JsonReader;
  * user registered key
  */
 @Stateless
-public class u2fActivateBean implements u2fActivateBeanLocal {
+public class u2fUpdateBean implements u2fUpdateBeanLocal {
 
     /*
      * This class' name - used for logging

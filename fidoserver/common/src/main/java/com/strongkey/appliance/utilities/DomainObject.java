@@ -1,41 +1,8 @@
-/*
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License, as published by the Free Software Foundation and
- * available at http://www.fsf.org/licensing/licenses/lgpl.html,
- * version 2.1 or above.
+/**
+ * Copyright StrongAuth, Inc. All Rights Reserved.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * Copyright (c) 2001-2018 StrongAuth, Inc.
- *
- * $Date$
- * $Revision$
- * $Author$
- * $URL$
- *
- * **********************************************
- *
- *  888b    888          888
- *  8888b   888          888
- *  88888b  888          888
- *  888Y88b 888  .d88b.  888888  .d88b.  .d8888b
- *  888 Y88b888 d88""88b 888    d8P  Y8b 88K
- *  888  Y88888 888  888 888    88888888 "Y8888b.
- *  888   Y8888 Y88..88P Y88b.  Y8b.          X88
- *  888    Y888  "Y88P"   "Y888  "Y8888   88888P'
- *
- * **********************************************
- *
- *
- * An object to hold to hold the Domains object.  To improve performance,
- * each DomainObject will also now have its own SecureRandom (from SunJCE)
- * seeded by the cryptographic hardware module on the appliance.  It will
- * also hold domain-specific configuration instead of the configuration-map
- * so that changes through DACTool go into effect without GF-restarts.
+ * Use of this source code is governed by the Gnu Lesser General Public License 2.3.
+ * The license can be found at https://github.com/StrongKey/FIDO-Server/LICENSE
  */
 
 package com.strongkey.appliance.utilities;

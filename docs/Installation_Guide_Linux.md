@@ -17,7 +17,7 @@
 
 The following must be downloaded to the same folder (we recommend _/user/local/strongkey/_), installed, and configured to run StrongKey FIDO Server:
 
-1.  **Download [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server) **saved as _jade.tgz_**.
+1.  **Download [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server)** and **save it as _jade.tgz_**.
 2.  [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)
 3.  [mariadb-10.2.13-linux-x86_64.tar.gz](https://downloads.mariadb.org/mariadb/10.2.13/)
 4.  [mariadb-java-client-2.2.2.jar](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar)

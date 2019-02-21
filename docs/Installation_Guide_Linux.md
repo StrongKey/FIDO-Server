@@ -1,8 +1,8 @@
 **This document first explains the installation of the StrongKey FIDO Server using a script and default settings, then describes the [manual, more customizeable process below](#unscripted). 
 
 -----------------------------------------------
-SCRIPTED INSTALLATION
-===============================================
+# SCRIPTED INSTALLATION
+
 ## Prerequisites
 
 A _fully qualified domain name (FQDN)_ for a hostname with either DNS or local hostfile entry in _/etc/hosts_ that can resolve the hostname. It is very important to have a hostname that is at least TLD+1 (i.e. [acme.com](http://acme.com), [example.org](http://example.org), etc) otherwise FIDO functionality may not work.
@@ -49,15 +49,17 @@ The installation script must be run as _root_. The script will create a _strongk
 
 **This ends the scripted install instructions.**
 ===============================================
-<a name="test_fido_server"></a>TEST STRONGKEY FIDO SERVER
 ===============================================
+# <a name="test_fido_server"></a>TEST STRONGKEY FIDO SERVER
+
 PLACEHOLDER CHAPTER
 
 
 **This ends the testing instructions.**
 ===============================================
-<a name="unscripted"></a>MANUAL INSTALLATION
 ===============================================
+# <a name="unscripted"></a>MANUAL INSTALLATION
+
 ## Download StrongKey FIDO Server
 
 Make sure you have the following set up and/or ready to run before you begin installation.

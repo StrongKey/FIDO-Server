@@ -51,14 +51,14 @@ The installation script must be run as  _root_. The script will create a  _stron
 **This ends the scripted install instructions.
 ----------
 
-# <a href="test_fido_server"></a>TEST STRONGKEY FIDO SERVER
+# <a name="test_fido_server"></a>TEST STRONGKEY FIDO SERVER
 
 PLACEHOLDER CHAPTER
 
 
 **This ends the testing instructions.
 -----------------------------------
-# <a href="unscripted"></a>MANUAL INSTALLATION
+# <a name="unscripted"></a>MANUAL INSTALLATION
 
 ## Download StrongKey FIDO Server
 
@@ -301,10 +301,4 @@ The StrongKey FIDO Server is ready to be deployed.
     The StrongKey FIDO Server application WADL displays.
     
 
-This finishes deploying StrongKey FIDO Server. The software is now ready to be tested.
-
-----------
-
-## Test StrongKey FIDO Server
-
-PLACEHOLDER CHAPTER
+This concludes deployment of StrongKey FIDO Server. To test it, follow [these instructions](#test_fido_server).

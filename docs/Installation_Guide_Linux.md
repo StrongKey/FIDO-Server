@@ -22,14 +22,14 @@ The following must be installed and configured to run StrongKey FIDO Server:
 -   **Download the following** binaries and copy them to the folder where the downloaded source resides:
     
     -   [FIDOServer-v#.#.tgz](https://github.com/StrongKey/FIDO-Server) **saved as _jade.tgz_**
-    -   [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/blue/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)
+    -   [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)
     -   [mariadb-10.2.13-linux-x86_64.tar.gz](https://downloads.mariadb.org/mariadb/10.2.13/)
     -   [mariadb-java-client-2.2.2.jar](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar)
     -   [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
     
-    StrongKey FIDO Server has been tested with these versions of the above software. StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
+    StrongKey FIDO Server has been tested with the above software versions. StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames. The default configuration should work on systems with at least 4 GB available.
 
--   **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name. Otherwise, the default configuration should work on systems with at least 4 GB available.
+-   **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name. 
 
 -  **Download and Install** _Open Java Development Kit (JDK)_. As _root_, type the following command:
 
@@ -198,7 +198,7 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
 
 ### Download and Install Payara 4.1
 
-1.  **Download** Payara 4.1 edition .ZIP file, [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/blue/distributions/payara/4.1.2.181/payara-4.1.2.181.zip). **Save** the file.
+1.  **Download** Payara 4.1 edition .ZIP file, [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip). **Save** the file.
 
 2.  Open a  **terminal window** and extract the download using the following command:
     
@@ -263,34 +263,28 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
     | _ServerName_ | **localhost** |
     | _DatabaseName_ | **skfs** |
 
-5.  Click **Finish**. This will create the connection pool; but to test the connection, click **ping** and it should respond, “Ping succeeded”:
+5.  Click **Finish**. This will create the connection pool; but to test the connection, click **ping**. The expected response is, “Ping succeeded”:
     
     **NOTE:** If the ping has failed, please verify you copied the JDBC driver _.JAR_ file into the Payara _/lib_ directory.
     
     `cp /usr/local/strongkey/jade/lib/mariadb-java-client-2.2.2.jar /usr/local/strongkey/payara41/glassfish/lib`
 
-6.  Now, we need to create a JDBC resource that uses the connection pool we just created above.
-
-7.  On the left, expand **Resources -> JDBC -> JDBC Resources**.
-
-8.  Click **New** and enter the **JDBC resource information** as shown here.
+6.  Now, we need to create a JDBC resource that uses the connection pool we just created above. On the left, expand **Resources -> JDBC -> JDBC Resources**. Click **New** and enter the **JDBC resource information** as shown here.
    
     _JNDI Name_ = **jdbc/skfs**
     
     _Pool Name_ = **SKFSPool**
 
-9.  Click **Ok** to create the JDBC resource.
+7.  Click **Ok** to create the JDBC resource.
 
 
 ### Restart Payara Server
 
-1.  To get all the configuration changes into efffect, the **Payara server must be restarted**.
-
-2.  On the **terminal window**, type the command below and press **Enter**.
+1.  To effect all the configuration changes, the **Payara server must be restarted**. On the **terminal window**, type the command below and press **Enter**.
     
     `/usr/local/strongkey/payara41/glassfish/bin/asadmin restart-domain`
 
-3.  In case the server must be stopped or started for some reason, please use the commands below:
+3.  If server must be stopped or started, please use the commands below:
     
     `/usr/local/strongkey/payara41/glassfish/bin/asadmin stop-domain /usr/local/strongkey/payara41/glassfish/bin/asadmin start-domain`
 
@@ -305,9 +299,9 @@ The StrongKey FIDO Server is ready to be deployed.
 
 1.  Open a **terminal window**.
 
-2.  **Deploy** _skfs.ear_ on Payara using the _asadmin_ deploy command:
+2.  **Deploy** _fidoserver.ear_ on Payara using the _asadmin_ deploy command:
     
-    `asadmin deploy /usr/local/strongkey/skfs.ear`
+    `asadmin deploy /usr/local/strongkey/fidoserver.ear`
     
     **NOTE:** If the deployment fails, verify the GLASSFISH_HOME is configured and check the server logs for errors:
     _/usr/local/strongkey/payara41/glassfish/domains/domain1/logs/server.log_

@@ -174,11 +174,7 @@ MariaDB is now installed and configured for StrongKey FIDO Server.
 
 ## Configure StrongKey FIDO Server
 
-The StrongKey FIDO Server is completely configurable to suit a specific enterprise environment. These settings must be altered before the software is deployed and run.
-
-### Configure StrongKey FIDO Server HOME Directory
-
-In this section, we will configure the FIDOSERVER_HOME and set an environment variable to match.
+The StrongKey FIDO Server is completely configurable to suit a specific enterprise environment. These settings must be altered before the software is deployed and run. In this section, we will add the FIDOSERVER_HOME and set an environment variable to match.
 
 1.  Open a **terminal window**.
 

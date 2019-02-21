@@ -58,7 +58,7 @@ import javax.xml.bind.Marshaller;
  * @author pmarathe
  */
 @Stateless
-public class getFidoUser implements getFidoUserRemote, getFidoUserLocal {
+public class getFidoUser implements getFidoUserLocal {
 
     /**
      ** This class's name - used for logging & not persisted
@@ -76,11 +76,6 @@ public class getFidoUser implements getFidoUserRemote, getFidoUserLocal {
 
     @EJB
     getDomainsBeanLocal getdomejb;
-
-    @Override
-    public FidoUsers remoteGetByUsername(Long did, String username) throws SKFEException {
-        return GetByUsername(did, username);
-    }
 
     @Override
     public FidoUsers GetByUsername(Long did, String username) throws SKFEException {

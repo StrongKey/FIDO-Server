@@ -43,75 +43,10 @@ import org.bouncycastle.util.encoders.Hex;
 
 public final class common {
     
-//    public static String makePOSTCallUsingHMAC(String baseuri, String methodname, String body, String accesskey, String secretkey) throws HttpException, IOException, NoSuchAlgorithmException {
-////        String contentToEncode = "{" +
-////                                    "\"username\" : \"" + username + "\"" +
-////                                 "}";
-//        String contentType = "application/x-www-form-urlencoded";
-//        String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
-//        String contentMD5 = calculateMD5(body);
-//
-//        CloseableHttpClient httpclient = HttpClients.createDefault();
-//        HttpPost httpPost = new HttpPost(baseuri + methodname);
-//        StringEntity data = new StringEntity(body, ContentType.APPLICATION_FORM_URLENCODED); //create(contentType));
-//        httpPost.setEntity(data);
-//        String requestToHmac = httpPost.getMethod() + "\n" + 
-//                        contentMD5 + "\n" +
-//                        contentType + "\n" + 
-//                        currentDate + "\n" +
-//                        httpPost.getURI().getPath();
-//
-//        String hmac = calculateHMAC(secretkey, requestToHmac);
-//        httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
-//        httpPost.addHeader("Content-MD5", contentMD5);
-//        httpPost.addHeader("content-type", contentType);
-//        httpPost.addHeader("Date", currentDate);
-//        CloseableHttpResponse response = httpclient.execute(httpPost);
-//        try {
-//            StatusLine sl = response.getStatusLine();
-//            System.out.println(sl.getStatusCode());
-//            HttpEntity entity = response.getEntity();
-//            String result = EntityUtils.toString(entity);
-//            EntityUtils.consume(entity);
-//            return result;
-//        } finally {
-//            response.close();
-//        }
-//    }
-
-//    public static String makeGETCallUsingHMAC(String baseuri, String methodname, String queryParams, String accesskey, String secretkey) throws HttpException, IOException, NoSuchAlgorithmException {
-//        String contentMD5 = "";
-//        String contentType = "";
-//        String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
-//
-//        CloseableHttpClient httpclient = HttpClients.createDefault();
-//        HttpGet httpGet = new HttpGet(baseuri + methodname + queryParams);
-//        String requestToHmac = httpGet.getMethod() + "\n" + 
-//                        contentMD5 + "\n" +
-//                        contentType + "\n" + 
-//                        currentDate + "\n" +
-//                        httpGet.getURI().getPath() + "?" + httpGet.getURI().getQuery();
-//
-//        String hmac = calculateHMAC(secretkey, requestToHmac);
-//        httpGet.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
-//        httpGet.addHeader("Date", currentDate);
-//        CloseableHttpResponse response = httpclient.execute(httpGet);
-//        try {
-//            StatusLine sl = response.getStatusLine();
-//            System.out.println(sl.getStatusCode());
-//            HttpEntity entity = response.getEntity();
-//            String result = EntityUtils.toString(entity);
-//            EntityUtils.consume(entity);
-//            return result;
-//        } finally {
-//            response.close();
-//        }
-//    }
-
     public static String calculateHMAC(String secret, String data) {
         try {
-            SecretKeySpec signingKey = new SecretKeySpec(Hex.decode(secret), "HmacSHA1");
-            Mac mac = Mac.getInstance("HmacSHA1", new BouncyCastleFipsProvider());
+            SecretKeySpec signingKey = new SecretKeySpec(Hex.decode(secret), "HmacSHA256");
+            Mac mac = Mac.getInstance("HmacSHA256", new BouncyCastleFipsProvider());
             mac.init(signingKey);
             byte[] rawHmac = mac.doFinal(data.getBytes());
             return Base64.toBase64String(rawHmac);
@@ -121,8 +56,8 @@ public final class common {
         }
     }
 
-    public static String calculateMD5(String contentToEncode) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("MD5");
+    public static String calculateSha256(String contentToEncode) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
         digest.update(contentToEncode.getBytes());
         return Base64.toBase64String(digest.digest());
     }

@@ -58,7 +58,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 @Stateless
-public class getFidoKeys implements getFidoKeysLocal, getFidoKeysRemote {
+public class getFidoKeys implements getFidoKeysLocal {
 
     /**
      ** This class's name - used for logging & not persisted
@@ -277,36 +277,6 @@ public class getFidoKeys implements getFidoKeysLocal, getFidoKeysRemote {
         } finally {
             em.flush();
         }
-    }
-
-    @Override
-    public Collection<FidoKeys> remoteGetByUsername(Long did, String username) throws SKFEException {
-        return getByUsername(did, username);
-    }
-
-    @Override
-    public Collection<FidoKeys> remoteGetAll(Long did) throws SKFEException {
-        return getAll(did);
-    }
-
-    @Override
-    public FidoKeys remoteGetByUsernameKH(Long did, String username, String KH) throws SKFEException {
-        return getByUsernameKH(did, username, KH);
-    }
-
-    @Override
-    public FidoKeys remoteGetByfkid(Short sid, Long did, String username, Long fkid) throws SKFEException {
-        return getByfkid(sid, did, username, fkid);
-    }
-
-    @Override
-    public Collection<FidoKeys> remoteGetByUsernameStatus(Long did, String username, String status) throws SKFEException {
-        return getByUsernameStatus(did, username, status);
-    }
-
-    @Override
-    public int remotenextfkid(Short sid, Long did, String username) {
-        return nextfkid(sid, did, username);
     }
 
     /**

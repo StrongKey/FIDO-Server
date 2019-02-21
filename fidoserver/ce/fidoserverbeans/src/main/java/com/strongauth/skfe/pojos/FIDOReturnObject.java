@@ -49,54 +49,18 @@ public class FIDOReturnObject {
     /**
      * Local variables
      */
-    private String method = "";
-    private JsonObject challenge = null;
     private String response = "";
-    private String message = "";
-    private String error = "";
        
     /**
      * Constructor of this class.
      * 
-     * @param method
-     * @param challenge
      * @param response
-     * @param message
-     * @param error 
      */
-    public FIDOReturnObject(String method, JsonObject challenge, String response, String message, String error) {
-        
-        if (method != null) {
-            this.method = method;
-        }
-        
-        if (challenge != null) {
-            this.challenge = challenge;
-        }
+    public FIDOReturnObject(String response) {
         
         if (response != null) {
             this.response = response;
         }
-        
-        if (message != null) {
-            this.message = message;
-        }
-        
-        if (error != null) {
-            this.error = error;
-        }     
-    }
-
-    /**
-     * Get and Set methods
-     * @return 
-     */
-    public JsonObject getChallenge() {
-        return challenge;
-    }
-
-    public void setChallenge(JsonObject challenge) {
-        this.challenge = challenge;
     }
 
     public String getResponse() {
@@ -106,22 +70,6 @@ public class FIDOReturnObject {
     public void setResponse(String response) {
         this.response = response;
     }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
             
     /**
      * Over-ridden toString method to print the object content in a readable 
@@ -130,10 +78,7 @@ public class FIDOReturnObject {
      */
     @Override
     public String toString() {
-        return "\n\tchallenge   = " + this.challenge
-             + "\n\tresponse    = " + this.response
-             + "\n\tmessage     = " + this.message
-             + "\n\terror       = " + this.error;
+        return "\n\tresponse    = " + this.response;
     }
     
     /**
@@ -143,65 +88,16 @@ public class FIDOReturnObject {
      */
     public String toJsonString() {
         
-        if ( message == null ) {
-            message = "";
-        }
-        
-        if ( error == null ) {
-            error = "";
-        }
-        
         if ( response == null ) {
             response = "";
         }
         
-        //  Convert the message string into html compatible format.
-        message = message.replaceAll("\"", "").replaceAll("\n", "<br>").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;"); 
-        error = error.replaceAll("\"", "").replaceAll("\n", "<br>").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;"); 
-        
         // Build the output json object
         JsonObject responseJSON = null;
         
-        if ( method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_PREREGISTER) || 
-                method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_PREAUTH) ) {
-            if ( challenge == null ) { 
-                responseJSON = Json.createObjectBuilder()
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_CHALLENGE, "")
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
-                .build();
-            } else {
-                responseJSON = Json.createObjectBuilder()
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_CHALLENGE, challenge)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
-                .build();   
-            }
-        } else if ( method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_REGISTER) || 
-                method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_AUTHENTICATE) ||
-                method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_DEREGISTER)   ||
-                method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_DEACTIVATE)   ||
-                method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_ACTIVATE)) {
-            responseJSON = Json.createObjectBuilder()
-            .add(skfeConstants.JSON_KEY_SERVLET_RETURN_RESPONSE, response)
-            .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-            .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
-            .build();
-        } else if ( method.equalsIgnoreCase(skfeConstants.FIDO_METHOD_GETKEYSINFO)) {
-            if ( challenge == null ) { 
-                responseJSON = Json.createObjectBuilder()
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_RESPONSE, "")
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
-                .build();
-            } else {
-                responseJSON = Json.createObjectBuilder()
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_RESPONSE, challenge)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_MESSAGE, message)
-                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_ERROR, error)
-                .build();   
-            }
-        }
+        responseJSON = Json.createObjectBuilder()
+        .add(skfeConstants.JSON_KEY_SERVLET_RETURN_RESPONSE, response)
+        .build();   
         
         if ( responseJSON != null )
             return responseJSON.toString();

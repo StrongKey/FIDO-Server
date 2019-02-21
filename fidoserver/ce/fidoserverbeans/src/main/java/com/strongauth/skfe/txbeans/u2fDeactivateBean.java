@@ -61,7 +61,7 @@ import javax.json.JsonReader;
  * user registered key
  */
 @Stateless
-public class u2fDeactivateBean implements u2fDeactivateBeanLocal, u2fDeactivateBeanRemote {
+public class u2fDeactivateBean implements u2fDeactivateBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -280,14 +280,5 @@ public class u2fDeactivateBean implements u2fDeactivateBeanLocal, u2fDeactivateB
         skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", skfeCommon.getMessageProperty("FIDO-MSG-5002"), classname);
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return skcero;
-    }
-    
-    @Override
-    public SKCEReturnObject remoteExecute(String did, 
-                                    String protocol,
-                                    String username, 
-                                    String randomid,
-                                    String modifyloc) {
-        return execute(did, protocol, username, randomid, modifyloc);
     }
 }

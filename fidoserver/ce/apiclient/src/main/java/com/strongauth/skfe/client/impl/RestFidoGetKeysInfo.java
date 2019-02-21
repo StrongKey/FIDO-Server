@@ -62,6 +62,7 @@ public class RestFidoGetKeysInfo {
                                 String accountname) 
     {
         String gkresponse = null;
+        String version = "2.0";
 
         try {
 
@@ -82,11 +83,13 @@ public class RestFidoGetKeysInfo {
                     + contentMD5 + "\n"
                     + contentType + "\n"
                     + currentDate + "\n"
+                    + version + "\n"
                     + httpGet.getURI().getPath() + "?" + httpGet.getURI().getQuery();
 
             String hmac = common.calculateHMAC(secretkey, requestToHmac);
             httpGet.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
             httpGet.addHeader("Date", currentDate);
+            httpGet.addHeader("strongkey-api-version", version);
             CloseableHttpResponse response = httpclient.execute(httpGet);
             String result;
             try {

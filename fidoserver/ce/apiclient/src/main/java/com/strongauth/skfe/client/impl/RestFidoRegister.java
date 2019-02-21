@@ -32,14 +32,16 @@
  */
 package com.strongauth.skfe.client.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.strongauth.skceclient.common.Constants;
-import static com.strongauth.skceclient.common.common.calculateHMAC;
-import static com.strongauth.skceclient.common.common.calculateMD5;
+import com.strongauth.skceclient.common.common;
 import com.strongauth.skfe.fido2.Fido2TokenSim;
+import com.strongauth.skfe.requests.PreregistrationRequest;
+import com.strongauth.skfe.requests.RegistrationRequest;
 import com.strongauth.skfe.tokensim.FIDOU2FTokenSimulator;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.HttpURLConnection;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
@@ -51,9 +53,7 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -68,14 +68,13 @@ import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParserFactory;
 import org.apache.commons.codec.DecoderException;
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 public class RestFidoRegister {
@@ -91,20 +90,19 @@ public class RestFidoRegister {
         System.out.println("Registration test");
         System.out.println("*******************************");
 
-        // Build payload
-        List<NameValuePair> nvps = new ArrayList<>();
-        nvps.add(new BasicNameValuePair("username", accountname));
-        nvps.add(new BasicNameValuePair("protocol", fidoprotocol));
+        String version = "2.0";
 
-        if ("FIDO20".compareTo(fidoprotocol) == 0) {
-            nvps.add(new BasicNameValuePair("displayname", accountname));
-        }
+        PreregistrationRequest prereg = new PreregistrationRequest();
+        prereg.setProtocol(fidoprotocol);
+        prereg.setUsername(accountname);
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(prereg);
 
-        HttpEntity body = new UrlEncodedFormEntity(nvps);
+        ContentType mimetype = ContentType.APPLICATION_JSON;
+        StringEntity body = new StringEntity(json, mimetype);
 
-        String contentType = "application/x-www-form-urlencoded";
         String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
-        String contentMD5 = calculateMD5(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+        String contentSHA = common.calculateSha256(json);
 
         String resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.PRE_REGISTER_ENDPOINT;
         
@@ -112,16 +110,18 @@ public class RestFidoRegister {
         HttpPost httpPost = new HttpPost(resourceLoc);
         httpPost.setEntity(body);
         String requestToHmac = httpPost.getMethod() + "\n"
-                + contentMD5 + "\n"
-                + contentType + "\n"
+                + contentSHA + "\n"
+                + mimetype.getMimeType() + "\n"
                 + currentDate + "\n"
+                + version + "\n"
                 + httpPost.getURI().getPath();
 
-        String hmac = calculateHMAC(secretkey, requestToHmac);
+        String hmac = common.calculateHMAC(secretkey, requestToHmac);
         httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
-        httpPost.addHeader("Content-MD5", contentMD5);
-        httpPost.addHeader("content-type", contentType);
+        httpPost.addHeader("strongkey-content-sha256", contentSHA);
+        httpPost.addHeader("Content-Type", mimetype.getMimeType());
         httpPost.addHeader("Date", currentDate);
+        httpPost.addHeader("strongkey-api-version", version);
 
         //  Make SKFE rest call and get response from the server
         System.out.println("\nCalling preregister @ " + resourceLoc);
@@ -152,7 +152,6 @@ public class RestFidoRegister {
         } finally {
             response.close();
         }
-
         
         //  Build a json object out of response
         StringReader s = new StringReader(result);
@@ -160,7 +159,7 @@ public class RestFidoRegister {
         JsonObject responseJSON = jsonReader.readObject();
         jsonReader.close();
         
-        JsonObject resJsonObj = responseJSON.getJsonObject("Challenge");
+        JsonObject resJsonObj = responseJSON.getJsonObject("Response");
         
         System.out.println("\n Pre-Registration Complete.");
 
@@ -169,7 +168,6 @@ public class RestFidoRegister {
         JsonObject input = null;
         JsonParserFactory factory = Json.createParserFactory(null);
         JsonParser parser;
-        
         
         if ("U2F_V2".compareTo(fidoprotocol) == 0) {
             
@@ -303,21 +301,16 @@ public class RestFidoRegister {
         System.out.println("\nCalling register @ " 
                 + REST_URI + Constants.REGISTER_ENDPOINT);
 
+        ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        RegistrationRequest reg = new RegistrationRequest();
+        reg.setProtocol(fidoprotocol);
+        reg.setResponse(input.toString());
+        reg.setMetadata(reg_metadata.toString());
+        json = ow.writeValueAsString(reg);
+        body = new StringEntity(json, mimetype);
 
-        // Build payload
-        nvps = new ArrayList<>();
-        nvps.add(new BasicNameValuePair("username", accountname));
-        nvps.add(new BasicNameValuePair("protocol", fidoprotocol));
-        nvps.add(new BasicNameValuePair("response", input.toString()));
-        nvps.add(new BasicNameValuePair("metadata", reg_metadata.toString()));
-
-        System.out.println(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
-
-        body = new UrlEncodedFormEntity(nvps);
-
-        contentType = "application/x-www-form-urlencoded";
         currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
-        contentMD5 = calculateMD5(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+        contentSHA = common.calculateSha256(json);
 
         resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.REGISTER_ENDPOINT;
 
@@ -325,16 +318,18 @@ public class RestFidoRegister {
         httpPost = new HttpPost(resourceLoc);
         httpPost.setEntity(body);
         requestToHmac = httpPost.getMethod() + "\n"
-                + contentMD5 + "\n"
-                + contentType + "\n"
+                + contentSHA + "\n"
+                + mimetype.getMimeType() + "\n"
                 + currentDate + "\n"
+                + version + "\n"
                 + httpPost.getURI().getPath();
 
-        hmac = calculateHMAC(secretkey, requestToHmac);
+        hmac = common.calculateHMAC(secretkey, requestToHmac);
         httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
-        httpPost.addHeader("Content-MD5", contentMD5);
-        httpPost.addHeader("content-type", contentType);
+        httpPost.addHeader("strongkey-content-sha256", contentSHA);
+        httpPost.addHeader("Content-Type", mimetype.getMimeType());
         httpPost.addHeader("Date", currentDate);
+        httpPost.addHeader("strongkey-api-version", version);
 
         //  Make SKFE rest call and get response from the server
         System.out.println("\nCalling register @ " + resourceLoc);
@@ -364,7 +359,6 @@ public class RestFidoRegister {
         } finally {
             response.close();
         }
-        
         
         System.out.println("\n Registration Complete.");
         System.out.println("*******************************");

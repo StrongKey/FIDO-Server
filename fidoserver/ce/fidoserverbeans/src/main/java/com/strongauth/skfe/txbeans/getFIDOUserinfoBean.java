@@ -45,7 +45,7 @@ import javax.ejb.Stateless;
 
 
 @Stateless
-public class getFIDOUserinfoBean implements getFIDOUserinfoBeanLocal, getFIDOUserinfoBeanRemote {
+public class getFIDOUserinfoBean implements getFIDOUserinfoBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -88,11 +88,4 @@ public class getFIDOUserinfoBean implements getFIDOUserinfoBeanLocal, getFIDOUse
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return authres;
     }
-
-    @Override
-    public FIDOUserMetadata remoteExecute(Long did, String username) throws SKFEException {
-        return execute(did, username);
-    }
-
-    
 }

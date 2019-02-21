@@ -29,20 +29,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-            <type>jar</type>
-	    <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>FidoClientSim</groupId>
-            <artifactId>FidoClientSim</artifactId>
-            <version>1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>common</artifactId>
             <version>4.0</version>

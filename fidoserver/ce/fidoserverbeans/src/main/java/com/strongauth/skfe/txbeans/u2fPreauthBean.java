@@ -36,7 +36,6 @@
 package com.strongauth.skfe.txbeans;
 
 import com.strongauth.skfe.utilities.skfeLogger;
-import com.strongauth.skfe.utilities.SKFEException;
 import com.strongauth.skfe.utilities.skfeCommon;
 import com.strongauth.skfe.utilities.skfeConstants;
 import com.strongauth.skfe.core.U2FAuthenticationChallenge;
@@ -46,7 +45,7 @@ import javax.ejb.Stateless;
 import javax.json.JsonArray;
 
 @Stateless
-public class u2fPreauthBean implements u2fPreauthBeanLocal, u2fPreauthBeanRemote {
+public class u2fPreauthBean implements u2fPreauthBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -108,15 +107,5 @@ public class u2fPreauthBean implements u2fPreauthBeanLocal, u2fPreauthBeanRemote
         skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", skfeCommon.getMessageProperty("FIDO-MSG-5002"), classname);
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return fer;
-    }
-    
-    @Override
-    public FEreturn remoteExecute(Long did, 
-                                String protocol,
-                                String username, 
-                                String keyhandle,
-                            String appidfromDB,
-                            JsonArray transports) {
-        return execute(did, protocol, username, keyhandle, appidfromDB,transports);
     }
 }

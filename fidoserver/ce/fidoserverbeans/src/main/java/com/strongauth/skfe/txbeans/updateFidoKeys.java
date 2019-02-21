@@ -57,7 +57,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class updateFidoKeys implements updateFidoKeysLocal, updateFidoKeysRemote {
+public class updateFidoKeys implements updateFidoKeysLocal {
 
     /**
      ** This class's name - used for logging & not persisted
@@ -266,10 +266,4 @@ public class updateFidoKeys implements updateFidoKeysLocal, updateFidoKeysRemote
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return retObj.toString();
     }
-
-    @Override
-    public String remoteExecute(Short sid, Long did, String username, Long fkid, Integer newCounter, String modify_location) {
-        return execute(sid, did, username, fkid, newCounter, modify_location);
-    }
-
 }

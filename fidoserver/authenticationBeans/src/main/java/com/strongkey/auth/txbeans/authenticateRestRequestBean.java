@@ -35,6 +35,9 @@
  */
 package com.strongkey.auth.txbeans;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.strongauth.appliance.utilities.applianceInputChecks;
 import com.strongauth.appliance.utilities.strongkeyLogger;
 import com.strongauth.crypto.interfaces.initCryptoModule;
@@ -79,7 +82,7 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
      * @param did Long the domain identifier for which to authenticate to 
      * @param request HttpServletRequest full request object in which to gather
      * headers and other parts of the request
-     * @param requestBody String body of the request to be md5'd 
+     * @param requestbody String body of the request to be SHA'd 
      * @return boolean value indicating either True (for authenticated) or False
      * (for unauthenticated or failure in processing)
      */
@@ -87,7 +90,7 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
     public boolean execute(
             Long did,
             HttpServletRequest request,
-            String requestBody) {
+            Object requestbody) {
 
         strongkeyLogger.logp(skceConstants.SKEE_LOGGER, Level.FINE, classname, "execute", "APPL-MSG-1051",
                 "\n EJB name=" + classname +
@@ -100,17 +103,26 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
             return false;
         }
 
-        String generatedmd5 = "";
+        String generatedSHA = "";
         String contenttype = "";
 
-        if (requestBody != null) {
-            String contentmd5  = request.getHeader("Content-MD5");
-            contenttype = request.getHeader("content-type");
+        if (requestbody != null) {
+            String contentSHA  = request.getHeader("strongkey-content-sha256");
+            contenttype = request.getHeader("Content-Type");
 
-            generatedmd5 = cryptoCommon.calculateMD5(requestBody);
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String json;
+            try {
+                json = ow.writeValueAsString(requestbody);
+            } catch (JsonProcessingException ex) {
+                strongkeyLogger.logp(skceConstants.SKFE_LOGGER, Level.SEVERE, classname, "execute", "APPL-ERR-1042", "");
+                return false;
+            }
 
-            if (!generatedmd5.equals(contentmd5)) {
-                strongkeyLogger.logp(skceConstants.SKFE_LOGGER, Level.SEVERE, classname, "execute", "APPL-ERR-1041", "Received: " + contentmd5 + " Expected: " + generatedmd5);
+            generatedSHA = cryptoCommon.calculateHash(json, "SHA-256");
+
+            if (!generatedSHA.equals(contentSHA)) {
+                strongkeyLogger.logp(skceConstants.SKFE_LOGGER, Level.SEVERE, classname, "execute", "APPL-ERR-1041", "Received: " + contentSHA + " Expected: " + generatedSHA);
                 return false;
             }
         }
@@ -142,9 +154,10 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
         }
         
         String requestToHmac = request.getMethod() + "\n"
-                + generatedmd5 + "\n"
+                + generatedSHA + "\n"
                 + contenttype + "\n"
                 + request.getHeader("Date") + "\n"
+                + request.getHeader("strongkey-api-version") + "\n"
                 + request.getRequestURI() + queryParams;
 
         strongkeyLogger.logp(skceConstants.SKFE_LOGGER, Level.FINE, classname, "execute", "APPL-MSG-1054", "\n" + requestToHmac);

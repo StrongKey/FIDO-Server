@@ -37,7 +37,6 @@ import com.strongauth.appliance.utilities.applianceCommon;
 import com.strongauth.appliance.utilities.applianceConstants;
 import com.strongauth.crypto.interfaces.initCryptoModule;
 import com.strongauth.crypto.utility.CryptoException;
-import com.strongauth.skfe.utilities.skfeConstants;
 import com.strongauth.skfe.entitybeans.FidoKeys;
 import com.strongauth.skfe.entitybeans.FidoKeysPK;
 import com.strongauth.skfe.messaging.replicateSKFEObjectBeanLocal;
@@ -63,7 +62,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 @Stateless
-public class addFidoKeys implements addFidoKeysLocal, addFidoKeysRemote {
+public class addFidoKeys implements addFidoKeysLocal {
 
     /**
      ** This class's name - used for logging & not persisted
@@ -429,29 +428,4 @@ public class addFidoKeys implements addFidoKeysLocal, addFidoKeysRemote {
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER, classname, "execute");
         return retObj.toString();
     }
-
-    @Override
-    public String remoteExecute(Long did,
-            String userid,
-            String username,
-            String UKH,
-            String UPK,
-            String appid,
-            Short transports,
-            Short attsid,
-            Short attdid,
-            Integer attcid,
-            int counter,
-            String fido_version,
-            String fido_protocol,
-            String aaguid,
-            String registrationSettings,
-            Integer registrationSettingsVersion,
-            String create_location) {
-        return execute(did, userid, username, UKH, UPK, appid, transports,
-                attsid, attdid, attcid, counter, fido_version, fido_protocol,
-                aaguid, registrationSettings, registrationSettingsVersion,
-                create_location);
-    }
-
 }

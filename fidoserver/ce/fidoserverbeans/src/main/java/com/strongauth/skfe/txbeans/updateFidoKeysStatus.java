@@ -63,7 +63,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 @Stateless
-public class updateFidoKeysStatus implements updateFidoKeysStatusLocal, updateFidoKeysStatusRemote {
+public class updateFidoKeysStatus implements updateFidoKeysStatusLocal {
 
     /**
      ** This class's name - used for logging & not persisted
@@ -326,10 +326,4 @@ public class updateFidoKeysStatus implements updateFidoKeysStatusLocal, updateFi
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER, classname, "execute");
         return retObj.toString();
     }
-
-    @Override
-    public String remoteExecute(Short sid, Long did, String username, Long fkid, String modify_location, String status) {
-        return execute(sid, did, username, fkid, modify_location, status);
-    }
-
 }

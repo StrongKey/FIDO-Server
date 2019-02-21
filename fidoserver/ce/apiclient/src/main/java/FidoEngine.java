@@ -42,7 +42,7 @@
 
 import com.strongauth.skceclient.common.Constants;
 import com.strongauth.skfe.client.impl.RestFidoActionsOnKey;
-import com.strongauth.skfe.client.impl.RestFidoAuthorize;
+import com.strongauth.skfe.client.impl.RestFidoAuthenticate;
 import com.strongauth.skfe.client.impl.RestFidoGetKeysInfo;
 import com.strongauth.skfe.client.impl.RestFidoRegister;
 import java.util.Calendar;
@@ -98,7 +98,7 @@ public class FidoEngine {
                     if (args.length != 9)
                         System.out.println("Missing arguments...\n" + usage);
 
-                    RestFidoAuthorize.authorize(args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
+                    RestFidoAuthenticate.authenticate(args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
                     System.out.println("\nDone with Authorize!\n");
                     break;
 
@@ -114,7 +114,7 @@ public class FidoEngine {
                     if (args.length != 6)
                         System.out.println("Missing arguments...\n" + usage);
 
-                    RestFidoActionsOnKey.deactivate(args[1], args[2], args[3], args[4], args[5]);
+                    RestFidoActionsOnKey.deregister(args[1], args[2], args[3], args[4], args[5]);
                     System.out.println("\nDone with Deactivate!\n");
                     break;
 

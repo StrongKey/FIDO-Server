@@ -37,7 +37,6 @@
 
 package com.strongauth.skfe.txbeans;
 
-import com.strongauth.appliance.utilities.applianceCommon;
 import com.strongauth.appliance.utilities.applianceConstants;
 import com.strongauth.skfe.utilities.skfeLogger;
 import com.strongauth.skfe.entitybeans.FidoKeys;
@@ -59,7 +58,7 @@ import javax.json.JsonReader;
  * user registered key
  */
 @Stateless
-public class u2fDeregisterBean implements u2fDeregisterBeanLocal, u2fDeregisterBeanRemote {
+public class u2fDeregisterBean implements u2fDeregisterBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -238,10 +237,5 @@ public class u2fDeregisterBean implements u2fDeregisterBeanLocal, u2fDeregisterB
         skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", skfeCommon.getMessageProperty("FIDO-MSG-5002"), classname);
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return rv;
-    }
-    
-    @Override
-    public SKCEReturnObject remoteExecute(Long did, String keyid) {
-        return execute(did, keyid);
     }
 }

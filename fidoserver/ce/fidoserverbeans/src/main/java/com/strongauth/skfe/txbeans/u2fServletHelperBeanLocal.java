@@ -34,6 +34,10 @@
  */
 package com.strongauth.skfe.txbeans;
 
+import com.strongauth.skfe.requests.AuthenticationRequest;
+import com.strongauth.skfe.requests.PreauthenticationRequest;
+import com.strongauth.skfe.requests.PreregistrationRequest;
+import com.strongauth.skfe.requests.RegistrationRequest;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
@@ -41,23 +45,17 @@ import javax.ws.rs.core.Response;
 @Local
 public interface u2fServletHelperBeanLocal {
     
-    Response preregister(Long did, String protocol, String username, String displayName, String options, String extensions);
+    Response preregister(Long did, PreregistrationRequest preregistration);
 
-    Response register(Long did, String protocol, String response, String metadata);
+    Response register(Long did, RegistrationRequest registration);
 
-    Response preauthenticate(Long did, String protocol, String username, String options, String extensions);
+    Response preauthenticate(Long did, PreauthenticationRequest preauthentication);
 
-    Response authenticate(Long did, String protocol, String response, String metadata);
-
-    Response preauthorize(Long did, String protocol, String username, String options, String extensions);
-
-    Response authorize(Long did, String protocol, String response, String metadata);
+    Response authenticate(Long did, AuthenticationRequest authentication);
 
     Response deregister(Long did, String keyid);
 
-    String activate(String did, String protocol, String payload);
-
-    String deactivate(String did, String protocol, String payload);
+    Response patchFidoKey(Long did, String keyid, String fidokey);
 
     Response getkeysinfo(Long did, String username);
 }

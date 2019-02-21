@@ -47,7 +47,7 @@ import javax.ejb.Stateless;
  * @author pmarathe
  */
 @Stateless
-public class getDBUserInfoBean implements getDBUserInfoBeanLocal, getDBUserInfoBeanRemote {
+public class getDBUserInfoBean implements getDBUserInfoBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -93,10 +93,4 @@ public class getDBUserInfoBean implements getDBUserInfoBeanLocal, getDBUserInfoB
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return authres;
     }
-
-    @Override
-    public LDAPUserMetadata remoteExecute(Long did, String username) throws SKFEException {
-        return execute(did, username);
-    }
-
 }

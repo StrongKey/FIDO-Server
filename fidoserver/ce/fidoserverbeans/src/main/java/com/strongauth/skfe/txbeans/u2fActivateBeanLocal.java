@@ -65,9 +65,7 @@ public interface u2fActivateBeanLocal {
      *                  In success case, a simple msg saying that the process was
      *                  successful would be populated.
      */
-    SKCEReturnObject execute(String did, 
-                            String protocol,
-                            String username, 
-                            String randomid,
-                            String modifyloc);
+    SKCEReturnObject execute(Long did,
+                             String keyid,
+                             String fidokey);
 }

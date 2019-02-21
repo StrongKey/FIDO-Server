@@ -45,7 +45,7 @@ import javax.persistence.TypedQuery;
 
 
 @Stateless
-public class getServerBean implements getServerBeanLocal, getServerBeanRemote {
+public class getServerBean implements getServerBeanLocal {
 
     /**
      ** This class's name - used for logging & not persisted
@@ -93,20 +93,5 @@ public class getServerBean implements getServerBeanLocal, getServerBeanRemote {
             skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "byFqdn");
             return null;
         }
-    }
-    /**
-     * 
-     * @param fqdn
-     * @return
-     * @throws SKFEException 
-     */
-    @Override
-    public Collection<Servers> remoteByActiveSubscribers(String fqdn) throws SKFEException {
-        return this.byActiveSubscribers(fqdn);
-    }
-
-    @Override
-    public Servers remotebyFqdn(String fqdn) throws SKFEException {
-        return this.byFqdn(fqdn);
     }
 }

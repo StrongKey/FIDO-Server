@@ -460,9 +460,9 @@ public final class cryptoCommon {
         return null;
     }
 
-    public static String calculateMD5(String contentToEncode) {
+    public static String calculateHash(String contentToEncode, String hash) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
+            MessageDigest digest = MessageDigest.getInstance(hash);
             digest.update(contentToEncode.getBytes());
             return Base64.toBase64String(digest.digest());
         } catch (NoSuchAlgorithmException ex) {

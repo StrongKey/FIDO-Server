@@ -60,7 +60,7 @@ import javax.xml.bind.Marshaller;
 
 
 @Stateless
-public class addFidoUserBean implements addFidoUserBeanLocal, addFidoUserBeanRemote {
+public class addFidoUserBean implements addFidoUserBeanLocal {
 
      /*
      * This class' name - used for logging
@@ -228,10 +228,4 @@ public class addFidoUserBean implements addFidoUserBeanLocal, addFidoUserBeanRem
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return retObj.toString();
     }
-
-    @Override
-    public String remoteExecute(Long did, String username) throws SKFEException {
-        return execute(did, username);
-    }
-
 }

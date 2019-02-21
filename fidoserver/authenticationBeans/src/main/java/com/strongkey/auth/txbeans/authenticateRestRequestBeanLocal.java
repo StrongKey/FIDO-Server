@@ -45,5 +45,5 @@ public interface authenticateRestRequestBeanLocal {
     
     boolean execute(Long did, 
                     HttpServletRequest accesskey,
-                    String requestBody);
+                    Object requestBody);
 }

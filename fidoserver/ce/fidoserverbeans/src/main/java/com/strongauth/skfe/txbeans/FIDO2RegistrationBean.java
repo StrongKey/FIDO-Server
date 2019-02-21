@@ -71,7 +71,7 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 @Stateless
-public class FIDO2RegistrationBean implements FIDO2RegistrationBeanLocal, FIDO2RegistrationBeanRemote {
+public class FIDO2RegistrationBean implements FIDO2RegistrationBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -132,8 +132,8 @@ public class FIDO2RegistrationBean implements FIDO2RegistrationBeanLocal, FIDO2R
             Boolean isSignatureValid = attObject.getAttStmt().verifySignature(browserdataBase64, attObject.getAuthData());
             if (!isSignatureValid) {
                 skfeLogger.logp(skfeConstants.SKFE_LOGGER, Level.SEVERE, classname, "execute", "FIDO-MSG-2001", "Registration Signature verification : " + isSignatureValid);
-                return skfeCommon.buildRegisterResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-2001")
-                        + "Registration Signature verification : " + isSignatureValid);
+                throw new IllegalArgumentException(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-2001")
+                        + "Registration Signature verification : " + isSignatureValid));
             }
             
             AttestationCertificatesPK attCertPK = storeAttestationStatement(did, attObject.getAttStmt());
@@ -163,15 +163,15 @@ public class FIDO2RegistrationBean implements FIDO2RegistrationBeanLocal, FIDO2R
                     RSV,
                     metadataJson.getString(skfeConstants.FIDO_METADATA_KEY_CREATE_LOC));
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.FINE, "FIDO-MSG-0024", "");
-            String responseJSON = skfeCommon.buildRegisterResponse("Successfully processed registration response", "", "");
+            String responseJSON = skfeCommon.buildReturn("Successfully processed registration response");
             return responseJSON;
         }
         catch(RuntimeException | SKFEException | CertificateException | NoSuchProviderException ex){
             ex.printStackTrace();
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE,
                     skfeCommon.getMessageProperty("FIDO-ERR-2001"), ex.getLocalizedMessage());
-            return skfeCommon.buildRegisterResponse("", "", skfeCommon.getMessageProperty("FIDO-ERR-2001")
-                    + ex.getLocalizedMessage());
+            throw new IllegalArgumentException(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-2001")
+                    + ex.getLocalizedMessage()));
         }
     }
     
@@ -392,10 +392,5 @@ public class FIDO2RegistrationBean implements FIDO2RegistrationBeanLocal, FIDO2R
         }
         
         return Base64.getUrlEncoder().encodeToString(registrationSettings.build().toString().getBytes());
-    }
-
-    @Override
-    public String remoteExecute(Long did, String registrationresponse, String registrationmetadata) {
-        return execute(did, registrationresponse, registrationmetadata);
     }
 }

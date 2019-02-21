@@ -48,7 +48,7 @@ import org.apache.http.util.EntityUtils;
 
 public class RestFidoActionsOnKey {
 
-    public static void deactivate(String REST_URI, 
+    public static void deregister(String REST_URI, 
                                 String did, 
                                 String accesskey, 
                                 String secretkey, 
@@ -56,6 +56,8 @@ public class RestFidoActionsOnKey {
     {
         System.out.println("Deactivate key test");
         System.out.println("******************************************");
+
+        String version = "2.0";
 
         //  Make SKFE rest call and get response from the server
         String resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.DEACTIVATE_ENDPOINT + "/" + keyid;
@@ -71,11 +73,13 @@ public class RestFidoActionsOnKey {
                 + contentMD5 + "\n"
                 + contentType + "\n"
                 + currentDate + "\n"
-                + httpDelete.getURI().getPath() + "?" + httpDelete.getURI().getQuery();
+                + version + "\n"
+                + httpDelete.getURI().getPath();
 
         String hmac = common.calculateHMAC(secretkey, requestToHmac);
         httpDelete.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
         httpDelete.addHeader("Date", currentDate);
+        httpDelete.addHeader("strongkey-api-version", version);
         CloseableHttpResponse response = httpclient.execute(httpDelete);
         String result;
         try {
@@ -120,6 +124,8 @@ public class RestFidoActionsOnKey {
         System.out.println("Update key test");
         System.out.println("******************************************");
 
+        String version = "2.0";
+
         //  Make SKFE rest call and get response from the server
         String resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.UPDATE_ENDPOINT + "/" + keyid;
         System.out.println("\nCalling update @ " + resourceLoc);
@@ -134,11 +140,13 @@ public class RestFidoActionsOnKey {
                 + contentMD5 + "\n"
                 + contentType + "\n"
                 + currentDate + "\n"
-                + httpPatch.getURI().getPath() + "?" + httpPatch.getURI().getQuery();
+                + version + "\n"
+                + httpPatch.getURI().getPath();
 
         String hmac = common.calculateHMAC(secretkey, requestToHmac);
         httpPatch.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
         httpPatch.addHeader("Date", currentDate);
+        httpPatch.addHeader("strongkey-api-version", version);
         CloseableHttpResponse response = httpclient.execute(httpPatch);
         String result;
         try {

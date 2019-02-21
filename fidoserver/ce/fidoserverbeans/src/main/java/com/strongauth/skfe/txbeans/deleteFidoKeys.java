@@ -53,7 +53,7 @@ import javax.persistence.PersistenceContext;
 
 
 @Stateless
-public class deleteFidoKeys implements deleteFidoKeysLocal, deleteFidoKeysRemote {
+public class deleteFidoKeys implements deleteFidoKeysLocal {
  /**
      ** This class's name - used for logging & not persisted
      **/
@@ -170,10 +170,4 @@ public class deleteFidoKeys implements deleteFidoKeysLocal, deleteFidoKeysRemote
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return retObj.toString();
     }
-
-    @Override
-    public String remoteExecute(Short sid, Long did, String username, Long fkid) {
-        return execute(sid, did, username, fkid);
-    }
-
 }

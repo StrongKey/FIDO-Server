@@ -46,7 +46,7 @@ import java.util.logging.Level;
 import javax.ejb.Stateless;
 
 @Stateless
-public class u2fRegisterBean implements u2fRegisterBeanLocal, u2fRegisterBeanRemote {
+public class u2fRegisterBean implements u2fRegisterBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -113,12 +113,5 @@ public class u2fRegisterBean implements u2fRegisterBeanLocal, u2fRegisterBeanRem
         skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", skfeCommon.getMessageProperty("FIDO-MSG-5002"), classname);
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return fr;
-    }
-    
-    @Override
-    public FEreturn remoteExecute(String did, 
-                            String protocol,
-                            String regresponseJson) throws SKFEException {
-        return execute(did, protocol, regresponseJson);
     }
 }

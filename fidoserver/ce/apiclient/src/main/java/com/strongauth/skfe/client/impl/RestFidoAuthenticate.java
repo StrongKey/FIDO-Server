@@ -6,15 +6,16 @@
  */
 package com.strongauth.skfe.client.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.strongauth.skceclient.common.Constants;
-import static com.strongauth.skceclient.common.common.calculateHMAC;
-import static com.strongauth.skceclient.common.common.calculateMD5;
+import com.strongauth.skceclient.common.common;
 import com.strongauth.skfe.fido2.Fido2TokenSim;
+import com.strongauth.skfe.requests.AuthenticationRequest;
+import com.strongauth.skfe.requests.PreauthenticationRequest;
 import com.strongauth.skfe.tokensim.FIDOU2FTokenSimulator;
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -23,11 +24,7 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -41,19 +38,18 @@ import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParserFactory;
 import org.apache.commons.codec.DecoderException;
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-public class RestFidoAuthorize {
+public class RestFidoAuthenticate {
 
-    public static void authorize(String REST_URI, 
+    public static void authenticate(String REST_URI, 
             String did, 
             String accesskey, 
             String secretkey, 
@@ -65,15 +61,20 @@ public class RestFidoAuthorize {
         System.out.println("Authentication test");
         System.out.println("*******************************");
 
+        String version = "2.0";
         // Build payload
-        List<NameValuePair> nvps = new ArrayList<>();
-        nvps.add(new BasicNameValuePair("username", accountname));
-        nvps.add(new BasicNameValuePair("protocol", fidoprotocol));
-        HttpEntity body = new UrlEncodedFormEntity(nvps);
 
-        String contentType = "application/x-www-form-urlencoded";
+        PreauthenticationRequest preauth = new PreauthenticationRequest();
+        preauth.setProtocol(fidoprotocol);
+        preauth.setUsername(accountname);
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(preauth);
+
+        ContentType mimetype = ContentType.APPLICATION_JSON;
+        StringEntity body = new StringEntity(json, mimetype);
+
         String currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
-        String contentMD5 = calculateMD5(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+        String contentSHA = common.calculateSha256(json);
 
         String resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.PRE_AUTH_ENDPOINT;
 
@@ -81,16 +82,18 @@ public class RestFidoAuthorize {
         HttpPost httpPost = new HttpPost(resourceLoc);
         httpPost.setEntity(body);
         String requestToHmac = httpPost.getMethod() + "\n"
-                + contentMD5 + "\n"
-                + contentType + "\n"
+                + contentSHA + "\n"
+                + mimetype.getMimeType() + "\n"
                 + currentDate + "\n"
+                + version + "\n"
                 + httpPost.getURI().getPath();
 
-        String hmac = calculateHMAC(secretkey, requestToHmac);
+        String hmac = common.calculateHMAC(secretkey, requestToHmac);
         httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
-        httpPost.addHeader("Content-MD5", contentMD5);
-        httpPost.addHeader("content-type", contentType);
+        httpPost.addHeader("strongkey-content-sha256", contentSHA);
+        httpPost.addHeader("Content-Type", mimetype.getMimeType());
         httpPost.addHeader("Date", currentDate);
+        httpPost.addHeader("strongkey-api-version", version);
 
         //  Make SKFE rest call and get response from the server
         System.out.println("\nCalling preauthorize @ " + resourceLoc);
@@ -130,7 +133,7 @@ public class RestFidoAuthorize {
         jsonReader.close();
 
         System.out.println("\n Authentication Parameters:\n");
-        String challenge = responseJSON.getJsonObject("Challenge").toString();
+        String challenge = responseJSON.getJsonObject("Response").toString();
         s = new StringReader(challenge);
 
         jsonReader = Json.createReader(s);
@@ -234,36 +237,35 @@ public class RestFidoAuthorize {
                 .add(Constants.JSON_KEY_SERVLET_INPUT_USERNAME, accountname).
                 build();
 
-        nvps = new ArrayList<>();
-        nvps.add(new BasicNameValuePair("username", accountname));
-        nvps.add(new BasicNameValuePair("protocol", fidoprotocol));
-        nvps.add(new BasicNameValuePair("response", input.toString()));
-        nvps.add(new BasicNameValuePair("metadata", auth_metadata.toString()));
+        ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        AuthenticationRequest auth = new AuthenticationRequest();
+        auth.setProtocol(fidoprotocol);
+        auth.setResponse(input.toString());
+        auth.setMetadata(auth_metadata.toString());
+        json = ow.writeValueAsString(auth);
+        body = new StringEntity(json, mimetype);
 
-        System.out.println(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
-
-        body = new UrlEncodedFormEntity(nvps);
-
-        contentType = "application/x-www-form-urlencoded";
         currentDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z").format(new Date());
-        contentMD5 = calculateMD5(EntityUtils.toString(new UrlEncodedFormEntity(nvps)));
+        contentSHA = common.calculateSha256(json);
 
-        resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.AUTHORIZE_ENDPOINT;
+        resourceLoc = REST_URI + Constants.REST_SUFFIX + did + Constants.AUTHENTICATE_ENDPOINT;
 
         httpclient = HttpClients.createDefault();
         httpPost = new HttpPost(resourceLoc);
         httpPost.setEntity(body);
         requestToHmac = httpPost.getMethod() + "\n"
-                + contentMD5 + "\n"
-                + contentType + "\n"
+                + contentSHA + "\n"
+                + mimetype.getMimeType() + "\n"
                 + currentDate + "\n"
+                + version + "\n"
                 + httpPost.getURI().getPath();
 
-        hmac = calculateHMAC(secretkey, requestToHmac);
+        hmac = common.calculateHMAC(secretkey, requestToHmac);
         httpPost.addHeader("Authorization", "HMAC " + accesskey + ":" + hmac);
-        httpPost.addHeader("Content-MD5", contentMD5);
-        httpPost.addHeader("content-type", contentType);
+        httpPost.addHeader("strongkey-content-sha256", contentSHA);
+        httpPost.addHeader("Content-Type", mimetype.getMimeType());
         httpPost.addHeader("Date", currentDate);
+        httpPost.addHeader("strongkey-api-version", version);
 
         //  Make SKFE rest call and get response from the server
         System.out.println("\nCalling authorize @ " + resourceLoc);

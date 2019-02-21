@@ -65,7 +65,7 @@ import javax.xml.bind.Marshaller;
  * EJB to perform ldap based user or group's attribute value changes
  */
 @Stateless
-public class updateFidoUserBean implements updateFidoUserBeanLocal, updateFidoUserBeanRemote {
+public class updateFidoUserBean implements updateFidoUserBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -321,15 +321,5 @@ public class updateFidoUserBean implements updateFidoUserBeanLocal, updateFidoUs
         retObj = Json.createObjectBuilder().add("status", status).add("message", skfeCommon.getMessageProperty("FIDOJPA-MSG-2010")).build();
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER, classname, "execute");
         return retObj.toString();
-
-    }
-
-    @Override
-    public String remoteExecute(Long did,
-            String username,
-            String key,
-            String value,
-            boolean deletion) throws SKFEException {
-        return execute(did, username, key, value, deletion);
     }
 }

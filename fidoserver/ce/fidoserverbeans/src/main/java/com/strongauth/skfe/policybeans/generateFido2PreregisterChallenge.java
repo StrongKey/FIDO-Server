@@ -57,7 +57,6 @@ import com.strongauth.skfe.pojos.RegistrationSettings;
 import com.strongauth.skfe.txbeans.getFidoKeysLocal;
 import com.strongauth.skfe.messaging.replicateSKFEObjectBeanLocal;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.Collection;
@@ -90,18 +89,18 @@ public class generateFido2PreregisterChallenge implements generateFido2Preregist
         //  fetch the username
         if (username == null || username.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0002", " username");
-            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username");
+            throw new IllegalArgumentException(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username"));
         }
         if (displayName == null || displayName.isEmpty()) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0002", " username");
-            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username");
+            throw new IllegalArgumentException(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-0002") + " username"));
         }
         
         //Gather useful information
         FidoPolicyObject fidoPolicy = getpolicybean.getPolicyByDidUsername(did, username);
         if(fidoPolicy == null){
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0002", "No policy found");
-            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + "No policy found");
+            throw new IllegalArgumentException(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-0002") + "No policy found"));
         }
         RegistrationPolicyOptions regOp = fidoPolicy.getRegistrationOptions();
         String userId = getUserId(did, username, regOp.getUseridLength());
@@ -128,7 +127,7 @@ public class generateFido2PreregisterChallenge implements generateFido2Preregist
         }
         catch (NoSuchAlgorithmException | NoSuchProviderException | UnsupportedEncodingException | SKFEException ex) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0003", ex.getLocalizedMessage());
-            return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0003") + ex.getLocalizedMessage());
+            throw new IllegalArgumentException(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-0003") + ex.getLocalizedMessage()));
         }
         
         if(fidoPolicy.getTimeout() != null){
@@ -176,7 +175,9 @@ public class generateFido2PreregisterChallenge implements generateFido2Preregist
         
         skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-0021"), " username=" + username);
         
-        String response = skfeCommon.buildPreRegisterResponse(returnObject, "", "");
+        String response = Json.createObjectBuilder()
+                .add(skfeConstants.JSON_KEY_SERVLET_RETURN_RESPONSE, returnObject)
+                .build().toString();
         skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.FINE, "FIDO-MSG-2001",
                 "FIDO 2.0 Response : " + response);
         skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.FINE, "FIDO-MSG-0035", "");

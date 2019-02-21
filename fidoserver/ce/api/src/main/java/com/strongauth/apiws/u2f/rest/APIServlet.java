@@ -7,22 +7,14 @@
 package com.strongauth.apiws.u2f.rest;
 
 import com.strongauth.apiws.utility.PATCH;
-import com.strongauth.appliance.utilities.applianceCommon;
-import com.strongauth.appliance.utilities.strongkeyLogger;
-import com.strongauth.skce.jaxb.SKCEServiceInfoType;
-import com.strongauth.skce.utilities.SKCEException;
-import com.strongauth.skfe.utilities.skfeCommon;
-import com.strongauth.skfe.utilities.skfeConstants;
+import com.strongauth.skfe.requests.AuthenticationRequest;
+import com.strongauth.skfe.requests.PreauthenticationRequest;
+import com.strongauth.skfe.requests.PreregistrationRequest;
+import com.strongauth.skfe.requests.RegistrationRequest;
 import com.strongauth.skfe.txbeans.u2fServletHelperBeanLocal;
 import com.strongkey.auth.txbeans.authenticateRestRequestBeanLocal;
-import com.strongkey.auth.txbeans.authorizeLdapUserBeanLocal;
-import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -55,15 +47,8 @@ public class APIServlet {
      * challenge and returns the same to the caller, which typically is a
      * Relying Party (RP) application.
      *
-     * @param requestbody - String The full body for auth purposes
+     * @param preregistration - String The full body for auth purposes
      * @param did - Long value of the domain to service this request
-     * @param protocol - String value of the protocol to use
-     * @param username - String user for which to create the pre-registration
-     * request
-     * @param displayname - String user for which to create the pre-registration
-     * request
-     * @param options - String json value of options to use for FIDO2
-     * @param extensions - String json value of extensions to use for FIDO2
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Challenge' : 'U2F Reg Challenge parameters; a json again' 2.
      * 'Message' : String, with a list of messages that explain the process. 3.
@@ -72,21 +57,16 @@ public class APIServlet {
      */
     @POST
     @Path("/challenge")
-    @Consumes({"application/x-www-form-urlencoded"})
+    @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response preregister(String requestbody,
-                                @PathParam("did") Long did,
-                                @FormParam("protocol") String protocol,
-                                @FormParam("username") String username,
-                                @FormParam("displayname") String displayname,
-                                @FormParam("options") String options,
-                                @FormParam("extensions") String extensions) {
-        
-        if (!authRest.execute(did, request, requestbody)) {
+    public Response preregister(PreregistrationRequest preregistration,
+                                @PathParam("did") Long did) {
+
+        if (!authRest.execute(did, request, preregistration)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
-        return u2fHelperBean.preregister(did, protocol, username, displayname, options, extensions);
+        return u2fHelperBean.preregister(did, preregistration);
     }
 
     /**
@@ -98,11 +78,9 @@ public class APIServlet {
      * should happen with in a certain time limit after the preregister is
      * finished; otherwise, the user session would be invalidated.
      *
-     * @param requestbody - String The full body for auth purposes
+     * @param registration - String The full body for auth purposes
      * @param did - Long value of the domain to service this request
-     * @param protocol - String value of the protocol to use
-     * @param response - String 
-     * @param metadata - String
+
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Response' : String, with a simple message telling if the process was
      * successful or not. 2. 'Message' : String, with a list of messages that
@@ -111,28 +89,24 @@ public class APIServlet {
      */
     @POST
     @Path("")
-    @Consumes({"application/x-www-form-urlencoded"})
+    @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response register(String requestbody,
-                             @PathParam("did") Long did,
-                             @FormParam("protocol") String protocol,
-                             @FormParam("response") String response,
-                             @FormParam("metadata") String metadata) {
+    public Response register(RegistrationRequest registration,
+                             @PathParam("did") Long did) {
 
-        if (!authRest.execute(did, request, requestbody)) {
+        if (!authRest.execute(did, request, registration)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
-        return u2fHelperBean.register(did, protocol, response, metadata);
+        return u2fHelperBean.register(did, registration);
     }
 
     /**
      * Step-1 for fido authenticator authentication. This methods generates a
      * challenge and returns the same to the caller.
      *
-     * @param requestbody - String The full body for auth purposes
+     * @param preauthentication- String The full body for auth purposes
      * @param did - Long value of the domain to service this request
-     * @param protocol - String value of the protocol to use
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Challenge' : 'U2F Auth Challenge parameters; a json again' 2.
      * 'Message' : String, with a list of messages that explain the process. 3.
@@ -141,20 +115,16 @@ public class APIServlet {
      */
     @POST
     @Path("/authenticate/challenge")
-    @Consumes({"application/x-www-form-urlencoded"})
+    @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response preauthenticate(String requestbody,
-                                    @PathParam("did") Long did,
-                                    @FormParam("protocol") String protocol,
-                                    @FormParam("username") String username,
-                                    @FormParam("options") String options,
-                                    @FormParam("extensions") String extensions) {
+    public Response preauthenticate(PreauthenticationRequest preauthentication,
+                                    @PathParam("did") Long did) {
 
-        if (!authRest.execute(did, request, requestbody)) {
+        if (!authRest.execute(did, request, preauthentication)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        return u2fHelperBean.preauthenticate(did, protocol, username, options, extensions);
+        return u2fHelperBean.preauthenticate(did, preauthentication);
     }
 
     /**
@@ -167,9 +137,8 @@ public class APIServlet {
      * preauthenticate is finished; otherwise, the user session would be
      * invalidated.
      *
-     * @param requestbody - String The full body for auth purposes
+     * @param authentication - String The full body for auth purposes
      * @param did - Long value of the domain to service this request
-     * @param protocol - String value of the protocol to use
      * 
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Response' : String, with a simple message telling if the process was
@@ -179,103 +148,16 @@ public class APIServlet {
      */
     @POST
     @Path("/authenticate")
-    @Consumes({"application/x-www-form-urlencoded"})
+    @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response authenticate(String requestbody,
-                                 @PathParam("did") Long did,
-                                 @FormParam("protocol") String protocol,
-                                 @FormParam("response") String response,
-                                 @FormParam("metadata") String metadata) {
+    public Response authenticate(AuthenticationRequest authentication,
+                                 @PathParam("did") Long did) {
 
-        if (!authRest.execute(did, request, requestbody)) {
+        if (!authRest.execute(did, request, authentication)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        return u2fHelperBean.authenticate(did, protocol, response, metadata);
-    }
-
-    /**
-     * Step-1 for fido based transaction confirmation using u2f authenticator.
-     * This methods generates a challenge and returns the same to the caller.
-     *
-     * @param svcinfo - Object that carries SKCE service information.
-     * Information bundled is :
-     * 
-     * (1) did - Unique identifier for a SKCE encryption domain (2) svcusername
-     * - SKCE service credentials : username requesting the service. The service
-     * credentials are looked up in the 'service' setup of authentication system
-     * based on LDAP / AD. The user should be authorized to encrypt. (3)
-     * svcpassword - SKCE service credentials : password of the service username
-     * specified above (4) protocol - U2F protocol version to comply with.
-     * 
-     * @param payload - String indicating transaction reference.
-     * @return - A Json in String format. The Json will have 3 key-value pairs;
-     * 1. 'Challenge' : 'U2F Auth Challenge parameters; a json again' 2.
-     * 'Message' : String, with a list of messages that explain the process. 3.
-     * 'Error' : String, with error message incase something went wrong. Will be
-     * empty if successful.
-     */
-    @POST
-    @Path("/authorize/challenge")
-    @Consumes({"application/x-www-form-urlencoded"})
-    @Produces({"application/json"})
-    public Response preauthorize(String requestbody,
-                                 @PathParam("did") Long did,
-                                 @FormParam("protocol") String protocol,
-                                 @FormParam("username") String username,
-                                 @FormParam("options") String options,
-                                 @FormParam("extensions") String extensions) {
-
-        if (!authRest.execute(did, request, requestbody)) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        return u2fHelperBean.preauthorize(did, protocol, username, options, extensions);
-    }
-
-    /**
-     * Step-2 or last step for fido based transaction confirmation using a u2f
-     * authenticator. This method receives the u2f authentication response
-     * parameters which is processed and the authorization result is notified
-     * back to the caller.
-     *
-     * Both preauthorize and authorize methods are time linked. Meaning,
-     * authorize should happen with in a certain time limit after the
-     * preauthorize is finished; otherwise, the user session would be
-     * invalidated.
-     *
-     * @param svcinfo - Object that carries SKCE service information.
-     * Information bundled is :
-     * 
-     * (1) did - Unique identifier for a SKCE encryption domain (2) svcusername
-     * - SKCE service credentials : username requesting the service. The service
-     * credentials are looked up in thaf9dd4a68c94ab8383980042ebd479113dc23b21e 'service' setup of authentication system
-     * based on LDAP / AD. The user should be authorized to encrypt. (3)
-     * svcpassword - SKCE service credentials : password of the service username
-     * specified above
-     *
-     * @param payload * @return - A Json in String format. The Json will have 3
-     * key-value pairs; 1. 'Response' : String, with a simple message telling if
-     * the process was successful or not. 2. 'Message' : String, with a list of
-     * messages that explain the process. 3. 'Error' : String, with error
-     * message incase something went wrong. Will be empty if successful.
-     * @return 
-     */
-    @POST
-    @Path("/authorize")
-    @Consumes({"application/x-www-form-urlencoded"})
-    @Produces({"application/json"})
-    public Response authorize(String requestbody,
-                              @PathParam("did") Long did,
-                              @FormParam("protocol") String protocol,
-                              @FormParam("response") String response,
-                              @FormParam("metadata") String metadata) {
-
-        if (!authRest.execute(did, request, requestbody)) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        return u2fHelperBean.authorize(did, protocol, response, metadata);
+        return u2fHelperBean.authenticate(did, authentication);
     }
 
     /**
@@ -284,18 +166,8 @@ public class APIServlet {
      * id to point to a unique registered key for that user. This random id can
      * be obtained by calling getkeysinfo method.
      *
-     * @param svcinfo - Object that carries SKCE service information.
-     * Information bundled is :
-     * 
-     * (1) did - Unique identifier for a SKCE encryption domain (2) svcusername
-     * - SKCE service credentials : username requesting the service. The service
-     * credentials are looked up in the 'service' setup of authentication system
-     * based on LDAP / AD. The user should be authorized to encrypt. (3)
-     * svcpassword - SKCE service credentials : password of the service username
-     * specified above (4) protocol - U2F protocol version to comply with.
-     * 
-     * @param payload - U2F de-registration parameters in Json form. Should
-     * contain username and randomid.
+     * @param did - Long value of the domain to service this request
+     * @param kid - String value of the key to deregister
      * @return - A Json in String format. The Json will have 3 key-value pairs;
      * 1. 'Response' : String, with a simple message telling if the process was
      * successful or not. 2. 'Message' : Empty string since there is no
@@ -303,17 +175,16 @@ public class APIServlet {
      * error message incase something went wrong. Will be empty if successful.
      */
     @DELETE
-    @Path("/{id}")
-    @Consumes({"application/x-www-form-urlencoded"})
+    @Path("/{kid}")
     @Produces({"application/json"})
     public Response deregister(@PathParam("did") Long did,
-                               @PathParam("keyid") String keyid) {
+                               @PathParam("kid") String kid) {
 
         if (!authRest.execute(did, request, null)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        return u2fHelperBean.deregister(did, keyid);
+        return u2fHelperBean.deregister(did, kid);
     }
 
     /**
@@ -341,55 +212,19 @@ public class APIServlet {
      * cryptographic work involved in activation 3. 'Error' : String, with error
      * message incase something went wrong. Will be empty if successful.
      */
-//    @PATCH
-//    @Path("/{id}")
-//    @Consumes({"application/x-www-form-urlencoded"})
-//    @Produces({"application/json"})
-//    public Response status(@FormParam("svcinfo") String svcinfo,
-//            @FormParam("payload") String payload) {
-//        //  Local variables       
-//        //  Service credentials
-//        String did;
-//        String svcusername;
-//        String svcpassword;
-//        String protocol;
-//        
-//        //  SKCE domain id validation
-//        try {
-//            SKCEServiceInfoType si = basicInputChecks("activate", svcinfo);
-//            did = Integer.toString(si.getDid());
-//            svcusername = si.getSvcusername();
-//            svcpassword = si.getSvcpassword();
-//            protocol = si.getProtocol();
-//
-////            skfeCommon.inputValidateSKCEDid(did);
-//        } catch (SKCEException ex) {
-//            return skfeCommon.buildDeactivateResponse(null, "", ex.getLocalizedMessage());
-//        }
-//        
-//        //  2. Input checks
-//        if (svcusername == null || svcusername.isEmpty()) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " svcusername");
-//            return skfeCommon.buildActivateResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " svcusername");
-//        }
-//        if (svcpassword == null) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0002", " svcpassword");
-//            return skfeCommon.buildActivateResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0002") + " svcpassword");
-//        }
-//        //authenticate
-//        boolean isAuthorized;
-//        try {
-//            isAuthorized = authorizebean.execute(Long.parseLong(did), svcusername, svcpassword, skfeConstants.LDAP_ROLE_FIDO);
-//        } catch (SKCEException ex) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, skfeCommon.getMessageProperty("FIDO-ERR-0003"), ex.getMessage());
-//            return skfeCommon.buildActivateResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0003") + ex.getMessage());
-//        }
-//        if (!isAuthorized) {
-//            strongkeyLogger.log(skfeConstants.SKFE_LOGGER,Level.SEVERE, "FIDO-ERR-0033", "");
-//            return skfeCommon.buildActivateResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0033"));
-//        }
-//        return u2fHelperBean.activate(did, protocol, payload);
-//    }
+    @PATCH
+    @Path("/{id}")
+    @Consumes({"application/merge-patch+json"})
+    @Produces({"application/json"})
+    public Response status(String requestbody,
+                           @PathParam("did") Long did,
+                           @PathParam("kid") String kid) {
+
+        if (!authRest.execute(did, request, requestbody)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return u2fHelperBean.patchFidoKey(did, kid, requestbody);
+    }
 
     /**
      * Method to return a list of user registered fido authenticator
@@ -410,7 +245,6 @@ public class APIServlet {
      */
     @GET
     @Path("")
-    @Consumes({"application/x-www-form-urlencoded"})
     @Produces({"application/json"})
     public Response getkeysinfo(@PathParam("did") Long did,
                                 @QueryParam("username") String username) {

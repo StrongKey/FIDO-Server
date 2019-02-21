@@ -90,14 +90,14 @@ public class generateFido2PreauthenticateChallenge implements generateFido2Preau
         try{
             userId = getUserId(did, username);
         } catch (SKFEException ex) {
-            return skfeCommon.buildPreAuthResponse(null, "", ex.getLocalizedMessage());
+            throw new IllegalArgumentException(skfeCommon.buildReturn(ex.getLocalizedMessage()));
         }
         
         //Gather useful information
         FidoPolicyObject fidoPolicy = getpolicybean.getPolicyByDidUsername(did, username);
         if (fidoPolicy == null) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0009", "No policy found");
-            return skfeCommon.buildPreRegisterResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0009") + "No policy found");
+            throw new IllegalArgumentException(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-0009") + "No policy found"));
         }
         String challenge = generateChallenge(fidoPolicy.getCryptographyOptions());
         
@@ -148,14 +148,16 @@ public class generateFido2PreauthenticateChallenge implements generateFido2Preau
 
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.FINE, skfeCommon.getMessageProperty("FIDO-MSG-0021"), " username=" + username);
 
-            String response = skfeCommon.buildPreRegisterResponse(returnObjectBuilder.build(), "", "");
+            String response = Json.createObjectBuilder()
+                    .add(skfeConstants.JSON_KEY_SERVLET_RETURN_RESPONSE, returnObjectBuilder.build())
+                    .build().toString();
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.FINE, "FIDO-MSG-2001",
                     "FIDO 2.0 Response : " + response);
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.FINE, "FIDO-MSG-0035", "");
             return response;
         } catch (SKFEException | NoSuchAlgorithmException | NoSuchProviderException | UnsupportedEncodingException ex) {
             skfeLogger.log(skfeConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0009", ex.getLocalizedMessage());
-            return skfeCommon.buildPreAuthResponse(null, "", skfeCommon.getMessageProperty("FIDO-ERR-0009") + ex.getLocalizedMessage());
+            throw new IllegalArgumentException(skfeCommon.buildReturn(skfeCommon.getMessageProperty("FIDO-ERR-0009") + ex.getLocalizedMessage()));
         }
     }
     

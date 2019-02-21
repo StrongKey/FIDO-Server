@@ -885,43 +885,8 @@ Y88b  d88P Y88..88P 888  888 888    888 Y88b 888 Y88b 888 888     888  888 Y88b.
  /*
      * Internal methods to build wsresponse json object
      */
-    public static String buildPreRegisterResponse(JsonObject challenge, String message, String error) {
-        FIDOReturnObject fro = new FIDOReturnObject(skfeConstants.FIDO_METHOD_PREREGISTER, challenge, "", message, error);
-        return fro.toJsonString();
-    }
-
-    public static String buildRegisterResponse(String response, String message, String error) {
-        FIDOReturnObject fro = new FIDOReturnObject(skfeConstants.FIDO_METHOD_REGISTER, null, response, message, error);
-        return fro.toJsonString();
-    }
-
-    public static String buildPreAuthResponse(JsonObject challenge, String message, String error) {
-        FIDOReturnObject fro = new FIDOReturnObject(skfeConstants.FIDO_METHOD_PREAUTH, challenge, "", message, error);
-        return fro.toJsonString();
-    }
-
-    public static String buildAuthenticateResponse(String response, String message, String error) {
-        FIDOReturnObject fro = new FIDOReturnObject(skfeConstants.FIDO_METHOD_AUTHENTICATE, null, response, message, error);
-        return fro.toJsonString();
-    }
-
-    public static String buildGetKeyInfoResponse(JsonObject info, String message, String error) {
-        FIDOReturnObject fro = new FIDOReturnObject(skfeConstants.FIDO_METHOD_GETKEYSINFO, info, "", message, error);
-        return fro.toJsonString();
-    }
-
-    public static String buildDeregisterResponse(String response, String message, String error) {
-        FIDOReturnObject fro = new FIDOReturnObject(skfeConstants.FIDO_METHOD_DEREGISTER, null, response, message, error);
-        return fro.toJsonString();
-    }
-
-    public static String buildDeactivateResponse(String response, String message, String error) {
-        FIDOReturnObject fro = new FIDOReturnObject(skfeConstants.FIDO_METHOD_DEACTIVATE, null, response, message, error);
-        return fro.toJsonString();
-    }
-
-    public static String buildActivateResponse(String response, String message, String error) {
-        FIDOReturnObject fro = new FIDOReturnObject(skfeConstants.FIDO_METHOD_ACTIVATE, null, response, message, error);
+    public static String buildReturn(String response) {
+        FIDOReturnObject fro = new FIDOReturnObject(response);
         return fro.toJsonString();
     }
 }

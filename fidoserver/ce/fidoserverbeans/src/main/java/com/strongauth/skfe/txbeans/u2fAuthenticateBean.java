@@ -44,7 +44,7 @@ import java.util.logging.Level;
 import javax.ejb.Stateless;
 
 @Stateless
-public class u2fAuthenticateBean implements u2fAuthenticateBeanLocal, u2fAuthenticateBeanRemote {
+public class u2fAuthenticateBean implements u2fAuthenticateBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -120,15 +120,5 @@ public class u2fAuthenticateBean implements u2fAuthenticateBeanLocal, u2fAuthent
         skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", skfeCommon.getMessageProperty("FIDO-MSG-5002"), classname);
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return fr;
-    }
-    
-    @Override
-    public FEreturn remoteExecute(Long did, 
-                                String protocol,
-                                String authresponseJson, 
-                                String userpublickey,
-                                String challenge,
-                                String appid) throws SKFEException {
-        return execute(did, protocol, authresponseJson, userpublickey, challenge, appid);
     }
 }

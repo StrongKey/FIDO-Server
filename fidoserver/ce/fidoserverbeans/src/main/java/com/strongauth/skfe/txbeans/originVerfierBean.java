@@ -46,7 +46,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 @Stateless
-public class originVerfierBean implements originVerfierBeanLocal, originVerifierBeanRemote {
+public class originVerfierBean implements originVerfierBeanLocal {
 
     @Override
     public boolean execute(String appid, String origin) {
@@ -114,10 +114,5 @@ public class originVerfierBean implements originVerfierBeanLocal, originVerifier
             e.printStackTrace();
         }
         return false;
-    }
-
-    @Override
-    public boolean remoteexecute(String appid, String origin) {
-        return execute(appid, origin);
     }
 }

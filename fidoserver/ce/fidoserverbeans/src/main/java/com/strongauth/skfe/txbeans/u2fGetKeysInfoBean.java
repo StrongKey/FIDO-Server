@@ -59,7 +59,7 @@ import javax.json.JsonObject;
  * as a meta data array.
  */
 @Stateless
-public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysInfoBeanRemote {
+public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal {
 
     /*
      * This class' name - used for logging
@@ -229,11 +229,5 @@ public class u2fGetKeysInfoBean implements u2fGetKeysInfoBeanLocal, u2fGetKeysIn
         skfeLogger.logp(skfeConstants.SKFE_LOGGER,Level.FINE, classname, "execute", skfeCommon.getMessageProperty("FIDO-MSG-5002"), classname);
         skfeLogger.exiting(skfeConstants.SKFE_LOGGER,classname, "execute");
         return skcero;
-    }
-    
-    @Override
-    public SKCEReturnObject remoteExecute(Long did, 
-                                        String username) {
-        return execute(did, username);
     }
 }

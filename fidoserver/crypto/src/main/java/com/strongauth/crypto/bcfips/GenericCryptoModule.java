@@ -219,7 +219,7 @@ public class GenericCryptoModule {
 
         SecretKey key = (SecretKey) sk;
 
-        return Base64.toBase64String(cryptoCommon.calculateHmac(key, request.getBytes(), "HmacSHA1"));
+        return Base64.toBase64String(cryptoCommon.calculateHmac(key, request.getBytes(), "HmacSHA256"));
     }
 
     public PrivateKey getXMLSignatureSigningKey(String secret, String signingdn) throws CryptoException {

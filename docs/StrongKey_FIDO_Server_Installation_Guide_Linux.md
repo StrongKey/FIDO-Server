@@ -174,17 +174,13 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
     
 3.  Click  **New**. A page opens to create a new JDBC connection pool. Enter the information as shown here:
     
-    | ---Field--- | ---Value--- |
+    | Field | Value |
     |-------------|-------------|
     | _Pool name_ | **SKFSPool** |
-    
-    _Resource Type_
-    
-    **javax.sql.ConnectionPoolDataSource**
-    
-    _Database Driver Vendor_
-    
-    **MariaDB**
+    |-------------|-------------|
+    | _Resource Type_ | **javax.sql.ConnectionPoolDataSource** |
+    | _Database Driver Vendor_ | **MariaDB** |
+    |-------------|-------------|
     
 4.  Click  **Next**. On the next page, scroll down to the  _Additional properties_  section. This is where you must specify the  _database name_,  _hostname_,  _port_, and  _user credentials_  for access. Delete all the existing values and add the new values as shown here:
     

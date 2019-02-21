@@ -181,13 +181,16 @@ The StrongKey FIDO Server is completely configurable to suit a specific enterpri
     
     `vi /etc/bashrc`
     
-3.  **Add this line** at the end of the file:
+3.  **Add these lines** at the end of the file:
     
     `export FIDOSERVER_HOME=/usr/local/strongkey/skfs`
+    `export GLASSFISH_HOME=/usr/local/strongkey/payara41/glassfish/`
+    `PATH=$GLASSFISH_HOME/bin:$PATH`
     
 4.  **Save** and **close** the file and **exit** out of _root_. 
     
     `:wq`
+    `exec bash`
 
 ## Install and Configure Payara
 
@@ -201,11 +204,7 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
     
     `unzip payara-4.1.2.181.zip -d /usr/local/strongkey`
 
-3.  Create the _GLASSFISH_HOME_ **environment variable**:
-    
-    `GLASSFISH_HOME=/usr/local/strongkey/payara41/glassfish/ export GLASSFISH_HOME=/usr/local/strongkey/payara41/glassfish/ PATH=$GLASSFISH_HOME/bin:$PATH`
-
-4.  **Download and copy** the [MariaDB JDBC driver .JAR](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar) file into the Payara _/lib_ directory.
+4673.  **Download and copy** the [MariaDB JDBC driver .JAR](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar) file into the Payara _/lib_ directory.
     
     `cp {jar-location}/mariadb-java-client-2.2.2.jar /usr/local/strongkey/payara41/glassfish/lib`
 

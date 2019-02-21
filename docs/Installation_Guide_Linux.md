@@ -113,7 +113,7 @@ As _root_, type the following commands:
 4.  `systemctl status mariadb`
 5.  `mysql_secure_installation`
 
-Edit _/etc/my.cnf_ to add this under mysqd, then restart the database:
+Edit _/etc/my.cnf_ to add this under "mysqld," then restart the database:
 1.  `lower_case_table_names = 1`
 2.  `systemctl restart mariadb`
 

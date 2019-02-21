@@ -62,13 +62,13 @@ PLACEHOLDER CHAPTER
 ## Create strongkey User
 These steps create a user with _/usr/local/strongkey/_ as the home folder. Type the following commands at a terminal prompt:
 
-    `groupadd strongkey`
-    
-    `useradd -g strongkey -c"StrongKey" -d /usr/local/strongkey -m strongkey`
-    
-    `chcon -u user_u -t user_home_dir_t /usr/local/strongkey`
-    
-    `echo "ShaZam123" | passwd --stdin strongkey`
+`groupadd strongkey`
+
+`useradd -g strongkey -c"StrongKey" -d /usr/local/strongkey -m strongkey`
+
+`chcon -u user_u -t user_home_dir_t /usr/local/strongkey`
+
+`echo "ShaZam123" | passwd --stdin strongkey`
 
 ----------
 
@@ -85,7 +85,7 @@ Please create the following directories on the Linux server where you are about 
 
 Ensure the logged in account has _read/write/execute_ privileges on the _/strongkey_ directory. Failing to have privileges on _/strongkey_ directory will lead to many problems in the further steps of installation.
 
-    `chmod 755 /usr/local/strongkey/`
+`chmod 755 /usr/local/strongkey/`
 
 **NOTE:** It is highly recommended to perform the installation as a user other than _root_. Specific instructions in the installation process will require _sudo_ access and those instructions explicitly state so.
 

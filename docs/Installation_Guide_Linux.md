@@ -325,5 +325,7 @@ The StrongKey FIDO Server is ready to be deployed.
     
     The StrongKey FIDO Server application WADL displays.
 
-**This concludes deployment of StrongKey FIDO Server. To test it, follow [these instructions](#test_fido_server).**
+**This concludes deployment of StrongKey FIDO Server.
+===============================================================
+To test it, follow [these instructions](#test_fido_server).**
 ===========================================================

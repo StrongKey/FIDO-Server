@@ -198,7 +198,7 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
 
 ### Download and Install Payara 4.1
 
-1.  **Download** Payara 4.1 edition [_.ZIP file (_payara-4.1.2.181.zip_)](http://repo1.maven.org/maven2/fish/payara/blue/distributions/payara/4.1.2.181/payara-4.1.2.181.zip). **Save** the file.
+1.  **Download** Payara 4.1 edition .ZIP file, [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/blue/distributions/payara/4.1.2.181/payara-4.1.2.181.zip). **Save** the file.
 
 2.  Open a  **terminal window** and extract the download using the following command:
     

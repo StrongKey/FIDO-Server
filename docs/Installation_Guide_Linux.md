@@ -19,7 +19,7 @@ The following must be downloaded to the same folder (we recommend _/user/local/s
 
 1.  **Change directory** to the target download folder.
 2.  **Download** the binary distribution file [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server).
-3.  **Extract the downloaded file** to _/usr/local/strongkey_:
+3.  **Extract the downloaded file**:
 
     `tar xvzf FIDOServer-v0.9.tgz -C /usr/local/strongkey/`
     

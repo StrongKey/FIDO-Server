@@ -204,11 +204,11 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
     
     `unzip payara-4.1.2.181.zip -d /usr/local/strongkey`
 
-4673.  **Download and copy** the [MariaDB JDBC driver .JAR](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar) file into the Payara _/lib_ directory.
+3.  **Download and copy** the [MariaDB JDBC driver .JAR](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar) file into the Payara _/lib_ directory.
     
     `cp {jar-location}/mariadb-java-client-2.2.2.jar /usr/local/strongkey/payara41/glassfish/lib`
 
-5.  **Start Payara** application server using the command below and ensure that the server has started successfully.
+4.  **Start Payara** application server using the command below and ensure that the server has started successfully.
     
     `/usr/local/strongkey/payara41/glassfish/bin/asadmin start-domain`
 
@@ -220,11 +220,7 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
 
 1.  All configuration changes to Payara in this step can be done either on the command line using _asadmin_ commands, or via a browser-based administration console for Payara. For simplicity and ease of use, this document explains how to configure Payara using the Payara administration console.
 
-2.  Open a web browser and type **localhost:4848** where _4848_ is the default port for Payara. If your instance of Payara has been configured to use another port, use that port instead.
-
-3.  Enter **admin** as the username and **adminadmin** as the _password_ (the Payara default admin credentials). Depending on how the Payara admin login credentials are configured, the first page shown might be the login page for the console or might be the console’s home page.
-
-4.  Clicking **Login** opens the console’s home page.
+2.  Open a web browser and type **localhost:4848** where _4848_ is the default port for Payara. If your instance of Payara has been configured to use another port, use that port instead. This opens the FIDO Server launch page.
 
 ### Configure Thread Pool
 
@@ -233,7 +229,6 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
 2.  Set _Max Thread Pool Size_ to **100**.
 
 3.  Click **Save**.
-
 
 ### Create JDBC Resources
 

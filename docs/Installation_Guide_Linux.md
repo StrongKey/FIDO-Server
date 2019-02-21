@@ -20,24 +20,30 @@
 The following must be downloaded to the same folder (we recommend _/user/local/strongkey/_), installed, and configured to run StrongKey FIDO Server:
 
 1.  **Change directory** to the target download folder.
-1.  **Download [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server)** and **save it as _jade.tgz_**.
-2.  [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)
-3.  [mariadb-10.2.13-linux-x86_64.tar.gz](https://downloads.mariadb.org/mariadb/10.2.13/)
-4.  [mariadb-java-client-2.2.2.jar](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar)
-5.  [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
+2.  **Download** the binary distribution file [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server).
+3.  **Extract the downloaded file** to _/usr/local/strongkey_:
+
+    `tar xvzf FIDOServer-v0.9.tgz -C /usr/local/strongkey/`
+    
+4.  **Download dependency applications** by typing the following at the prompt:
+
+    `wget http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip`
+    `wget https://downloads.mariadb.org/interstitial/mariadb-10.2.13/source/mariadb-10.2.13.tar.gz/from/http%3A//ftp.hosteurope.de/mirror/archive.mariadb.org/ -O mariadb-10.2.13.tar.gz`
+    `wget https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar`
+    `wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm`
     
     **NOTE:** StrongKey FIDO Server has been tested with the above software versions. StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
 
-6.   **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name.
-7.  **Download and Install** _Open Java Development Kit (JDK)_. Type the following command:
+5.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name.
+6.  **Download and Install** _Open Java Development Kit (JDK)_. Type the following command:
 
    `sudo yum install java-1.8.0-openjdk`
 
-8.  The installation script must be run using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. **Execute** the _install-skfs.sh_ script as follows:
+7.  The installation script must be run using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. **Execute** the _install-skfs.sh_ script as follows:
 
     `>  sudo **<path to download directory>**/install-skfs.sh`
     
-9.  When the script finishes, all software will have been deployed and a _strongkey_ user will have been been created. The default password for the _strongkey_ user is _ShaZam123_. Login as the _strongkey_ user.
+8.  When the script finishes, all software will have been deployed and a _strongkey_ user will have been been created. The default password for the _strongkey_ user is _ShaZam123_. **Login** as the _strongkey_ user.
 
 ***This ends the scripted install instructions.***
 ===============================================
@@ -83,7 +89,7 @@ Ensure the logged in account has _read/write/execute_ privileges on the _/strong
 
 2.  **Extract the downloaded file** to _/usr/local/strongkey_:
 
-    `tar xvzf FIDOServer-v#.#.tgz -C /usr/local/strongkey/`
+    `tar xvzf FIDOServer-v0.9.tgz -C /usr/local/strongkey/`
 
 3.  **Verify the contents** of the _jade_ directory:
 

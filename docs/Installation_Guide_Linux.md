@@ -38,7 +38,7 @@ The installation script must be run as _root_ or using _sudo_. The script will c
 
 **NOTE:** While the installation script allows for changing the default _strongkey_ home directory, the installed FIDO Sevrer will not recognize a non-default directory.
 
-1.  **Execute** the _[install-skfs.sh](http://install-skfs.sh)_ script.
+1.  **Execute** the _install-skfs.sh_ script.
 
     `>  **<path to download directory>**/install-skfs.sh`
 

@@ -62,13 +62,13 @@ PLACEHOLDER CHAPTER
 ## Create strongkey User
 These steps create a user with _/usr/local/strongkey/_ as the home folder. Type the following commands at a terminal prompt:
 
-    `groupadd strongkey`
+     `groupadd strongkey`
 
-    `useradd -g strongkey -c"StrongKey" -d /usr/local/strongkey -m strongkey`
+     `useradd -g strongkey -c"StrongKey" -d /usr/local/strongkey -m strongkey`
 
-    `chcon -u user_u -t user_home_dir_t /usr/local/strongkey`
+     `chcon -u user_u -t user_home_dir_t /usr/local/strongkey`
 
-    `echo "ShaZam123" | passwd --stdin strongkey`
+     `echo "ShaZam123" | passwd --stdin strongkey`
 
 ----------
 

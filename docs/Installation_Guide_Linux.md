@@ -5,11 +5,11 @@
 
 ## Prerequisites
 
-A _fully qualified domain name (FQDN)_ for a hostname with either DNS or local hostfile entry in _/etc/hosts_ that can resolve the hostname. It is very important to have a hostname that is at least TLD+1 (i.e. [acme.com](http://acme.com), [example.org](http://example.org), etc) otherwise FIDO functionality may not work.
+-  A _fully qualified domain name (FQDN)_ for a hostname with either DNS or local hostfile entry in _/etc/hosts_ that can resolve the hostname. It is very important to have a hostname that is at least TLD+1 (i.e. [acme.com](http://acme.com), [example.org](http://example.org), etc) otherwise FIDO functionality may not work.
 
-The installation process has been tested on CentOS 7 only. The installation script is untested on CentOS 5, CentOS 6, and other flavors of Linux but may work with slight modifications.
+-  The installation process has been tested on CentOS 7 only. The installation script is untested on CentOS 5, CentOS 6, and other flavors of Linux but may work with slight modifications.
 
-It is recommended to have at least 10GB of available disk space and 4GB of memory.
+-  It is recommended to have at least 10GB of available disk space and 4GB of memory.
 
 ----------
 

@@ -39,10 +39,10 @@ import java.util.logging.Logger;
 @SuppressWarnings("ClassWithMultipleLoggers")
 public class skfsLogger {
 
-    private static final String classname = "skfeLogger";
+    private static final String classname = "skfsLogger";
 
     // Logger for the application
-    private static final Logger SKFE_LOGGER = Logger.getLogger("SKFE", "resources.skfe-messages_" + Locale.getDefault());
+    private static final Logger SKFE_LOGGER = Logger.getLogger("SKFE", "resources.skfs-messages_" + Locale.getDefault());
 
     static {
 

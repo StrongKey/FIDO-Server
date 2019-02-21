@@ -158,7 +158,7 @@ Y8P          Y8P 888
         strongkeyLogger.log(applianceConstants.APPLIANCE_LOGGER, Level.INFO, "APPL-MSG-1131", baos.toString());
 
         // Print SKLES version
-        strongkeyLogger.log(applianceConstants.APPLIANCE_LOGGER, Level.INFO, "APPL-MSG-1053", "STRONGKEYLITE VERSION is: " + vrb.getString("version"));
+        strongkeyLogger.log(applianceConstants.APPLIANCE_LOGGER, Level.INFO, "APPL-MSG-1053", "SKFS VERSION is: " + vrb.getString("version"));
 
         // Print this SKLES appliance's server ID
         serverid = Long.parseLong(getApplianceConfigurationProperty("appliance.cfg.property.serverid"));

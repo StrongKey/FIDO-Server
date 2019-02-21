@@ -110,27 +110,27 @@ Ensure the logged in account has _read/write/execute_ privileges on the _/strong
 
 As _root_, type the following command:
 
-    `yum install java-1.8.0-openjdk`
+`yum install java-1.8.0-openjdk`
 
 ## Download and Install MariaDB
 
 As _root_, type the following commands:
 
-    `yum install mariadb-server`
+`yum install mariadb-server`
 
-    `systemctl start mariadb`
+`systemctl start mariadb`
 
-    `systemctl enable mariadb`
+`systemctl enable mariadb`
 
-    `systemctl status mariadb`
+`systemctl status mariadb`
 
-    `mysql_secure_installation`
+`mysql_secure_installation`
 
 Edit _/etc/my.cnf_ to add this under "mysqld," then restart the database:
 
-    `lower_case_table_names = 1`
+`lower_case_table_names = 1`
 
-    `systemctl restart mariadb`
+`systemctl restart mariadb`
 
 ### Create a Database Schema for StrongKey FIDO Server
 

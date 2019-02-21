@@ -208,7 +208,7 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
     
     `GLASSFISH_HOME=/usr/local/strongkey/payara41/glassfish/ export GLASSFISH_HOME=/usr/local/strongkey/payara41/glassfish/ PATH=$GLASSFISH_HOME/bin:$PATH`
 
-4.  **Download and copy** the [MariaDB JDBC driver _.JAR_](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar) file into the Payara _/lib_ directory.
+4.  **Download and copy** the [MariaDB JDBC driver_.JAR_](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar) file into the Payara _/lib_ directory.
     
     `cp {jar-location}/mariadb-java-client-2.2.2.jar /usr/local/strongkey/payara41/glassfish/lib`
 

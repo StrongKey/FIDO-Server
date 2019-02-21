@@ -55,6 +55,10 @@ As  _root_, type the following commands:
 4.  `systemctl status mariadb`
 5.  `mysql_secure_installation`
 
+Edit _/etc/my.cnf_ to add this under mysqd, then restart the database:
+1.  `lower_case_table_names = 1`
+2.  `systemctl restart mariadb`
+
 ## Create a Database Schema for StrongKey FIDO Server
 
 1.  **Login**  to MariaDB as  _root_  via terminal and use the  _mysql_  database. This will open MariaDB access as  _root_.  
@@ -70,7 +74,7 @@ As  _root_, type the following commands:
     `mysql -u skfsdbuser -p<PASSWORD> skfs`
     
 5.  **Source**  the  _create.txt_  file to create tables. The output should not have any errors.  
-    `source /usr/local/strongkey/jade/sql/mysql/create.txt;`
+    `source create.txt;`
     
 6.  Use the  **show tables**  command in MariaDB to list the created tables.  
     `show tables;`
@@ -170,13 +174,9 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
     
 3.  Click  **New**. A page opens to create a new JDBC connection pool. Enter the information as shown here:
     
-    **Field**
-    
-    **Value**
-    
-    _Pool name_
-    
-    **SKFSPool**
+    | ---Field--- | ---Value--- |
+    |-------------|-------------|
+    | _Pool name_ | **SKFSPool** |
     
     _Resource Type_
     

@@ -5,11 +5,10 @@ Make sure you have the following set up and/or ready to run before you begin ins
 Please create the following directories on the Linux server where you are about to install.
 
 -   _/usr/local/workspace_
--   /usr/local/strongkey
--   /usr/local/strongkey/skfs
--   /usr/local/strongkey/skfs/etc
--   /usr/local/strongkey/skfs/keystores
--   _/usr/local/strongkey/jade/_
+-   _/usr/local/strongkey_
+-   _/usr/local/strongkey/skfs_
+-   _/usr/local/strongkey/skfs/etc_
+-   _/usr/local/strongkey/skfs/keystores_
 
 Ensure the logged in account has  _read/write/execute_  privileges on the  _/strongkey_  directory. Failing to have privileges on  _/strongkey_  directory will lead to many problems in the further steps of installation.  
 `chmod 755 /usr/local/strongkey/`
@@ -30,7 +29,14 @@ Ensure the logged in account has  _read/write/execute_  privileges on the  _/str
         
     -   _signingtruststore.bcfks_
         
-    
+----------
+# Create strongkey User
+These steps create a user with _/usr/local/strongkey/_ as the home folder. Type the following commands at a terminal prompt:
+
+1.  `groupadd strongkey`
+2.  `useradd -g strongkey -c"StrongKey" -d /usr/local/strongkey -m strongkey`
+3.  `chcon -u user_u -t user_home_dir_t /usr/local/strongkey`
+4.  `echo "ShaZam123" | passwd --stdin strongkey`
 
 ----------
 

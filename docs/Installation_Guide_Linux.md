@@ -9,7 +9,7 @@
 
 -  The installation process has been tested on CentOS 7 only. The installation script is untested on other flavors of Linux but may work with slight modifications.
 
--  A _fully qualified domain name (FQDN)_ for a hostname with either DNS or local hostfile entry in _/etc/hosts_ that can resolve the hostname. It is very important to have a hostname that is at least TLD+1 (i.e. [acme.com](http://acme.com), [example.org](http://example.org), etc) otherwise FIDO functionality may not work.
+-  A _fully qualified domain name (FQDN)_ for a hostname with either DNS or local hostfile entry in _/etc/hosts_ that can resolve the hostname. It is very important to have a hostname that is at least TLD+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO functionality may not work.
 
 ----------------
 

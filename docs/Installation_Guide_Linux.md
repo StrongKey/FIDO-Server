@@ -180,20 +180,15 @@ The StrongKey FIDO Server is completely configurable to suit a specific enterpri
 
 1.  Open a **terminal window**.
 
-2.  **Create a FIDOSERVER_HOME directory** called _skfs_. 
-    _/usr/local/strongkey/skfs_ is the **FIDOSERVER_HOME** directory for this install.
-    
-    `mkdir -p /usr/local/strongkey/skfs/etc`
-
-3.  You must be a _root_ user to do this step. Edit the _/etc/bashrc_ file and export the variables using the command below:
++  You must be a _root_ user to do this step. Edit the _/etc/bashrc_ file and export the variables using the command below:
     
     `vi /etc/bashrc`
     
-4.  **Add this line** at the end of the file:
++  **Add this line** at the end of the file:
     
     `export FIDOSERVER_HOME=/usr/local/strongkey/skfs`
     
-5.  **Save** and **close** the file and **exit** out of _root_. 
++  **Save** and **close** the file and **exit** out of _root_. 
     
     `:wq`
 

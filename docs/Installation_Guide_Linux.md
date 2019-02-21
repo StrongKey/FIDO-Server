@@ -17,7 +17,7 @@
 
 The following must be installed and configured to run StrongKey FIDO Server:
 
--   **Download the [Install Scripts Directory](https://github.com/StrongKey/FIDO-Server/tree/master/fidoserver/fidoserverInstall/src)** and place all the following downloads in it.
+-   **Download the [Install Scripts Archive](https://github.com/StrongKey/FIDO-Server/tree/master/fidoserver/fidoserverInstall/src)** and place all the following downloads in it.
     -   [FIDOServer-v#.#.tgz](https://github.com/StrongKey/FIDO-Server) **saved as _jade.tgz_**
     -   [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)
     -   [mariadb-10.2.13-linux-x86_64.tar.gz](https://downloads.mariadb.org/mariadb/10.2.13/)

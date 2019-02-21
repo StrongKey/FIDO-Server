@@ -15,7 +15,7 @@
 
 ## Installation
 
-The following must be downloaded to the same folder (we recommend _/user/local/strongkey/_), installed, and configured to run StrongKey FIDO Server:
+The following must be downloaded to the same folder (we recommend _/user/local/strongkey/_, but if another path is used, substitute it where appropriate herein), installed, and configured to run StrongKey FIDO Server:
 
 1.  **Change directory** to the target download folder.
 2.  **Download** the binary distribution file [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server).
@@ -42,7 +42,7 @@ The following must be downloaded to the same folder (we recommend _/user/local/s
 
 7.  The installation script must be run using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. **Execute** the _install-skfs.sh_ script as follows:
 
-    `>  sudo **<path to download directory>**/install-skfs.sh`
+    `>  sudo /usr/local/strongkey/install-skfs.sh`
     
 8.  When the script finishes, all software will have been deployed and a _strongkey_ user will have been been created. The default password for the _strongkey_ user is _ShaZam123_. **Login** as the _strongkey_ user.
 

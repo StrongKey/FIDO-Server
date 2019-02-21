@@ -15,8 +15,6 @@
 
 ## Installation
 
-## Downloads
-
 The following must be downloaded to the same folder (we recommend _/user/local/strongkey/_), installed, and configured to run StrongKey FIDO Server:
 
 1.  **Change directory** to the target download folder.

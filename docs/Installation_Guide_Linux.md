@@ -282,6 +282,7 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
 8.  Click **New** and enter the **JDBC resource information** as shown here.
    
     _JNDI Name_ = **jdbc/skfs**
+    
     _Pool Name_ = **SKFSPool**
 
 9.  Click **Ok** to create the JDBC resource.

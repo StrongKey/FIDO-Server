@@ -223,7 +223,7 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
 
 **NOTE:** To stop Payara, use the following command:
 
-    `/usr/local/strongkey/payara41/glassfish/bin/asadmin stop-domain`
+`/usr/local/strongkey/payara41/glassfish/bin/asadmin stop-domain`
 
 ### Configure Payara 4.1
 
@@ -277,7 +277,6 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
 
 7.  Click **Ok** to create the JDBC resource.
 
-
 ### Restart Payara Server
 
 1.  To effect all the configuration changes, the **Payara server must be restarted**. On the **terminal window**, type the command below and press **Enter**.
@@ -287,7 +286,6 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
 3.  If server must be stopped or started, please use the commands below:
     
     `/usr/local/strongkey/payara41/glassfish/bin/asadmin stop-domain /usr/local/strongkey/payara41/glassfish/bin/asadmin start-domain`
-
 
 Payara 4.1 is now installed, configured, and started.
 

@@ -1,3 +1,5 @@
+**This document first explains the installation of the StrongKey FIDO Server using a script and default settings, then describes the (manual, more customizeable process below)[#unscripted]. 
+
 # Prerequisites
 
 A  _fully qualified domain name (FQDN)_  for a hostname with either DNS or local hostfile entry in  _/etc/hosts_  that can resolve the hostname. It is very important to have a hostname that is at least TLD+1 (i.e.  [acme.com](http://acme.com),  [example.org](http://example.org), etc) otherwise FIDO functionality may not work.

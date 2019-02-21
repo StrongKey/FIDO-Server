@@ -183,6 +183,7 @@ The StrongKey FIDO Server is fully tested using Payara 4.1 application server.
 4.  Click  **Next**. On the next page, scroll down to the  _Additional properties_  section. This is where you must specify the  _database name_,  _hostname_,  _port_, and  _user credentials_  for access. Delete all the existing values and add the new values as shown here:
     
     | **Field** | **Value** |
+    |-------|-------|
     | _user_ | **skfsdbuser** |
     | _port_ | **3306** |
     | _password_ | **AbracaDabra** |

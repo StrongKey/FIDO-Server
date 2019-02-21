@@ -1,4 +1,4 @@
-**This document first explains the installation of the StrongKey FIDO Server using a script and default settings, then describes the (manual, more customizeable process below)[#unscripted]. 
+**This document first explains the installation of the StrongKey FIDO Server using a script and default settings, then describes the [manual, more customizeable process below](#unscripted). 
 
 # Prerequisites
 
@@ -51,3 +51,9 @@ The installation script must be run as  _root_. The script will create a  _stron
 # Test StrongKey FIDO Server
 
 PLACEHOLDER CHAPTER
+
+-----------------------------------
+# Manual Installation
+
+
+

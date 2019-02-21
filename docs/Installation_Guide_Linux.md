@@ -59,6 +59,16 @@ PLACEHOLDER CHAPTER
 
 # <a name="unscripted"></a>MANUAL INSTALLATION
 
+## Create strongkey User
+These steps create a user with _/usr/local/strongkey/_ as the home folder. Type the following commands at a terminal prompt:
+
+1.  `groupadd strongkey`
+2.  `useradd -g strongkey -c"StrongKey" -d /usr/local/strongkey -m strongkey`
+3.  `chcon -u user_u -t user_home_dir_t /usr/local/strongkey`
+4.  `echo "ShaZam123" | passwd --stdin strongkey`
+
+----------
+
 ## Download StrongKey FIDO Server
 
 Make sure you have the following set up and/or ready to run before you begin installation.
@@ -66,7 +76,6 @@ Make sure you have the following set up and/or ready to run before you begin ins
 Please create the following directories on the Linux server where you are about to install.
 
 -   _/usr/local/workspace_
--   _/usr/local/strongkey_
 -   _/usr/local/strongkey/skfs_
 -   _/usr/local/strongkey/skfs/etc_
 -   _/usr/local/strongkey/skfs/keystores_
@@ -91,15 +100,6 @@ Ensure the logged in account has _read/write/execute_ privileges on the _/strong
 
     -   _signingkeystore.bcfks_
     -   _signingtruststore.bcfks_
-
-----------
-## Create strongkey User
-These steps create a user with _/usr/local/strongkey/_ as the home folder. Type the following commands at a terminal prompt:
-
-1.  `groupadd strongkey`
-2.  `useradd -g strongkey -c"StrongKey" -d /usr/local/strongkey -m strongkey`
-3.  `chcon -u user_u -t user_home_dir_t /usr/local/strongkey`
-4.  `echo "ShaZam123" | passwd --stdin strongkey`
 
 ----------
 

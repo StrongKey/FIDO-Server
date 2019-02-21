@@ -1,6 +1,9 @@
 **This document first explains the installation of the StrongKey FIDO Server using a script and default settings, then describes the [manual, more customizeable process below](#unscripted). 
 
-# Prerequisites
+-----------------------------------------------
+# SCRIPTED INSTALLATION
+
+## Prerequisites
 
 A  _fully qualified domain name (FQDN)_  for a hostname with either DNS or local hostfile entry in  _/etc/hosts_  that can resolve the hostname. It is very important to have a hostname that is at least TLD+1 (i.e.  [acme.com](http://acme.com),  [example.org](http://example.org), etc) otherwise FIDO functionality may not work.
 
@@ -10,7 +13,7 @@ It is recommended to have at least 10GB of available disk space and 4GB of memor
 
 ----------
 
-# Downloads
+## Downloads
 
 The following must be installed and configured to run StrongKey FIDO Server:
 
@@ -27,12 +30,12 @@ The following must be installed and configured to run StrongKey FIDO Server:
 -   **Modify**  the  _COMPANY_  variable in  _install-skfs.sh_. Otherwise, the default configuration should work on systems with at least 4 GB available.  
     
 
-## Download and Install_Open Java Development Kit (JDK)_
+### Download and Install_Open Java Development Kit (JDK)_
 
 As  _root_, type the following command:  
 `yum install java-1.8.0-openjdk`
 
-# Run the Installation Script
+## Run the Installation Script
 
 The installation script must be run as  _root_. The script will create a  _strongkey_  user account with the home directory of  _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the  _/usr/local/strongkey_  directory and be run by  _strongkey_.
 
@@ -45,15 +48,17 @@ The installation script must be run as  _root_. The script will create a  _stron
     
 3.  When the script finishes, all software will have been deployed and a  _strongkey_  user has been created.  **Log out**  of  _root_  and  **login**  to the  _strongkey_  user for the next steps. The default password for the  _strongkey_  user is  _ShaZam123_.
     
-
+**This ends the scripted install instructions.
 ----------
 
-# Test StrongKey FIDO Server
+# <a href="test_fido_server"></a>TEST STRONGKEY FIDO SERVER
 
 PLACEHOLDER CHAPTER
 
+
+**This ends the testing instructions.
 -----------------------------------
-# Manual Installation
+# <a href="unscripted"></a>MANUAL INSTALLATION
 
 ## Download StrongKey FIDO Server
 

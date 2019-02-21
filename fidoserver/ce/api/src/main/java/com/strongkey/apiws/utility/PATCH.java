@@ -1,5 +1,3 @@
-package com.strongkey.apiws.utility;
-
 /*
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -31,6 +29,8 @@ package com.strongkey.apiws.utility;
  *  ********************************************* 
  *  DESCRIPTION 
  */
+
+package com.strongkey.apiws.utility;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

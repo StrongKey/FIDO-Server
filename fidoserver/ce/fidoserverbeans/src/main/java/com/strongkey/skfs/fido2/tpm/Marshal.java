@@ -1,10 +1,3 @@
-package com.strongkey.skfs.fido2.tpm;
-
-import com.strongkey.skce.utilities.TPMConstants;
-import com.strongkey.skfs.utilities.skfsConstants;
-import com.strongkey.skfs.utilities.skfsLogger;
-import java.nio.ByteBuffer;
-import java.util.logging.Level;
 
 /*
  * This program is free software; you can redistribute it and/or
@@ -41,10 +34,14 @@ import java.util.logging.Level;
  *
  */
 
-/**
- *
- * @author mishimoto
- */
+package com.strongkey.skfs.fido2.tpm;
+
+import com.strongkey.skce.utilities.TPMConstants;
+import com.strongkey.skfs.utilities.skfsConstants;
+import com.strongkey.skfs.utilities.skfsLogger;
+import java.nio.ByteBuffer;
+import java.util.logging.Level;
+
 public class Marshal {
     //Marshal Data
     public static byte[] marshalObjects(Object... objectsToMarshal){

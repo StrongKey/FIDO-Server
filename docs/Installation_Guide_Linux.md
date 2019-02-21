@@ -29,8 +29,8 @@ The following must be installed and configured to run StrongKey FIDO Server:
     
 -   **Modify**  the  _COMPANY_  variable in  _install-skfs.sh_. Otherwise, the default configuration should work on systems with at least 4 GB available.  
     
-    -  **Download and Install** _Open Java Development Kit (JDK)_. As  _root_, type the following command:  
-       `yum install java-1.8.0-openjdk`
+-  **Download and Install** _Open Java Development Kit (JDK)_. As  _root_, type the following command:  
+   `yum install java-1.8.0-openjdk`
 
 ## Run the Installation Script
 

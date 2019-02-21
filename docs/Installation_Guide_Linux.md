@@ -47,19 +47,17 @@ The installation script must be run as _root_. The script will create a _strongk
 
 3.  When the script finishes, all software will have been deployed and a _strongkey_ user has been created. **Log out** of _root_ and **login** to the _strongkey_ user for the next steps. The default password for the _strongkey_ user is _ShaZam123_.
 
-**This ends the scripted install instructions.**
+***This ends the scripted install instructions.***
 ===============================================
 
-===============================================
 # <a name="test_fido_server"></a>TEST STRONGKEY FIDO SERVER
 
 PLACEHOLDER CHAPTER
 
 
-**This ends the testing instructions.**
+***This ends the testing instructions.***
 ===============================================
 
-===============================================
 # <a name="unscripted"></a>MANUAL INSTALLATION
 
 ## Download StrongKey FIDO Server

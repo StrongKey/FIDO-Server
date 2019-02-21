@@ -186,7 +186,8 @@ In this section, we will configure the FIDOSERVER_HOME and set an environment va
     
     `mkdir -p /usr/local/strongkey/skfs/etc`
 
-3.  You must be a _root_ user to do this step. Edit the _/etc/bashrc_ file and export the variables using the command below:     
+3.  You must be a _root_ user to do this step. Edit the _/etc/bashrc_ file and export the variables using the command below:
+    
     `vi /etc/bashrc`
     
 4.  **Add this line** at the end of the file:

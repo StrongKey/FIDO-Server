@@ -30,7 +30,7 @@ The following must be downloaded to the same folder (we recommend _/user/local/s
     -   [mariadb-java-client-2.2.2.jar](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar)
     -   [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
 
-You can copy the commands below to download the files directly to your server.
+You can copy the commands below to download the files directly to your server.  
     `wget http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip`
     
     `wget https://downloads.mariadb.org/interstitial/mariadb-10.2.13/source/mariadb-10.2.13.tar.gz/from/http%3A//ftp.hosteurope.de/mirror/archive.mariadb.org/ -O mariadb-10.2.13.tar.gz`
@@ -39,7 +39,7 @@ You can copy the commands below to download the files directly to your server.
     
     `wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm`
     
-    **NOTE:** StrongKey FIDO Server has been tested with the above software versions. StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
+**NOTE:** StrongKey FIDO Server has been tested with the above software versions. StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
 
 5.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name.
 6.  **Download and Install** _Open Java Development Kit (JDK)_. Type the following command:

@@ -18,11 +18,18 @@
 The following must be downloaded to the same folder (we recommend _/user/local/strongkey/_, but if another path is used, substitute it where appropriate herein), installed, and configured to run StrongKey FIDO Server:
 
 1.  **Change directory** to the target download folder.
-2.  **Download** the binary distribution file [FIDOServer-v0.9.tgz](https://github.com/StrongKey/FIDO-Server).
-3.  **Extract the downloaded file**:
+2.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz).
 
-    `tar xvzf FIDOServer-v0.9.tgz -C /usr/local/strongkey/`
-    
+```sh
+wget https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz
+```
+
+3.  **Extract the downloaded file to the current directory**:
+
+```sh
+tar xvzf FIDOServer-v0.9.tgz
+```
+
 4.  **Download the following**
     
     -   [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)

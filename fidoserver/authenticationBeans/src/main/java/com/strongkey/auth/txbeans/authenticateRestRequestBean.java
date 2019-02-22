@@ -132,6 +132,8 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
                 + request.getHeader("strongkey-api-version") + "\n"
                 + request.getRequestURI() + queryParams;
 
+        // TODO Check if date is expired
+
         strongkeyLogger.logp(applianceConstants.APPLIANCE_LOGGER, Level.FINE, classname, "execute", "APPL-MSG-1054", "\n" + requestToHmac);
 
         try {

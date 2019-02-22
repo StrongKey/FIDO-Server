@@ -82,7 +82,7 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
             String contentSHA  = request.getHeader("strongkey-content-sha256");
             contenttype = request.getHeader("Content-Type");
 
-            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            ObjectWriter ow = new ObjectMapper().writer();
             String json;
             try {
                 json = ow.writeValueAsString(requestbody);

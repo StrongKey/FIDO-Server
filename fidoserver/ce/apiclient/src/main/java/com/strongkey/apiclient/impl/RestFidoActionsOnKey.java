@@ -113,7 +113,7 @@ public class RestFidoActionsOnKey {
         PatchFidoKeyRequest patch = new PatchFidoKeyRequest();
         patch.setStatus(status);
         patch.setModify_location("Sunnyvale, CA");
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        ObjectWriter ow = new ObjectMapper().writer();
         String json = ow.writeValueAsString(patch);
 
         ContentType mimetype = ContentType.create("application/merge-patch+json");

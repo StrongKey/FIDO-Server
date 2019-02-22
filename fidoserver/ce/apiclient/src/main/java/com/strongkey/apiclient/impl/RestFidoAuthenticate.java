@@ -68,7 +68,7 @@ public class RestFidoAuthenticate {
         PreauthenticationRequest preauth = new PreauthenticationRequest();
         preauth.setProtocol(fidoprotocol);
         preauth.setUsername(accountname);
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        ObjectWriter ow = new ObjectMapper().writer();
         String json = ow.writeValueAsString(preauth);
 
         ContentType mimetype = ContentType.APPLICATION_JSON;
@@ -238,7 +238,7 @@ public class RestFidoAuthenticate {
                 .add(Constants.JSON_KEY_SERVLET_INPUT_USERNAME, accountname).
                 build();
 
-        ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        ow = new ObjectMapper().writer();
         AuthenticationRequest auth = new AuthenticationRequest();
         auth.setProtocol(fidoprotocol);
         auth.setResponse(input.toString());

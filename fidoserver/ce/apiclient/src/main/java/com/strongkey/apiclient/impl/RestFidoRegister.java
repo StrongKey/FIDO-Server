@@ -70,7 +70,7 @@ public class RestFidoRegister {
         PreregistrationRequest prereg = new PreregistrationRequest();
         prereg.setProtocol(fidoprotocol);
         prereg.setUsername(accountname);
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        ObjectWriter ow = new ObjectMapper().writer();
         String json = ow.writeValueAsString(prereg);
 
         ContentType mimetype = ContentType.APPLICATION_JSON;
@@ -276,7 +276,7 @@ public class RestFidoRegister {
         System.out.println("\nCalling register @ " 
                 + REST_URI + Constants.REGISTER_ENDPOINT);
 
-        ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        ow = new ObjectMapper().writer();
         RegistrationRequest reg = new RegistrationRequest();
         reg.setProtocol(fidoprotocol);
         reg.setResponse(input.toString());

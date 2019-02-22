@@ -89,7 +89,6 @@ public class APIServlet {
      * something went wrong. Will be empty if successful.
      */
     @POST
-    @Path("")
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response register(RegistrationRequest registration,
@@ -236,7 +235,6 @@ public class APIServlet {
      * successful.
      */
     @GET
-    @Path("")
     @Produces({"application/json"})
     public Response getkeysinfo(@PathParam("did") Long did,
                                 @QueryParam("username") String username) {

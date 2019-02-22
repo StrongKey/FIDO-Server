@@ -66,7 +66,7 @@ MARIACONJAR=mariadb-java-client-2.2.2.jar
 # End Required Distributables
 
 # Other vars
-SKFS=FIDOServer-0.9.tgz
+SKFS=FIDOServer-v0.9.tgz
 STRONGKEY_HOME=/usr/local/strongkey
 SKFS_HOME=$STRONGKEY_HOME/skfs
 GLASSFISH_HOME=$STRONGKEY_HOME/payara41/glassfish

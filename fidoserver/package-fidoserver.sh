@@ -95,14 +95,12 @@ mvn clean install -q
 echo "-Copying files..."
 mkdir -p $fidoserver/jade/sql
 touch $fidoserver/jade/Version${version}
-cp -r $fidoserver/ce/*/target/dist/* $fidoserver/jade
 cp -r $fidoserver/fidoserverInstall/src/fidoserverSQL/mysql $fidoserver/jade/sql
 cp $fidoserver/fidoserverEAR/target/fidoserver.ear $fidoserver/jade
 
 # Create archives
 echo "-Packaging jade..."
-tar zcf FIDOServer-${version}.tgz -C $fidoserver jade
-tar zcf fidolib.tgz -C $fidoserver/jade lib
+tar zcf FIDOServer-v${version}.tgz -C $fidoserver jade
 
 # Remove jade
 rm -r $fidoserver/jade

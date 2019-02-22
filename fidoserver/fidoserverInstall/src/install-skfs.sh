@@ -1,35 +1,10 @@
 #!/bin/bash
+###################################################################################
+# Copyright StrongAuth, Inc. All Rights Reserved.
 #
-###############################################################
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License, as published by the Free Software Foundation and
-# available at http://www.fsf.org/licensing/licenses/lgpl.html,
-# version 2.1 or above.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# Copyright (c) 2001-2018 StrongAuth, Inc.
-#
-# $Date$
-# $Revision$
-# $Author$
-# $URL$
-#
-# Must be run by 'root' from the /usr/local/software/skfs
-# directory AFTER having downloaded all required components:
-#
-# - BouncyCastle
-# - Glassfish
-# - MariaDB RDBMS and JDBC Connector
-# - StrongKey FidoServer
-#
-###############################################################
-
+# Use of this source code is governed by the Gnu Lesser General Public License 2.3.
+# The license can be found at https://github.com/StrongKey/FIDO-Server/LICENSE
+###################################################################################
 # Uncomment to show detailed installation process
 #SHOWALL=1
 
@@ -307,7 +282,6 @@ fi
 
 ##### Change ownership of files #####
 chown -R strongkey:strongkey $STRONGKEY_HOME
-chown -R strongkey:strongkey $SKFS_SOFTWARE
 
 ##### Start MariaDB and Glassfish #####
 echo -n "Creating $DBSIZE SKFS Internal Database..." | tee -a $LOGNAME

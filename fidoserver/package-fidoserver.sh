@@ -1,28 +1,11 @@
 #!/bin/bash
 #
-###############################################################
+###################################################################################
+# Copyright StrongAuth, Inc. All Rights Reserved.
 #
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License, as published by the Free Software Foundation and
-# available at http://www.fsf.org/licensing/licenses/lgpl.html,
-# version 2.1 or above.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# Copyright (c) 2001-2018 StrongAuth, Inc.
-#
-# $Date$
-# $Revision$
-# $Author$
-# $URL$
-#
-# Script to create the FIDOSERVER Bundle
-#
-###############################################################
+# Use of this source code is governed by the Gnu Lesser General Public License 2.3.
+# The license can be found at https://github.com/StrongKey/FIDO-Server/LICENSE
+###################################################################################
 
 fidoserver=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 version=$(sed -nr 's|^version=(.*)|\1|p' $fidoserver/common/src/main/resources/resources/appliance/appliance-version.properties)
@@ -57,7 +40,7 @@ set -e
 
 # Yellow
 tty -s && tput setaf 3
-echo "Creating jade..."
+echo "Creating fidoserver..."
 
 # Copy the messages part from the main strongkeylite-messages.properties to all langauge specific files
 echo "-Duplicating messages..."
@@ -88,6 +71,8 @@ done
 # Create jade
 # This cd is important for mvn to work
 cd $fidoserver
+mvn -q install:install-file -Dfile=$fidoserver/lib/bc-fips-1.0.1.jar -DgroupId=org.bouncycastle -DartifactId=bc-fips -Dversion=1.0.1 -Dpackaging=jar
+mvn -q install:install-file -Dfile=$fidoserver/lib/bcpkix-fips-1.0.0.jar -DgroupId=org.bouncycastle -DartifactId=bcpkix-fips -Dversion=1.0.0 -Dpackaging=jar
 echo "-Clean and building source..."
 mvn clean install -q 
 

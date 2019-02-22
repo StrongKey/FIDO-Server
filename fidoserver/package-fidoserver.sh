@@ -1,14 +1,11 @@
 #!/bin/bash
 #
+###################################################################################
 # Copyright StrongAuth, Inc. All Rights Reserved.
 #
 # Use of this source code is governed by the Gnu Lesser General Public License 2.3.
 # The license can be found at https://github.com/StrongKey/FIDO-Server/LICENSE
-#
-#
-# Script to create the FIDOSERVER Bundle
-#
-###############################################################
+###################################################################################
 
 fidoserver=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 version=$(sed -nr 's|^version=(.*)|\1|p' $fidoserver/common/src/main/resources/resources/appliance/appliance-version.properties)
@@ -43,7 +40,7 @@ set -e
 
 # Yellow
 tty -s && tput setaf 3
-echo "Creating jade..."
+echo "Creating fidoserver..."
 
 # Copy the messages part from the main strongkeylite-messages.properties to all langauge specific files
 echo "-Duplicating messages..."
@@ -74,6 +71,8 @@ done
 # Create jade
 # This cd is important for mvn to work
 cd $fidoserver
+mvn -q install:install-file -Dfile=$fidoserver/lib/bc-fips-1.0.1.jar -DgroupId=org.bouncycastle -DartifactId=bc-fips -Dversion=1.0.1 -Dpackaging=jar
+mvn -q install:install-file -Dfile=$fidoserver/lib/bcpkix-fips-1.0.0.jar -DgroupId=org.bouncycastle -DartifactId=bcpkix-fips -Dversion=1.0.0 -Dpackaging=jar
 echo "-Clean and building source..."
 mvn clean install -q 
 
@@ -81,14 +80,12 @@ mvn clean install -q
 echo "-Copying files..."
 mkdir -p $fidoserver/jade/sql
 touch $fidoserver/jade/Version${version}
-cp -r $fidoserver/ce/*/target/dist/* $fidoserver/jade
 cp -r $fidoserver/fidoserverInstall/src/fidoserverSQL/mysql $fidoserver/jade/sql
 cp $fidoserver/fidoserverEAR/target/fidoserver.ear $fidoserver/jade
 
 # Create archives
 echo "-Packaging jade..."
-tar zcf FIDOServer-${version}.tgz -C $fidoserver jade
-tar zcf fidolib.tgz -C $fidoserver/jade lib
+tar zcf FIDOServer-v${version}.tgz -C $fidoserver jade
 
 # Remove jade
 rm -r $fidoserver/jade

@@ -55,23 +55,25 @@ wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemall
 sudo yum install java-1.8.0-openjdk
 ```
 
-7.  The installation script must be run using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. **Execute** the _install-skfs.sh_ script as follows:
+7.  The installation script must be run using _sudo_. The script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. 
+
+**Execute** the _install-skfs.sh_ script as follows:
 
 ```sh
-sudo /usr/local/strongkey/install-skfs.sh
+sudo ./install-skfs.sh
 ```
     
-8.  When the script finishes, all software will have been deployed and a _strongkey_ user will have been been created. The default password for the _strongkey_ user is _ShaZam123_. **Login** as the _strongkey_ user.
+8.  When the script finishes, all software will have been deployed and a _strongkey_ user will have been been created. The default password for the _strongkey_ user is _ShaZam123_.
+
+9. Confirm that your FIDO Server is running with the following command. You should get the API WADL file back in response.
+
+```sh
+curl -k https://localhost:8181/api/application.wadl
+```
+
+10. For further testing, check out the [sample Relying Party](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
 
 ***This ends the scripted install instructions.***
-===============================================
-
-# <a name="test_fido_server"></a>TEST STRONGKEY FIDO SERVER
-
-PLACEHOLDER CHAPTER
-
-
-***This ends the testing instructions.***
 ===============================================
 
 # <a name="unscripted"></a>MANUAL INSTALLATION

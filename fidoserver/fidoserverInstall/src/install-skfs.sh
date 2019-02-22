@@ -1,22 +1,10 @@
 #!/bin/bash
-#
-###############################################################
-#
+###################################################################################
 # Copyright StrongAuth, Inc. All Rights Reserved.
 #
 # Use of this source code is governed by the Gnu Lesser General Public License 2.3.
 # The license can be found at https://github.com/StrongKey/FIDO-Server/LICENSE
-#
-# Must be run by 'root' from the /usr/local/software/skfs
-# directory AFTER having downloaded all required components:
-#
-# - BouncyCastle
-# - Glassfish
-# - MariaDB RDBMS and JDBC Connector
-# - StrongKey FidoServer
-#
-###############################################################
-
+###################################################################################
 # Uncomment to show detailed installation process
 #SHOWALL=1
 
@@ -53,7 +41,7 @@ MARIACONJAR=mariadb-java-client-2.2.2.jar
 # End Required Distributables
 
 # Other vars
-SKFS=FIDOServer-0.9.tgz
+SKFS=FIDOServer-v0.9.tgz
 STRONGKEY_HOME=/usr/local/strongkey
 SKFS_HOME=$STRONGKEY_HOME/skfs
 GLASSFISH_HOME=$STRONGKEY_HOME/payara41/glassfish
@@ -294,7 +282,6 @@ fi
 
 ##### Change ownership of files #####
 chown -R strongkey:strongkey $STRONGKEY_HOME
-chown -R strongkey:strongkey $SKFS_SOFTWARE
 
 ##### Start MariaDB and Glassfish #####
 echo -n "Creating $DBSIZE SKFS Internal Database..." | tee -a $LOGNAME

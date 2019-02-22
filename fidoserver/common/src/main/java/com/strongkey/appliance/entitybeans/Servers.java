@@ -38,8 +38,7 @@ import javax.persistence.UniqueConstraint;
 
 
 @Entity
-@Table(name = "servers", catalog = "strongkeylite", schema = "",
-    uniqueConstraints = {@UniqueConstraint(columnNames = {"did", "sid", "pseudo_number"}),
+@Table(name = "servers", uniqueConstraints = {@UniqueConstraint(columnNames = {"did", "sid", "pseudo_number"}),
                          @UniqueConstraint(columnNames = {"did", "sid", "fqdn"})
 })
 @NamedQueries({

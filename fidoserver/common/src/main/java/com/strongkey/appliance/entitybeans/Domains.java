@@ -38,8 +38,7 @@ import javax.persistence.UniqueConstraint;
 
 
 @Entity
-@Table(name = "domains", catalog = "strongkeylite", schema = "", 
-    uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})
+@Table(name = "domains", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})
 })
 @NamedQueries({
     @NamedQuery(name = "Domains.findAll", query = "SELECT d FROM Domains d"),

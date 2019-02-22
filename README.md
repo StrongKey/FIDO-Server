@@ -12,7 +12,7 @@ The following links provide some background on FIDO, the Fido Alliance, and WebA
 
 
 ## Installation
-Download the installation package [here](https://github.com/StrongKey/FIDO-Server/tree/master/fidoserver/fidoserverInstall/src) and save it, then follow [the installation instructions](https://github.com/StrongKey/FIDO-Server/blob/master/docs/Installation_Guide_Linux.md) to get it running.
+Download the installation package [here](https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz) and save it, then follow [the installation instructions](https://github.com/StrongKey/FIDO-Server/blob/master/docs/Installation_Guide_Linux.md) to get it running.
 
 To see it in action, sample code is provided in the links below.
 

@@ -1,8 +1,8 @@
-#### StrongKey FIDO2 Community Edition Server
+#### StrongKey FIDO Server, Community Edition 
 # README
 
 ## Overview
-StrongKey's FIDO2 Community Edition Server is an open-source solution designed for DIY coders who want WebAuthn capability for their web applications. Download the code, study the Open API documentation, and contribute with your own code submissions.
+StrongKey's FIDO Server, Community Edition is an open-source solution designed for DIY coders who want WebAuthn capability for their web applications. Download the code, study the Open API documentation, and contribute with your own code submissions.
 
 The following links provide some background on FIDO, the Fido Alliance, and WebAuthn/FIDO2:
 

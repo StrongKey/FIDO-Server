@@ -21,7 +21,7 @@ wget https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.t
 3.  **Extract the downloaded file to the current directory**:
 
 ```sh
-tar xvzf FIDOServer-v0.9.tgz
+tar xvzf FIDOServer-v0.9-dist.tgz
 ```
 
 4.  **Download the following**

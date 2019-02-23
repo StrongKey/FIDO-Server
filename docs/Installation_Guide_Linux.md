@@ -40,7 +40,7 @@ wget https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-
 wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm
 ```
     
-**NOTE:** StrongKey FIDO Server has been tested with the above software versions. StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
+**NOTE:** The StrongKey FIDO Server has been tested with the above software versions. The StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
 
 5.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name.
 6.  **Download and Install** _Open Java Development Kit (JDK)_. Type the following command:

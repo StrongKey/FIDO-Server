@@ -1,4 +1,4 @@
-#### StrongKey FIDO Server, Community Edition 
+#### FIDO Server, Community Edition 
 # README
 
 ## Overview

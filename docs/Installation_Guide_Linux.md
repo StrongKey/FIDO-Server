@@ -4,7 +4,7 @@
 
 -  **The scripted installation process has been tested on CentOS 7 only.** The installation script is untested on other flavors of Linux but may work with slight modifications.
 
--  A **fully qualified domain name (FQDN)**. It is very important to have a hostname that is at least TLD+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO functionality may not work.
+-  A **fully qualified domain name (FQDN)**. It is very important to have a hostname that is at least _Top-level domain (TLD)_+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO functionality may not work.
 
 -  The installation script installs Payara running https on port 8181, so make sure all firewall rules allow that port to be accessed.
 

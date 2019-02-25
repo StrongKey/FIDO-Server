@@ -62,7 +62,7 @@ hostname
 If you see only the machine name and not the hostname, run the following command:
 
 ```sh
-sudo hostnamectl set-hostname \<YOUR SERVER'S FQDN>
+sudo hostnamectl set-hostname <YOUR SERVER'S FQDN>
 ```
 
 8.  **Execute** the _install-skfs.sh_ script as follows:

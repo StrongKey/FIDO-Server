@@ -62,7 +62,8 @@ If you see only the machine name and not the hostname, run the following command
 sudo hostnamectl set-hostname <YOUR SERVER'S FQDN>
 ```
 
-If you do not  have DNS configured for this machine, please add the following entry (replace the ip-address with the ip of the machine)  to the "/etc/hosts" file. **DO NOT** run this if your machine does not have a FQDN configured and is still running as localhost.
+If you do not  have DNS configured for this machine, please add the following entry (replace the ip-address with the ip of the machine)  to the "/etc/hosts" file. 
+**DO NOT run this if your machine does not have a FQDN configured and is still running as localhost.**
 
 ```sh
 echo `hostname -i` $(hostname) | sudo tee -a /etc/hosts

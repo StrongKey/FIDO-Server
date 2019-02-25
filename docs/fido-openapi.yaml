@@ -43,7 +43,7 @@ paths:
           schema:
             type: integer
           required: true
-          description: Numeric ID of the domain to request services from.
+          description: Numeric ID of the domain from which to request services.
           example: 1
         - in: header
           name: strongkey-content-sha256
@@ -65,7 +65,7 @@ paths:
             type: string
             example: Mon, 25 Feb 2019 01:48:43 PST
           required: true
-          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z"
+          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z".
         - in: header
           name: strongkey-api-version
           schema:
@@ -80,7 +80,7 @@ paths:
             example: HMAC <access key>:<HMAC-SHA-256-of-request>
           required: true
           description: | 
-              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth which requires an access key and secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the form of\:
+              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
                 + http verb + "\n"             (ex POST)
                 + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
                 + content type + "\n"          (ex application/json)
@@ -129,7 +129,7 @@ paths:
           schema:
             type: integer
           required: true
-          description: Numeric ID of the domain to request services from.
+          description: Numeric ID of the domain from which to request services.
           example: 1
         - in: header
           name: strongkey-content-sha256
@@ -151,7 +151,7 @@ paths:
             type: string
             example: Mon, 25 Feb 2019 01:48:43 PST
           required: true
-          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z"
+          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z".
         - in: header
           name: strongkey-api-version
           schema:
@@ -166,7 +166,7 @@ paths:
             example: HMAC <access key>:<HMAC-SHA-256-of-request>
           required: true
           description: | 
-              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth which requires an access key and secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the form of\:
+              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
                 + http verb + "\n"             (ex POST)
                 + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
                 + content type + "\n"          (ex application/json)
@@ -211,14 +211,14 @@ paths:
           schema:
             type: integer
           required: true
-          description: Numeric ID of the domain to request services from.
+          description: Numeric ID of the domain from which to request services.
           example: 1
         - in: query
           name: username
           schema:
             type: string
           required: true
-          description: String username to retrieve keyinfo for.
+          description: String username for which to retrieve keyinfo.
           example: user.name@domain.com
         - in: header
           name: Date
@@ -226,7 +226,7 @@ paths:
             type: string
             example: Mon, 25 Feb 2019 01:48:43 PST
           required: true
-          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z"
+          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z".
         - in: header
           name: strongkey-api-version
           schema:
@@ -241,7 +241,7 @@ paths:
             example: HMAC <access key>:<HMAC-SHA-256-of-request>
           required: true
           description: | 
-              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth which requires an access key and secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the form of\:
+              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
                 + http verb + "\n"             (ex GET)
                 + "\n"
                 + "\n"
@@ -273,7 +273,7 @@ paths:
           schema:
             type: integer
           required: true
-          description: Numeric ID of the domain to request services from.
+          description: Numeric ID of the domain from which to request services.
           example: 1
         - in: header
           name: strongkey-content-sha256
@@ -295,7 +295,7 @@ paths:
             type: string
             example: Mon, 25 Feb 2019 01:48:43 PST
           required: true
-          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z"
+          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z".
         - in: header
           name: strongkey-api-version
           schema:
@@ -310,7 +310,7 @@ paths:
             example: HMAC <access key>:<HMAC-SHA-256-of-request>
           required: true
           description: | 
-              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth which requires an access key and secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the form of\:
+              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
                 + http verb + "\n"             (ex POST)
                 + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
                 + content type + "\n"          (ex application/json)
@@ -357,7 +357,7 @@ paths:
           schema:
             type: integer
           required: true
-          description: Numeric ID of the domain to request services from.
+          description: Numeric ID of the domain from which to request services.
           example: 1
         - in: header
           name: strongkey-content-sha256
@@ -379,7 +379,7 @@ paths:
             type: string
             example: Mon, 25 Feb 2019 01:48:43 PST
           required: true
-          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z"
+          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z".
         - in: header
           name: strongkey-api-version
           schema:
@@ -394,7 +394,7 @@ paths:
             example: HMAC <access key>:<HMAC-SHA-256-of-request>
           required: true
           description: | 
-              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth which requires an access key and secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the form of\:
+              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
                 + http verb + "\n"             (ex POST)
                 + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
                 + content type + "\n"          (ex application/json)
@@ -440,7 +440,7 @@ paths:
           schema:
             type: integer
           required: true
-          description: Numeric ID of the domain to request services from.
+          description: Numeric ID of the domain from which to request services.
           example: 1
         - in: path
           name: kid
@@ -469,7 +469,7 @@ paths:
             type: string
             example: Mon, 25 Feb 2019 01:48:43 PST
           required: true
-          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z"
+          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z".
         - in: header
           name: strongkey-api-version
           schema:
@@ -484,7 +484,7 @@ paths:
             example: HMAC <access key>:<HMAC-SHA-256-of-request>
           required: true
           description: | 
-              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth which requires an access key and secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the form of\:
+              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
                 + http verb + "\n"             (ex POST)
                 + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
                 + content type + "\n"          (ex application/json)
@@ -519,7 +519,7 @@ paths:
     delete:
       summary: Delete a registered key.
       description: |
-        The process of deleting or de-registering an already registered FIDO authenticator. The inputs needed are the username and the random ID to point to a unique registered key for that user. This random ID can be obtained by calling the *getkeysinfo* method.
+        The process of deleting or de-registering an already-registered FIDO authenticator. The inputs needed are the username and the random ID to point to a unique registered key for that user. This random ID can be obtained by calling the *getkeysinfo* method.
       tags:
         - Administration
       operationId: deregister
@@ -529,7 +529,7 @@ paths:
           schema:
             type: integer
           required: true
-          description: Numeric ID of the domain to request services from.
+          description: Numeric ID of the domain from which to request services.
           example: 1
         - in: path
           name: kid
@@ -544,7 +544,7 @@ paths:
             type: string
             example: Mon, 25 Feb 2019 01:48:43 PST
           required: true
-          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z"
+          description: The date that the request is being made in the format "EEE, d MMM yyyy HH:mm:ss z".
         - in: header
           name: strongkey-api-version
           schema:
@@ -559,7 +559,7 @@ paths:
             example: HMAC <access key>:<HMAC-SHA-256-of-request>
           required: true
           description: | 
-              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth which requires an access key and secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the form of\:
+              The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
                 + http verb + "\n"             (ex DELETE)
                 + "\n"
                 + "\n"
@@ -598,7 +598,7 @@ components:
         - Message
       properties:
         Response:
-          description: The produced result of the web service operation, typically an error message for non 200 status returns.
+          description: The result produced by the web service operation, typically an error message for non-200 status returns.
           type: string
     options:
       description: The options that accompany this request.
@@ -614,7 +614,7 @@ components:
       maxLength: 256
       example: user.name@domain.com
     displayname:
-      description: The username associated with or to be associated with the FIDO key.
+      description: The display name associated with or to be associated with the FIDO key.
       type: string
       maxLength: 256
       example: User Name
@@ -640,11 +640,11 @@ components:
               "Response": "",
             }
     BadAuth:
-      description: The HMAC Authentication failed
+      description: The HMAC Authentication failed.
     MissingResource:
-      description: The requested resource is unavailable
+      description: The requested resource is unavailable.
     BadInput:
-      description: Their was an error in the submitted input
+      description: Their was an error in the submitted input.
       content:
         application/json:
           schema:
@@ -654,7 +654,7 @@ components:
               "Response": "",
             }
     ServerError:
-      description: The server ran into an unexpected exception
+      description: The server ran into an unexpected exception.
       content:
         application/json:
           schema:

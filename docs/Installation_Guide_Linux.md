@@ -65,7 +65,7 @@
     ```
 
     If you do not have DNS configured for this machine, please add the following entry (replace the IP address with the IP address of the machine)  to the _/etc/hosts_ file. 
-    **DO NOT run this if your machine does not have a FQDN configured and is still running as _localhost_.**
+    **DO NOT run this if your machine does not have a configured FQDN and is still running as _localhost_.**
 
     ```sh
     echo `hostname -i` $(hostname) | sudo tee -a /etc/hosts

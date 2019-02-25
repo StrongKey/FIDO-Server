@@ -52,7 +52,7 @@
 
 6.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name.
 
-7. Be sure that you have your server's FQDN set as its hostname. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
+7. Be sure that you have your **server FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
 
     ```sh
     hostname
@@ -79,7 +79,7 @@
 
     The installation script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. The default password for the _strongkey_ user is _ShaZam123_.
 
-9. Using the following command, confirm that your FIDO Server is running. You should get the API WADL file back in response.
+9. Using the following command, **confirm your FIDO Server is running**. You should get the API WADL file back in response.
 
     ```sh
     curl -k https://localhost:8181/api/application.wadl

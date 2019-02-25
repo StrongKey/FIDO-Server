@@ -32,6 +32,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
 
 public class PackedAttestationStatement implements FIDO2AttestationStatement {
@@ -129,44 +132,46 @@ public class PackedAttestationStatement implements FIDO2AttestationStatement {
                 
                 //  Subject field MUST be set to:
                 String subjectDN = attCert.getSubjectDN().getName();
-                String[] subjectFields = subjectDN.split(",");
                 Map<String, String> subjectFieldMap = new HashMap<>();
-                for(String field: subjectFields){
-                    String[] entry = field.split("=");
-                    if(entry.length != 2){
-                        skfsLogger.log(skfsConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0015", 
-                            "Unable to parse subjectDN");
-                        return false;
+                try{
+                    LdapName ldapDN = new LdapName(subjectDN);
+                    for (Rdn rdn : ldapDN.getRdns()) {
+                        subjectFieldMap.put(rdn.getType(), rdn.getValue().toString());
                     }
-                    subjectFieldMap.put(entry[0], entry[1]);
                 }
+                catch (InvalidNameException ex) {
+                    skfsLogger.log(skfsConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0015",
+                            "Unable to parse subjectDN");
+                    return false;
+                }
+                
                 
                 //      Subject-C ISO 3166 code specifying the country where the Authenticator vendor is incorporated (PrintableString)
                 //TODO ensure string is an ISO 3166 country code
                 if (!subjectFieldMap.containsKey("C")) {
                     skfsLogger.log(skfsConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0015", 
-                            "Attestation Certificate (Packed) Failure: Invalid Country " + subjectFields[3]);
+                            "Attestation Certificate (Packed) Failure: Missing Country ");
                     return false;
                 }
                 
                 //      Subject-O Legal name of the Authenticator vendor (UTF8String)
                 if (!subjectFieldMap.containsKey("O")) {
                     skfsLogger.log(skfsConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0015", 
-                            "Attestation Certificate (Packed) Failure: Invalid Organization " + subjectFields[2]);
+                            "Attestation Certificate (Packed) Failure: Missing Organization");
                     return false;
                 }
                 
                 //      Subject-OU Literal string “Authenticator Attestation” (UTF8String)
                 if (!subjectFieldMap.containsKey("OU") || !subjectFieldMap.get("OU").equals("Authenticator Attestation")) {
                     skfsLogger.log(skfsConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0015", 
-                            "Attestation Certificate (Packed) Failure: Invalid OU " + subjectFields[1]);
+                            "Attestation Certificate (Packed) Failure: Missing OU");
                     return false;
                 }
                 
                 //      Subject-CN A UTF8String of the vendor’s choosing
                 if (!subjectFieldMap.containsKey("CN")) {
                     skfsLogger.log(skfsConstants.SKFE_LOGGER, Level.SEVERE, "FIDO-ERR-0015", 
-                            "Attestation Certificate (Packed) Failure: Invalid CN " + subjectFields[0]);
+                            "Attestation Certificate (Packed) Failure: Invalid CN");
                     return false;
                 }
                 

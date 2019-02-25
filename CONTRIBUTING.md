@@ -29,7 +29,7 @@ We use GitHub [Issues](https://github.com/StrongKey/FIDO-Server/issues) to track
 
 ### Did you discover a bug?
 
-Do not open up a GitHub Issue if the bug is a security vulnerability in FIDO2 Server, and instead to refer to our security policy.
+Do not open up a GitHub Issue if the bug is a security vulnerability in FIDO2 Server, and instead email [support@strongkey.com](mailto:support@strongkey.com)
 
 Ensure the bug was not already reported by searching on GitHub Issues.
 

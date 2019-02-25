@@ -16,6 +16,9 @@ Follow [the installation instructions](https://github.com/StrongKey/FIDO-Server/
 
 To see it in action, sample code is provided in the links below.
 
+## API docs
+[Interactive OpenAPI documentation for FIDO Server](https://strongkey.github.io/FIDO-Server/)
+
 ## Sample Code
 Sample Code is provided with a brief explanation of what each sample does:
 
@@ -23,10 +26,7 @@ Sample Code is provided with a brief explanation of what each sample does:
 * [Relying Party](https://github.com/StrongKey/relying-party-java) - Java sample
 
 ## Links
-[StrongKey's public FIDO2/WebAuthn server](https://github.com/StrongKey/WebAuthn)
-
-## API docs
-[Open API documentation for FIDO2/WebAuthn](https://github.com/StrongKey/FIDO-Server/blob/master/docs/fido-openapi.yaml)
+[WebAuthn demo](https://webauthndemo.strongkey.com/tutorial.html)
 
 ## Contributing
 If you would like to contribute to the FIDO2 Community Edition Server project, please sign and return the [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).

@@ -4,7 +4,7 @@
 
 -  **The scripted installation process has been tested on CentOS 7 only.** The installation script is untested on other flavors of Linux but may work with slight modifications.
 
--  A **fully qualified domain name (FQDN)**. It is very important to have a hostname that is at least _Top-level domain (TLD)_+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO functionality may not work.
+-  A **fully qualified public domain name (FQDN)**. It is very important to have a hostname that is at least _Top-level domain (TLD)_+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO functionality may not work.
 
 -  The installation script installs Payara running HTTPS on port 8181, so make sure all firewall rules allow that port to be accessed.
 
@@ -58,13 +58,13 @@
     hostname
     ```
 
-    If you see only the machine name and not the hostname, run the following command:
+    If you see only the machine name and not the public FQDN, run the following command:
 
     ```sh
-    sudo hostnamectl set-hostname <YOUR SERVER'S FQDN>
+    sudo hostnamectl set-hostname <YOUR SERVER'S PUBLIC FQDN>
     ```
 
-    If you do not have DNS configured for this machine, please add the following entry (replace the IP address with the IP address of the machine)  to the _/etc/hosts_ file. 
+    If you do not have DNS configured for this machine, please run the following command to add an entry to the _/etc/hosts_ file. 
     **DO NOT run this if your machine does not have a configured FQDN and is still running as _localhost_.**
 
     ```sh

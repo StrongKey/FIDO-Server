@@ -62,10 +62,10 @@ If you see only the machine name and not the hostname, run the following command
 sudo hostnamectl set-hostname <YOUR SERVER'S FQDN>
 ```
 
-If you do not  have DNS configured for this machine, please add the following entry (replace the ip-address with the ip of the machine)  to the "/etc/hosts" file.
+If you do not  have DNS configured for this machine, please add the following entry (replace the ip-address with the ip of the machine)  to the "/etc/hosts" file. **DO NOT** run this if your machine does not have a FQDN configured and is still running as localhost.
 
 ```sh
-echo <ip-address> $(hostname) | sudo tee -a /etc/hosts
+echo `hostname -i` $(hostname) | sudo tee -a /etc/hosts
 ```
 
 8.  **Execute** the _install-skfs.sh_ script as follows:

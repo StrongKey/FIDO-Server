@@ -68,7 +68,7 @@
     **DO NOT run this if your machine does not have a configured FQDN and is still running as _localhost_.**
 
     ```sh
-    echo `hostname -i` $(hostname) | sudo tee -a /etc/hosts
+    echo `hostname -I | awk '{print $1}'` $(hostname) | sudo tee -a /etc/hosts
     ```
 
 8.  **Execute** the _install-skfs.sh_ script as follows:

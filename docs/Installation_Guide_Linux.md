@@ -4,7 +4,7 @@
 
 -  **The scripted installation process has been tested on CentOS 7 only.** The installation script is untested on other flavors of Linux but may work with slight modifications.
 
--  A **fully qualified domain name (FQDN)** for a hostname with either DNS or local hostfile entry in _/etc/hosts_ that can resolve the hostname. It is very important to have a hostname that is at least TLD+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO functionality may not work.
+-  A **fully qualified domain name (FQDN)**. It is very important to have a hostname that is at least TLD+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO functionality may not work.
 
 ----------------
 
@@ -53,7 +53,19 @@ wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemall
 
 6.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name.
 
-7.  **Execute** the _install-skfs.sh_ script as follows:
+7. Be sure that you have your server's FQDN set as its hostname. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
+
+```sh
+hostname
+```
+
+If you see only the machine name and not the hostname, run the following command:
+
+```sh
+sudo hostnamectl set-hostname \<YOUR SERVER'S FQDN>
+```
+
+8.  **Execute** the _install-skfs.sh_ script as follows:
 
 ```sh
 sudo ./install-skfs.sh
@@ -61,11 +73,11 @@ sudo ./install-skfs.sh
 
 The installation script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. The default password for the _strongkey_ user is _ShaZam123_.
 
-8. Confirm that your FIDO Server is running with the following command. You should get the API WADL file back in response.
+9. Confirm that your FIDO Server is running with the following command. You should get the API WADL file back in response.
 
 ```sh
 curl -k https://localhost:8181/api/application.wadl
 ```
 
-9. For further testing, check out the [sample Relying Party](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
+10. For further testing, check out the [sample Relying Party](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
 

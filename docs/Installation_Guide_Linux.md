@@ -6,7 +6,7 @@
 
 -  A **fully qualified domain name (FQDN)**. It is very important to have a hostname that is at least TLD+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO functionality may not work.
 
--  The script installs payara running https on port 8181, so make sure all firewall rules allow that port to be accessed.
+-  The installation script installs payara running https on port 8181, so make sure all firewall rules allow that port to be accessed.
 
 ----------------
 

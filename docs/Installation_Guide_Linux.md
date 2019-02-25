@@ -15,10 +15,7 @@
 2.  **Download and Install** various dependencies. Run the following commands:
 
 ```sh
-sudo yum install wget
-sudo yum install unzip
-sudo yum install libaio
-sudo yum install java-1.8.0-openjdk
+sudo yum install wget unnzip libaio java-1.8.0-openjdk
 ```
 
 3.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz).
@@ -65,10 +62,10 @@ If you see only the machine name and not the hostname, run the following command
 sudo hostnamectl set-hostname <YOUR SERVER'S FQDN>
 ```
 
-If you do not  have DNS configured for this machine, please add it to the "/etc/hosts" file.
+If you do not  have DNS configured for this machine, please add the following entry (replace the ip-address with the ip of the machine)  to the "/etc/hosts" file.
 
 ```sh
-sudo echo $(hostname) >> /etc/hosts
+echo <ip-address> $(hostname) | sudo tee -a /etc/hosts
 ```
 
 8.  **Execute** the _install-skfs.sh_ script as follows:

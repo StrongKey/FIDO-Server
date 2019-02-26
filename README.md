@@ -29,7 +29,7 @@ Sample Code is provided with a brief explanation of what each sample does:
 [WebAuthn demo](https://webauthndemo.strongkey.com/tutorial.html)
 
 ## Contributing
-If you would like to contribute to the FIDO2 Community Edition Server project, please sign and return the [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).
+If you would like to contribute to the FIDO Server, Community Edition project, please sign and return the [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).
 
 ## Licensing
 This project is currently licensed under the [GNU Lesser General Public License v2.1](https://github.com/StrongKey/FIDO-Server/blob/master/LICENSE).

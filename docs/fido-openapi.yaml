@@ -644,7 +644,7 @@ components:
     MissingResource:
       description: The requested resource is unavailable.
     BadInput:
-      description: Their was an error in the submitted input.
+      description: There was an error in the submitted input.
       content:
         application/json:
           schema:

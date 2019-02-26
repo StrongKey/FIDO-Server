@@ -8,6 +8,8 @@
 
 -  The installation script installs Payara running HTTPS on port 8181, so make sure all firewall rules allow that port to be accessed.
 
+- StrongKey's FIDO Server must be installed before the sample Relying Party and sample WebAuthn.
+
 ----------------
 
 ## Installation

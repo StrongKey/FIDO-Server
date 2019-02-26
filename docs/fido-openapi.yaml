@@ -81,12 +81,12 @@ paths:
           required: true
           description: | 
               The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
-                + http verb + "\n"             (ex POST)
-                + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
-                + content type + "\n"          (ex application/json)
-                + current date + "\n"          (ex Mon, 25 Feb 2019 01:48:43 PST)
-                + strongkey api version + "\n" (ex 2.0)
-                + resource location            (ex /api/domains/1/fidokeys)
+                + http verb + "\n"             (ex: POST)
+                + content SHA-256 + "\n"       (ex: RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
+                + content type + "\n"          (ex: application/json)
+                + current date + "\n"          (ex: Mon, 25 Feb 2019 01:48:43 PST)
+                + strongkey api version + "\n" (ex: 2.0)
+                + resource location            (ex: /api/domains/1/fidokeys)
       requestBody:
         content:
           application/json:
@@ -167,12 +167,12 @@ paths:
           required: true
           description: | 
               The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
-                + http verb + "\n"             (ex POST)
-                + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
-                + content type + "\n"          (ex application/json)
-                + current date + "\n"          (ex Mon, 25 Feb 2019 01:48:43 PST)
-                + strongkey api version + "\n" (ex 2.0)
-                + resource location            (ex /api/domains/1/fidokeys)
+                + http verb + "\n"             (ex: POST)
+                + content SHA-256 + "\n"       (ex: RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
+                + content type + "\n"          (ex: application/json)
+                + current date + "\n"          (ex: Mon, 25 Feb 2019 01:48:43 PST)
+                + strongkey api version + "\n" (ex: 2.0)
+                + resource location            (ex: /api/domains/1/fidokeys)
       requestBody:
         content:
           application/json:
@@ -242,12 +242,12 @@ paths:
           required: true
           description: | 
               The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
-                + http verb + "\n"             (ex GET)
+                + http verb + "\n"             (ex: GET)
                 + "\n"
                 + "\n"
-                + current date + "\n"          (ex Mon, 25 Feb 2019 01:48:43 PST)
-                + strongkey api version + "\n" (ex 2.0)
-                + resource location            (ex /api/domains/1/fidokeys?username=user.name@domain.com)
+                + current date + "\n"          (ex: Mon, 25 Feb 2019 01:48:43 PST)
+                + strongkey api version + "\n" (ex: 2.0)
+                + resource location            (ex: /api/domains/1/fidokeys?username=user.name@domain.com)
       responses:
         '200':
           $ref: '#/components/responses/GenericResponse'
@@ -311,12 +311,12 @@ paths:
           required: true
           description: | 
               The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
-                + http verb + "\n"             (ex POST)
-                + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
-                + content type + "\n"          (ex application/json)
-                + current date + "\n"          (ex Mon, 25 Feb 2019 01:48:43 PST)
-                + strongkey api version + "\n" (ex 2.0)
-                + resource location            (ex /api/domains/1/fidokeys)
+                + http verb + "\n"             (ex: POST)
+                + content SHA-256 + "\n"       (ex: RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
+                + content type + "\n"          (ex: application/json)
+                + current date + "\n"          (ex: Mon, 25 Feb 2019 01:48:43 PST)
+                + strongkey api version + "\n" (ex: 2.0)
+                + resource location            (ex: /api/domains/1/fidokeys)
       requestBody:
         content:
           application/json:
@@ -395,12 +395,12 @@ paths:
           required: true
           description: | 
               The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
-                + http verb + "\n"             (ex POST)
-                + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
-                + content type + "\n"          (ex application/json)
-                + current date + "\n"          (ex Mon, 25 Feb 2019 01:48:43 PST)
-                + strongkey api version + "\n" (ex 2.0)
-                + resource location            (ex /api/domains/1/fidokeys)
+                + http verb + "\n"             (ex: POST)
+                + content SHA-256 + "\n"       (ex: RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
+                + content type + "\n"          (ex: application/json)
+                + current date + "\n"          (ex: Mon, 25 Feb 2019 01:48:43 PST)
+                + strongkey api version + "\n" (ex: 2.0)
+                + resource location            (ex: /api/domains/1/fidokeys)
       requestBody:
         content:
           application/json:
@@ -485,12 +485,12 @@ paths:
           required: true
           description: | 
               The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
-                + http verb + "\n"             (ex POST)
-                + content SHA-256 + "\n"       (ex RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
-                + content type + "\n"          (ex application/json)
-                + current date + "\n"          (ex Mon, 25 Feb 2019 01:48:43 PST)
-                + strongkey api version + "\n" (ex 2.0)
-                + resource location            (ex /api/domains/1/fidokeys)
+                + http verb + "\n"             (ex: POST)
+                + content SHA-256 + "\n"       (ex: RDk2y8UcpVXsnFmyo6TzRpJxbszectFj8zR3bFdDjyY=)
+                + content type + "\n"          (ex: application/json)
+                + current date + "\n"          (ex: Mon, 25 Feb 2019 01:48:43 PST)
+                + strongkey api version + "\n" (ex: 2.0)
+                + resource location            (ex: /api/domains/1/fidokeys)
       requestBody:
         content:
           application/json:
@@ -560,12 +560,12 @@ paths:
           required: true
           description: | 
               The type of authentication to present to the server. The currently supported mechanism is HMAC Auth, which requires an access key and a secret key. The secret key must be used to create an HMAC-SHA256 hash over the request in the following form\:
-                + http verb + "\n"             (ex DELETE)
+                + http verb + "\n"             (ex: DELETE)
                 + "\n"
                 + "\n"
-                + current date + "\n"          (ex Mon, 25 Feb 2019 01:48:43 PST)
-                + strongkey api version + "\n" (ex 2.0)
-                + resource location            (ex /api/domains/1/fidokeys)
+                + current date + "\n"          (ex: Mon, 25 Feb 2019 01:48:43 PST)
+                + strongkey api version + "\n" (ex: 2.0)
+                + resource location            (ex: /api/domains/1/fidokeys)
       responses:
         '200':
           $ref: '#/components/responses/GenericResponse'

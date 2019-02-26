@@ -24,8 +24,8 @@ info:
 servers:
   - url: '/api/domains/{did}'
 tags:
-  - name: U2F/FIDO2
-    description: StrongKey implementation of the FIDO U2F and FIDO2 protocols.
+  - name: FIDO2
+    description: StrongKey implementation of the FIDO and FIDO2 protocols.
   - name: Administration
     description: Management API for registered FIDO keys.
 paths:
@@ -35,7 +35,7 @@ paths:
       description: |
         Step 1 for FIDO authenticator registration. This method generates and returns a challenge to the caller.
       tags:
-        - U2F/FIDO2
+        - FIDO2
       operationId: preregister
       parameters:
         - in: path
@@ -121,7 +121,7 @@ paths:
       description: |
         Step 2 for FIDO authenticator registration. This method allows the caller to return the signed challenge to the server to be verified.
       tags:
-        - U2F/FIDO2
+        - FIDO2
       operationId: register
       parameters:
         - in: path
@@ -265,7 +265,7 @@ paths:
       description: |
         Step 1 for FIDO authenticator authentication. This method generates and returns a challenge to the caller.
       tags:
-        - U2F/FIDO2
+        - FIDO2
       operationId: preauthenticate
       parameters:
         - in: path
@@ -349,7 +349,7 @@ paths:
       description: |
         Step 2 for FIDO authenticator authentication. This method allows the caller to return the signed challenge to the server to be verified.
       tags:
-        - U2F/FIDO2
+        - FIDO2
       operationId: authenticate
       parameters:
         - in: path

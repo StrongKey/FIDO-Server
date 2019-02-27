@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: FIDO Server API
-  version: 4.0.0
+  version: 2.0
   description: |
     The FIDO Server API provides the registration and authentication web services required to manage users' FIDO keys.
 
@@ -24,8 +24,10 @@ info:
 servers:
   - url: '/api/domains/{did}'
 tags:
-  - name: FIDO2
-    description: StrongKey implementation of the FIDO and FIDO2 protocols.
+  - name: Register
+    description: Register a user and their FIDO key using FIDO2 protocols.
+  - name: Authenticate
+    description: Authenticate a user using FIDO2 protocols.
   - name: Administration
     description: Management API for registered FIDO keys.
 paths:
@@ -35,7 +37,7 @@ paths:
       description: |
         Step 1 for FIDO authenticator registration. This method generates and returns a challenge to the caller.
       tags:
-        - FIDO2
+        - Register
       operationId: preregister
       parameters:
         - in: path
@@ -121,7 +123,7 @@ paths:
       description: |
         Step 2 for FIDO authenticator registration. This method allows the caller to return the signed challenge to the server to be verified.
       tags:
-        - FIDO2
+        - Register
       operationId: register
       parameters:
         - in: path
@@ -265,7 +267,7 @@ paths:
       description: |
         Step 1 for FIDO authenticator authentication. This method generates and returns a challenge to the caller.
       tags:
-        - FIDO2
+        - Authenticate
       operationId: preauthenticate
       parameters:
         - in: path
@@ -349,7 +351,7 @@ paths:
       description: |
         Step 2 for FIDO authenticator authentication. This method allows the caller to return the signed challenge to the server to be verified.
       tags:
-        - FIDO2
+        - Authenticate
       operationId: authenticate
       parameters:
         - in: path

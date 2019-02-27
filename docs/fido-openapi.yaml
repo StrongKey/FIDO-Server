@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: FIDO Server API
-  version: 2.0
+  version: "0.9"
   description: |
     The FIDO Server API provides the registration and authentication web services required to manage users' FIDO keys.
 

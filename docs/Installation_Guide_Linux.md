@@ -16,7 +16,7 @@
 
 1.  **Change directory** to the target download folder.
 
-2.  **Download and Install** various dependencies. Run the following commands:
+2.  **Download and install** various dependencies. Run the following commands:
     
     ```sh
     sudo yum install wget unzip libaio java-1.8.0-openjdk

@@ -26,7 +26,7 @@ Sample Code is provided with a brief explanation of what each sample does:
 * [Relying Party](https://github.com/StrongKey/relying-party-java) - Java sample
 
 ## Links
-[WebAuthn demo](https://webauthndemo.strongkey.com/tutorial.html)
+[Live FIDO demo website](https://webauthndemo.strongkey.com/tutorial.html)
 
 ## Contributing
 If you would like to contribute to the FIDO Server, Community Edition project, please sign and return the [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).

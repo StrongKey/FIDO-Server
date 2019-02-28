@@ -72,9 +72,9 @@ paths:
           name: strongkey-api-version
           schema:
             type: string
-            example: "2.0"
+            example: "0.9"
           required: true
-          description: "0.9"
+          description: "0.9 is the only acceptable value."
         - in: header
           name: Authorization
           schema:
@@ -158,9 +158,9 @@ paths:
           name: strongkey-api-version
           schema:
             type: string
-            example: "2.0"
+            example: "0.9"
           required: true
-          description: "0.9"
+          description: "0.9 is the only acceptable value."
         - in: header
           name: Authorization
           schema:
@@ -233,9 +233,9 @@ paths:
           name: strongkey-api-version
           schema:
             type: string
-            example: "2.0"
+            example: "0.9"
           required: true
-          description: "0.9"
+          description: "0.9 is the only acceptable value."
         - in: header
           name: Authorization
           schema:
@@ -302,9 +302,9 @@ paths:
           name: strongkey-api-version
           schema:
             type: string
-            example: "2.0"
+            example: "0.9"
           required: true
-          description: "0.9"
+          description: "0.9 is the only acceptable value."
         - in: header
           name: Authorization
           schema:
@@ -386,9 +386,9 @@ paths:
           name: strongkey-api-version
           schema:
             type: string
-            example: "2.0"
+            example: "0.9"
           required: true
-          description: "0.9"
+          description: "0.9 is the only acceptable value."
         - in: header
           name: Authorization
           schema:
@@ -476,9 +476,9 @@ paths:
           name: strongkey-api-version
           schema:
             type: string
-            example: "2.0"
+            example: "0.9"
           required: true
-          description: "0.9"
+          description: "0.9 is the only acceptable value."
         - in: header
           name: Authorization
           schema:
@@ -551,9 +551,9 @@ paths:
           name: strongkey-api-version
           schema:
             type: string
-            example: "2.0"
+            example: "0.9"
           required: true
-          description: "0.9"
+          description: "0.9 is the only acceptable value."
         - in: header
           name: Authorization
           schema:

@@ -74,7 +74,7 @@ paths:
             type: string
             example: "2.0"
           required: true
-          description: The version of the resource to be requested.
+          description: "0.9"
         - in: header
           name: Authorization
           schema:
@@ -160,7 +160,7 @@ paths:
             type: string
             example: "2.0"
           required: true
-          description: The version of the resource to be requested.
+          description: "0.9"
         - in: header
           name: Authorization
           schema:
@@ -235,7 +235,7 @@ paths:
             type: string
             example: "2.0"
           required: true
-          description: The version of the resource to be requested.
+          description: "0.9"
         - in: header
           name: Authorization
           schema:
@@ -304,7 +304,7 @@ paths:
             type: string
             example: "2.0"
           required: true
-          description: The version of the resource to be requested.
+          description: "0.9"
         - in: header
           name: Authorization
           schema:
@@ -388,7 +388,7 @@ paths:
             type: string
             example: "2.0"
           required: true
-          description: The version of the resource to be requested.
+          description: "0.9"
         - in: header
           name: Authorization
           schema:
@@ -478,7 +478,7 @@ paths:
             type: string
             example: "2.0"
           required: true
-          description: The version of the resource to be requested.
+          description: "0.9"
         - in: header
           name: Authorization
           schema:
@@ -553,7 +553,7 @@ paths:
             type: string
             example: "2.0"
           required: true
-          description: The version of the resource to be requested.
+          description: "0.9"
         - in: header
           name: Authorization
           schema:

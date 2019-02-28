@@ -52,7 +52,7 @@
 
     **NOTE:** The StrongKey FIDO Server has been tested with the above software versions. The StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
 
-6.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name.
+6.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name. This provides a lable for your certificate.
 
 7. Be sure that you have your **server FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
 

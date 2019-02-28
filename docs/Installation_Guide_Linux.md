@@ -81,7 +81,7 @@
 
     The installation script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. The default password for the _strongkey_ user is _ShaZam123_.
     
-    The policy for the StrongKey FIDO Server is a generic policy with default settings. 
+    **NOTE: The policy for the StrongKey FIDO Server is a generic policy with default settings.**
 
 9. Using the following command, **confirm your FIDO Server is running**. You should get the API _Web Application Definition Language (WADL)_ file back in response.
 

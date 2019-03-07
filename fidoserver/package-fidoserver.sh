@@ -18,15 +18,9 @@ skcemessages=$(sed -n '31,$p' $skceresources/skce-messages.properties)
 cryptoresources=$fidoserver/crypto/src/main/resources/resources
 cryptomessages=$(sed -n '31,$p' $cryptoresources/crypto-messages.properties)
 
-if [ -f "$fidoserver/*.tgz" ]; then
-        rm $fidoserver/*.tgz
-fi
-
 failure() {
         tty -s && tput setaf 1
-        if [ -d $fidoserver/jade ]; then
-                rm -r $fidoserver/jade
-        fi
+        rm -f $fidoserver/fidoserverInstall/fidoserver.ear 
         echo "There was a problem creating the FIDOSERVER distribution. Aborting." >&2
         tty -s && tput sgr0
         exit 1
@@ -68,7 +62,7 @@ for languagefile in $cryptoresources/crypto-messages_*; do
         echo "$cryptomessages" >> $languagefile
 done
 
-# Create jade
+# Create dist
 # This cd is important for mvn to work
 cd $fidoserver
 mvn -q install:install-file -Dfile=$fidoserver/lib/bc-fips-1.0.1.jar -DgroupId=org.bouncycastle -DartifactId=bc-fips -Dversion=1.0.1 -Dpackaging=jar
@@ -76,23 +70,18 @@ mvn -q install:install-file -Dfile=$fidoserver/lib/bcpkix-fips-1.0.0.jar -Dgroup
 echo "-Clean and building source..."
 mvn clean install -q 
 
-# Copy the necessary jars, libs, wars, ears into jade
+# Copy the necessary jars, libs, wars, ears into dist
 echo "-Copying files..."
-mkdir -p $fidoserver/jade/sql
-touch $fidoserver/jade/Version${version}
-cp -r $fidoserver/fidoserverInstall/src/fidoserverSQL/mysql $fidoserver/jade/sql
-cp $fidoserver/fidoserverEAR/target/fidoserver.ear $fidoserver/jade
+cp $fidoserver/fidoserverEAR/target/fidoserver.ear $fidoserver/fidoserverInstall
 
 # Create archives
-echo "-Packaging jade..."
-tar zcf FIDOServer-v${version}.tgz -C $fidoserver jade
-
-# Remove jade
-rm -r $fidoserver/jade
+echo "-Packaging fidoserver..."
+tar zcf FIDOServer-v${version}-dist.tgz -C $fidoserver/fidoserverInstall *
 
 # Do not go to the failure function
 trap : 0
 echo "Success!"
-tty -s && tput sgr0
 
+tty -s && tput sgr0
+rm -f $fidoserver/fidoserverInstall/fidoserver.ear 
 exit 0

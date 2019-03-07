@@ -57,7 +57,7 @@ public class APIServlet {
      * empty if successful.
      */
     @POST
-    @Path("/challenge")
+    @Path("/registration/challenge")
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response preregister(PreregistrationRequest preregistration,
@@ -89,6 +89,7 @@ public class APIServlet {
      * something went wrong. Will be empty if successful.
      */
     @POST
+    @Path("/registration")
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response register(RegistrationRequest registration,
@@ -114,7 +115,7 @@ public class APIServlet {
      * empty if successful.
      */
     @POST
-    @Path("/authenticate/challenge")
+    @Path("/authentication/challenge")
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response preauthenticate(PreauthenticationRequest preauthentication,
@@ -147,7 +148,7 @@ public class APIServlet {
      * something went wrong. Will be empty if successful.
      */
     @POST
-    @Path("/authenticate")
+    @Path("/authentication")
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response authenticate(AuthenticationRequest authentication,

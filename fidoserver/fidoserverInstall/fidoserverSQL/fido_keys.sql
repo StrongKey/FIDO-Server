@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS fido_keys (
         attcid                          mediumint(20) NULL,
         counter                         INT NOT NULL,
         fido_version                    VARCHAR(45) NULL,
-        fido_protocol                   ENUM('U2F','UAF','FIDO20') NULL,
+        fido_protocol                   ENUM('U2F','UAF','FIDO2_0') NULL,
         aaguid                          varchar(36) NULL,
         registration_settings           LONGTEXT NULL,
         registration_settings_version   INT(11) NULL,

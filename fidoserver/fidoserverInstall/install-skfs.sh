@@ -10,11 +10,7 @@
 
 ##########################################
 ##########################################
-# Company name for self signed certificate
-COMPANY="StrongKey"
-
 # Server Passwords
-GLASSFISH_PASSWORD=adminadmin
 LINUX_PASSWORD=ShaZam123
 MARIA_ROOT_PASSWORD=BigKahuna
 MARIA_SKFSDBUSER_PASSWORD=AbracaDabra
@@ -28,7 +24,7 @@ BUFFERPOOLSIZE=512m
 # Flags to indicate if a module should be installed
 INSTALL_GLASSFISH=Y
 INSTALL_MARIA=Y
-INSTALL_JADE=Y
+INSTALL_FIDO=Y
 
 # Script logging location
 LOGNAME=/root/strongkey-skfs-$(date +%s)
@@ -41,7 +37,6 @@ MARIACONJAR=mariadb-java-client-2.2.2.jar
 # End Required Distributables
 
 # Other vars
-SKFS=FIDOServer-v0.9.tgz
 STRONGKEY_HOME=/usr/local/strongkey
 SKFS_HOME=$STRONGKEY_HOME/skfs
 GLASSFISH_HOME=$STRONGKEY_HOME/payara41/glassfish
@@ -50,7 +45,6 @@ JAVA_HOME=/lib/jvm/jre-1.8.0
 MARIAVER=mariadb-10.2.13-linux-x86_64
 MARIATGT=mariadb-10.2.13
 MARIA_HOME=$STRONGKEY_HOME/$MARIATGT
-JADE=$STRONGKEY_HOME/jade
 SKFS_SOFTWARE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 function check_exists {
@@ -115,8 +109,7 @@ if [ $INSTALL_MARIA = 'Y' ]; then
         check_exists $SKFS_SOFTWARE/$MARIA $SKFS_SOFTWARE/$JEMALLOC $SKFS_SOFTWARE/$MARIACONJAR
 fi
 
-if [ $INSTALL_JADE = 'Y' ]; then
-        check_exists $SKFS_SOFTWARE/$SKFS
+if [ $INSTALL_FIDO = 'Y' ]; then
         check_exists $SKFS_SOFTWARE/signingkeystore.bcfks $SKFS_SOFTWARE/signingtruststore.bcfks
 fi
 
@@ -152,7 +145,7 @@ cat > /etc/skfsrc << EOFSKFSRC
               export PATH=\$GLASSFISH_HOME/bin:\$JAVA_HOME/bin:\$MYSQL_HOME/bin:\$STRONGKEY_HOME/bin:/usr/lib64/qt-3.3/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin
 
 alias str='cd $STRONGKEY_HOME'
-alias jade='cd $STRONGKEY_HOME/jade'
+alias dist='cd $STRONGKEY_HOME/dist'
 alias aslg='cd $GLASSFISH_HOME/domains/domain1/logs'
 alias ascfg='cd $GLASSFISH_HOME/domains/domain1/config'
 alias tsl='tail --follow=name $GLASSFISH_HOME/domains/domain1/logs/server.log'
@@ -165,11 +158,10 @@ echo ". /etc/skfsrc" >> /etc/bashrc
 # Make needed directories
 mkdir -p $STRONGKEY_HOME/certs $STRONGKEY_HOME/Desktop $STRONGKEY_HOME/dbdumps $STRONGKEY_HOME/lib $STRONGKEY_HOME/bin $STRONGKEY_HOME/appliance/etc $STRONGKEY_HOME/crypto/etc $SKFS_HOME/etc $SKFS_HOME/keystores
 
-##### Install Jade #####
-if [ $INSTALL_JADE = 'Y' ]; then
+##### Install Fido #####
+if [ $INSTALL_FIDO = 'Y' ]; then
 
         echo "Installing SKFS..." | tee -a $LOGNAME
-        tar zxf $SKFS_SOFTWARE/$SKFS -C $STRONGKEY_HOME
 
         cp $SKFS_SOFTWARE/certimport.sh $STRONGKEY_HOME/bin
         cp $STRONGKEY_HOME/bin/* $STRONGKEY_HOME/Desktop/
@@ -265,7 +257,7 @@ if [ $INSTALL_GLASSFISH = 'Y' ]; then
         chmod 755 /etc/init.d/glassfishd
         chkconfig --add glassfishd
 
-        $JAVA_HOME/bin/keytool -genkeypair -alias skfs -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit -keypass changeit -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -validity 3562 -dname "CN=$(hostname),OU=\"StrongKey FidoServer\",O=\"$COMPANY\"" &>/dev/null
+        $JAVA_HOME/bin/keytool -genkeypair -alias skfs -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit -keypass changeit -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -validity 3562 -dname "CN=$(hostname),OU=\"StrongKey FidoServer\"" &>/dev/null
         $JAVA_HOME/bin/keytool -changealias -alias s1as -destalias s1as.original -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit &>/dev/null
         $JAVA_HOME/bin/keytool -changealias -alias skfs -destalias s1as -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit &>/dev/null
         sed -ri 's|^(com.sun.enterprise.server.logging.GFFileHandler.rotationOnDateChange=).*|\1true|
@@ -303,7 +295,7 @@ $MARIA_HOME/bin/mysql -u root mysql -e "update user set password=password('$MARI
                                                     create database skfs;
                                                     grant all on skfs.* to skfsdbuser@localhost identified by '$MARIA_SKFSDBUSER_PASSWORD';
                                                     flush privileges;"
-cd $JADE/sql/mysql
+cd $SKFS_SOFTWARE/fidoserverSQL
 $STRONGKEY_HOME/$MARIATGT/bin/mysql --user=skfsdbuser --password=$MARIA_SKFSDBUSER_PASSWORD --database=skfs --quick < create.txt
 
 # Add server entries to SERVERS table
@@ -374,22 +366,7 @@ done
 chown strongkey $GLASSFISH_HOME/domains/domain1/docroot/app.json
 
 echo "Deploying StrongKey FidoServer ..." | tee -a $LOGNAME
-$GLASSFISH_HOME/bin/asadmin deploy $STRONGKEY_HOME/jade/fidoserver.ear
-service glassfishd stop
-
-echo "AS_ADMIN_PASSWORD=" > /tmp/password
-echo "AS_ADMIN_NEWPASSWORD=$GLASSFISH_PASSWORD" >> /tmp/password
-$GLASSFISH_HOME/bin/asadmin --user admin --passwordfile /tmp/password change-admin-password --domain_name domain1
-
-service glassfishd start
-echo "AS_ADMIN_PASSWORD=$GLASSFISH_PASSWORD" > /tmp/password
-$GLASSFISH_HOME/bin/asadmin --user admin --passwordfile /tmp/password enable-secure-admin --instancealias=s1as
-$GLASSFISH_HOME/bin/asadmin --user admin --passwordfile /tmp/password set server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-tls-ciphers=+TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,+TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,+TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,+TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,+TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,+TLS_DHE_RSA_WITH_AES_256_CBC_SHA
-$GLASSFISH_HOME/bin/asadmin --user admin --passwordfile /tmp/password set server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl2-enabled=false
-$GLASSFISH_HOME/bin/asadmin --user admin --passwordfile /tmp/password set server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled=false
-$GLASSFISH_HOME/bin/asadmin --user admin --passwordfile /tmp/password set server.network-config.protocols.protocol.sec-admin-listener.http.trace-enabled=false
-$GLASSFISH_HOME/bin/asadmin --user admin --passwordfile /tmp/password set server.network-config.protocols.protocol.sec-admin-listener.http.xpowered-by=false
-rm /tmp/password
+$GLASSFISH_HOME/bin/asadmin deploy $SKFS_SOFTWARE/fidoserver.ear
 
 echo "Done!" | tee -a $LOGNAME
 

@@ -30,7 +30,7 @@ public class U2FChallenge implements Serializable {
      * Supported versions for U2F protocol
      */
     final String U2F_VERSION_V2 = "U2F_V2";
-    final String FIDO = "FIDO20";
+    final String FIDO = "FIDO2_0";
     
     /**
      * Common parameters for a challenge in U2F

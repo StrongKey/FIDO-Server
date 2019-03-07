@@ -50,7 +50,7 @@ public class skfsConstants {
      * FIDO protocol versions
      */
     public static final String FIDO_PROTOCOL_VERSION_U2F_V2 = "U2F_V2";
-    public static final String FIDO_PROTOCOL_VERSION_2_0 = "FIDO20";
+    public static final String FIDO_PROTOCOL_VERSION_2_0 = "FIDO2_0";
     public static final int USER_PRESENT_FLAG = 1;
     
         /**

@@ -26,9 +26,6 @@ INSTALL_GLASSFISH=Y
 INSTALL_MARIA=Y
 INSTALL_FIDO=Y
 
-# Script logging location
-LOGNAME=/root/strongkey-skfs-$(date +%s)
-
 # Start Required Distributables
 GLASSFISH=payara-4.1.2.181.zip
 JEMALLOC=jemalloc-3.6.0-1.el7.x86_64.rpm
@@ -51,7 +48,7 @@ function check_exists {
 for ARG in "$@"
 do
     if [ ! -f $ARG ]; then
-        >&2 echo -e "\E[31m$ARG Not Found. Check to ensure the file exists in the proper location and try again.\E[0m" | tee -a $LOGNAME
+        >&2 echo -e "\E[31m$ARG Not Found. Check to ensure the file exists in the proper location and try again.\E[0m"
         exit 1
     fi
 done
@@ -68,7 +65,7 @@ function get_ip {
                         if ! dig +short +time=2 +retry=1 +tries=1 $1 | grep '.' 2>/dev/null; then
 
                                 # Can't resolve IP
-                                >&2 echo -e "\E[31mFQDN $1 not resolvable. Modify DNS or add a hosts entry and try again.\E[0m" | tee -a $LOGNAME
+                                >&2 echo -e "\E[31mFQDN $1 not resolvable. Modify DNS or add a hosts entry and try again.\E[0m"
                                 exit 1
                         fi
                 fi
@@ -78,19 +75,15 @@ function get_ip {
 # Make sure we can resolve our own hostname
 get_ip "$(hostname)" > /dev/null
 
-if ! [ -d /root/strongkey_logs ]; then
-        mkdir /root/stronguth_logs
-fi
-
 # Check that the script is run as root
 if [ $UID -ne 0 ]; then
-        >&2 echo -e "\E[31m$0 must be run as root\E[0m" | tee -a $LOGNAME
+        >&2 echo -e "\E[31m$0 must be run as root\E[0m"
         exit 1
 fi
 
 # Check that strongkey doesn't already exist
 if $(id strongkey &> /dev/null); then
-        >&2 echo -e "\E[31m'strongkey' user already exists. Run cleanup.sh and try again.\E[0m" | tee -a $LOGNAME
+        >&2 echo -e "\E[31m'strongkey' user already exists. Run cleanup.sh and try again.\E[0m"
         exit 1
 fi
 
@@ -161,7 +154,7 @@ mkdir -p $STRONGKEY_HOME/certs $STRONGKEY_HOME/Desktop $STRONGKEY_HOME/dbdumps $
 ##### Install Fido #####
 if [ $INSTALL_FIDO = 'Y' ]; then
 
-        echo "Installing SKFS..." | tee -a $LOGNAME
+        echo "Installing SKFS..."
 
         cp $SKFS_SOFTWARE/certimport.sh $STRONGKEY_HOME/bin
         cp $STRONGKEY_HOME/bin/* $STRONGKEY_HOME/Desktop/
@@ -186,7 +179,7 @@ fi
 
 ##### MariaDB #####
 if [ $INSTALL_MARIA = 'Y' ]; then
-        echo "Installing MariaDB..." | tee -a $LOGNAME
+        echo "Installing MariaDB..."
         if [ $SHOWALL ]; then
                 tar zxvf $SKFS_SOFTWARE/$MARIA -C $STRONGKEY_HOME
         else
@@ -238,7 +231,7 @@ fi
 
 ##### Glassfish #####
 if [ $INSTALL_GLASSFISH = 'Y' ]; then
-        echo "Installing Glassfish..." | tee -a $LOGNAME
+        echo "Installing Glassfish..."
         if [ $SHOWALL ]; then
                 unzip $SKFS_SOFTWARE/$GLASSFISH -d $STRONGKEY_HOME
         else
@@ -267,7 +260,7 @@ if [ $INSTALL_GLASSFISH = 'Y' ]; then
         $JAVA_HOME/bin/keytool -importcert -noprompt -alias $(hostname) -file $STRONGKEY_HOME/certs/$(hostname).der --keystore $GLASSFISH_CONFIG/cacerts.jks -storepass changeit &>/dev/null
 
         ##### MariaDB JDBC Driver #####
-        echo "Installing JDBC Driver..." | tee -a $LOGNAME
+        echo "Installing JDBC Driver..."
         cp $SKFS_SOFTWARE/$MARIACONJAR $GLASSFISH_HOME/lib
 fi
 
@@ -276,7 +269,7 @@ fi
 chown -R strongkey:strongkey $STRONGKEY_HOME
 
 ##### Start MariaDB and Glassfish #####
-echo -n "Creating $DBSIZE SKFS Internal Database..." | tee -a $LOGNAME
+echo -n "Creating $DBSIZE SKFS Internal Database..."
 cd $STRONGKEY_HOME/$MARIATGT
 scripts/mysql_install_db --basedir=`pwd` --datadir=`pwd`/ibdata &>/dev/null
 # Sleep till the database is created
@@ -284,11 +277,11 @@ bin/mysqld_safe &>/dev/null &
 READY=`grep "ready for connections" $MARIA_HOME/log/mysqld-error.log | wc -l`
 while [ $READY -ne 1 ]
 do
-        echo -n . | tee -a $LOGNAME
+        echo -n . 
         sleep 3
         READY=`grep "ready for connections" $MARIA_HOME/log/mysqld-error.log | wc -l`
 done
-echo done | tee -a $LOGNAME
+echo done 
 $MARIA_HOME/bin/mysql -u root mysql -e "update user set password=password('$MARIA_ROOT_PASSWORD') where user = 'root';
                                                     delete from mysql.db where host = '%';
                                                     delete from mysql.user where user = '';
@@ -365,8 +358,8 @@ done
 
 chown strongkey $GLASSFISH_HOME/domains/domain1/docroot/app.json
 
-echo "Deploying StrongKey FidoServer ..." | tee -a $LOGNAME
+echo "Deploying StrongKey FidoServer ..."
 $GLASSFISH_HOME/bin/asadmin deploy $SKFS_SOFTWARE/fidoserver.ear
 
-echo "Done!" | tee -a $LOGNAME
+echo "Done!"
 

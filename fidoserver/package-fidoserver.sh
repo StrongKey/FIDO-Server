@@ -76,7 +76,7 @@ cp $fidoserver/fidoserverEAR/target/fidoserver.ear $fidoserver/fidoserverInstall
 
 # Create archives
 echo "-Packaging fidoserver..."
-tar zcf FIDOServer-v${version}-dist.tgz -C $fidoserver/fidoserverInstall *
+tar zcf FIDOServer-v${version}-dist.tgz -C $fidoserver/fidoserverInstall .
 
 # Do not go to the failure function
 trap : 0

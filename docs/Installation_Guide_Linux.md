@@ -91,3 +91,11 @@
 
 10. To test this installation of the FIDO2 server, check out the [sample Relying Party](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
 
+## Removal
+
+To uninstall StrongKey FIDO2 Server, run the following command:
+
+    ```sh
+    sudo ./cleanup.sh
+    ```
+This removes all StrongKey files plus the installed dependency packages.

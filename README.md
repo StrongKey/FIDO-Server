@@ -23,7 +23,7 @@ To see it in action, sample code is provided in the links below.
 Sample Code is provided with a brief explanation of what each sample does:
 
 * [WebAuthn client](https://github.com/StrongKey/WebAuthn) - JavaScript sample
-* [Relying Party](https://github.com/StrongKey/relying-party-java) - Java sample
+* [Relying Party web application](https://github.com/StrongKey/relying-party-java) - Java sample
 
 ## Links
 [Live FIDO2 demo website](https://webauthndemo.strongkey.com/tutorial.html)

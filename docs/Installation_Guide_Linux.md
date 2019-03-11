@@ -41,7 +41,7 @@
     -   [mariadb-java-client-2.2.2.jar](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar)
     -   [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
 
-    To download the files directly to your server, copy the commands below:  
+    To download the files directly to your machine, copy the commands below:  
     
     ```sh
     wget http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip
@@ -54,7 +54,7 @@
 
 6.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name. This provides a label for your certificate.
 
-7. Be sure that you have your **server FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
+7. Be sure that you have your machine's **FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
 
     ```sh
     hostname
@@ -89,7 +89,7 @@
     curl -k https://localhost:8181/api/application.wadl
     ```
 
-10. To test this installation of the FIDO2 server, check out the [sample Relying Party](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
+10. To test this installation of the FIDO2 Server, check out the [sample Relying Party](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
 
 ## Removal
 

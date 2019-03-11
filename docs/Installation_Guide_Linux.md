@@ -1,4 +1,4 @@
-#### StrongKey FIDO Server, Community Edition
+#### StrongKey FIDO2 Server, Community Edition
 
 ## Prerequisites
 
@@ -8,13 +8,13 @@
 
 -  The installation script installs Payara running HTTPS on port 8181, so make sure all firewall rules allow that port to be accessed.
 
-- StrongKey's FIDO Server must be installed before the sample Relying Party and sample WebAuthn.
+- StrongKey's FIDO2 Server must be installed before the sample Relying Party and sample WebAuthn.
 
 ----------------
 
 ## Installation
 
-1.  **Change directory** to the target download folder.
+1.  Open a terminal and **change directory** to the target download folder.
 
 2.  **Download and install** various dependencies. Run the following commands:
     
@@ -50,7 +50,7 @@
     wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm
     ```
 
-    **NOTE:** The StrongKey FIDO Server has been tested with the above software versions. The StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
+    **NOTE:** The StrongKey FIDO2 Server has been tested with the above software versions. The StrongKey FIDO2 Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
 
 6.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name. This provides a label for your certificate.
 
@@ -79,11 +79,11 @@
     sudo ./install-skfs.sh
     ```
 
-    The installation script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. The default password for the _strongkey_ user is _ShaZam123_.
+    The installation script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO2 Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. The default password for the _strongkey_ user is _ShaZam123_.
     
-    **NOTE: The policy for the StrongKey FIDO Server is a generic policy with default settings.**
+    **NOTE: The policy for the StrongKey FIDO2 Server is a generic policy with default settings.**
 
-9. Using the following command, **confirm your FIDO Server is running**. You should get the API _Web Application Definition Language (WADL)_ file back in response.
+9. Using the following command, **confirm your FIDO2 Server is running**. You should get the API _Web Application Definition Language (WADL)_ file back in response.
 
     ```sh
     curl -k https://localhost:8181/api/application.wadl

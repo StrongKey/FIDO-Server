@@ -1,10 +1,10 @@
-#### FIDO Server, Community Edition 
+#### FIDO2 Server, Community Edition 
 # README
 
 ## Overview
-StrongKey's FIDO Server, Community Edition is an open-source solution designed for DIY coders who want password-less FIDO2  logins for any application. Download the code and integrate it with your own web login, or study the OpenAPI documentation and contribute with your own code submissions.
+StrongKey's FIDO2 Server, Community Edition is an open-source solution designed for DIY coders who want password-less FIDO2  logins for any application. Download the code and integrate it with your own web login, or study the OpenAPI documentation and contribute with your own code submissions.
 
-The following links provide some background on FIDO, the Fido Alliance, and FIDO2:
+The following links provide some background on FIDO, the FIDO Alliance, and FIDO2:
 
 * [FIDO Alliance Home](https://fidoalliance.org)
 * [What is FIDO?](https://fidoalliance.org/what-is-fido/)
@@ -12,12 +12,12 @@ The following links provide some background on FIDO, the Fido Alliance, and FIDO
 
 
 ## Installation
-Follow [the installation instructions](https://github.com/StrongKey/FIDO-Server/blob/master/docs/Installation_Guide_Linux.md) to download the FIDO Server and get it running.
+Follow [the installation instructions](https://github.com/StrongKey/FIDO-Server/blob/master/docs/Installation_Guide_Linux.md) to download the FIDO2 Server and get it running.
 
 To see it in action, sample code is provided in the links below.
 
 ## API docs
-[Interactive OpenAPI documentation for FIDO Server](https://strongkey.github.io/FIDO-Server/)
+[Interactive OpenAPI documentation for FIDO2 Server](https://strongkey.github.io/FIDO-Server/)
 
 ## Sample Code
 Sample Code is provided with a brief explanation of what each sample does:
@@ -26,10 +26,10 @@ Sample Code is provided with a brief explanation of what each sample does:
 * [Relying Party](https://github.com/StrongKey/relying-party-java) - Java sample
 
 ## Links
-[Live FIDO demo website](https://webauthndemo.strongkey.com/tutorial.html)
+[Live FIDO2 demo website](https://webauthndemo.strongkey.com/tutorial.html)
 
 ## Contributing
-If you would like to contribute to the FIDO Server, Community Edition project, please sign and return the [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).
+If you would like to contribute to the FIDO2 Server, Community Edition project, please sign and return the [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).
 
 ## Licensing
 This project is currently licensed under the [GNU Lesser General Public License v2.1](https://github.com/StrongKey/FIDO-Server/blob/master/LICENSE).

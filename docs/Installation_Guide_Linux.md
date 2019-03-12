@@ -14,6 +14,9 @@
 
 ## Installation
 
+**NOTE:** If the install fails for any reason, follow the instructions for [Removal](#removal), below, and start from the beginning.
+
+
 1.  Open a terminal and **change directory** to the target download folder.
 
 2.  **Download and install** various dependencies. Run the following commands:

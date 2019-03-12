@@ -113,24 +113,21 @@ else
         mkdir /etc/org
         cp /etc/bashrc /etc/org
         cp /etc/sudoers /etc/org
-        cp /etc/inittab /etc/org
 fi
 
 # Create the strongkey group and user, and add it to /etc/sudoers
 groupadd strongkey
 useradd -g strongkey -c"StrongKey" -d $STRONGKEY_HOME -m strongkey
-chcon -u user_u -t user_home_dir_t /usr/local/strongkey
-echo $LINUX_PASSWORD | passwd --stdin strongkey
+echo strongkey:$LINUX_PASSWORD | /usr/sbin/chpasswd
 cat >> /etc/sudoers <<-EOFSUDOERS
 
 ## SKFS permissions
-Cmnd_Alias SKFS_COMMANDS = /sbin/service glassfishd start, /sbin/service glassfishd stop, /sbin/service glassfishd restart, /sbin/service mysqld start, /sbin/service mysqld stop, /sbin/service mysqld restart
+Cmnd_Alias SKFS_COMMANDS = /usr/sbin/service glassfishd start, /usr/sbin/service glassfishd stop, /usr/sbin/service glassfishd restart, /usr/sbin/service mysqld start, /usr/sbin/service mysqld stop, /usr/sbin/service mysqld restart
 strongkey ALL=SKFS_COMMANDS
 EOFSUDOERS
 
 ##### Create skfsrc #####
 cat > /etc/skfsrc << EOFSKFSRC
-      export CRYPTOSERVER=/dev/cs2.0
     export GLASSFISH_HOME=$GLASSFISH_HOME
          export JAVA_HOME=$JAVA_HOME
         export MYSQL_HOME=$MARIA_HOME
@@ -173,8 +170,6 @@ if [ $INSTALL_FIDO = 'Y' ]; then
 
         cp $SKFS_SOFTWARE/signingkeystore.bcfks $SKFS_SOFTWARE/signingtruststore.bcfks $SKFS_HOME/keystores
 
-        chkconfig postfix on
-        service postfix start
 fi
 
 ##### MariaDB #####
@@ -190,7 +185,7 @@ if [ $INSTALL_MARIA = 'Y' ]; then
         sed -i 's|^mysqld_ld_preload=$|mysqld_ld_preload=/usr/lib64/libjemalloc.so.1|' $STRONGKEY_HOME/$MARIAVER/bin/mysqld_safe
         cp $STRONGKEY_HOME/$MARIAVER/support-files/mysql.server /etc/init.d/mysqld
         chmod 755 /etc/init.d/mysqld
-        chkconfig --add mysqld
+        /lib/systemd/systemd-sysv-install enable mysqld
         mkdir $STRONGKEY_HOME/$MARIAVER/backups $STRONGKEY_HOME/$MARIAVER/binlog $STRONGKEY_HOME/$MARIAVER/log $STRONGKEY_HOME/$MARIAVER/ibdata
         mv $STRONGKEY_HOME/$MARIAVER $STRONGKEY_HOME/$MARIATGT
 
@@ -229,9 +224,9 @@ if [ $INSTALL_MARIA = 'Y' ]; then
 	EOFMYCNF
 fi
 
-##### Glassfish #####
+##### Payara #####
 if [ $INSTALL_GLASSFISH = 'Y' ]; then
-        echo "Installing Glassfish..."
+        echo "Installing Payara..."
         if [ $SHOWALL ]; then
                 unzip $SKFS_SOFTWARE/$GLASSFISH -d $STRONGKEY_HOME
         else
@@ -248,7 +243,7 @@ if [ $INSTALL_GLASSFISH = 'Y' ]; then
 
         cp $SKFS_SOFTWARE/glassfishd /etc/init.d
         chmod 755 /etc/init.d/glassfishd
-        chkconfig --add glassfishd
+        /lib/systemd/systemd-sysv-install enable glassfishd
 
         $JAVA_HOME/bin/keytool -genkeypair -alias skfs -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit -keypass changeit -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -validity 3562 -dname "CN=$(hostname),OU=\"StrongKey FidoServer\"" &>/dev/null
         $JAVA_HOME/bin/keytool -changealias -alias s1as -destalias s1as.original -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit &>/dev/null
@@ -268,7 +263,7 @@ fi
 ##### Change ownership of files #####
 chown -R strongkey:strongkey $STRONGKEY_HOME
 
-##### Start MariaDB and Glassfish #####
+##### Start MariaDB and Payara #####
 echo -n "Creating $DBSIZE SKFS Internal Database..."
 cd $STRONGKEY_HOME/$MARIATGT
 scripts/mysql_install_db --basedir=`pwd` --datadir=`pwd`/ibdata &>/dev/null
@@ -307,9 +302,9 @@ chown -R strongkey $STRONGKEY_HOME/appliance
 
 chown strongkey:strongkey $STRONGKEY_HOME/crypto/etc/crypto-configuration.properties
 service glassfishd start
-sleep 5
+sleep 10
 
-##### Perform Glassfish Tasks #####
+##### Perform Payara Tasks #####
 $GLASSFISH_HOME/bin/asadmin set server.network-config.network-listeners.network-listener.http-listener-1.enabled=false
 $GLASSFISH_HOME/bin/asadmin set server.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=7200
 $GLASSFISH_HOME/bin/asadmin set server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers=+TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,+TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,+TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,+TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,+TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,+TLS_DHE_RSA_WITH_AES_256_CBC_SHA

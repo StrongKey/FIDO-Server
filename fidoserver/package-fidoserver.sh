@@ -19,10 +19,8 @@ cryptoresources=$fidoserver/crypto/src/main/resources/resources
 cryptomessages=$(sed -n '31,$p' $cryptoresources/crypto-messages.properties)
 
 failure() {
-        tty -s && tput setaf 1
         rm -f $fidoserver/fidoserverInstall/fidoserver.ear 
         echo "There was a problem creating the FIDOSERVER distribution. Aborting." >&2
-        tty -s && tput sgr0
         exit 1
 }
 
@@ -32,35 +30,7 @@ trap 'failure' 0
 # If any command unexpectantly fails, exit prematurely
 set -e
 
-# Yellow
-tty -s && tput setaf 3
 echo "Creating fidoserver..."
-
-# Copy the messages part from the main strongkeylite-messages.properties to all langauge specific files
-echo "-Duplicating messages..."
-for languagefile in $resources/appliance-messages_*; do
-        if grep "ja_JP" <<< "$languagefile" &>/dev/null; then
-                continue # Do not edit the JP language file
-        fi
-        sed -i '31,$d' $languagefile
-        echo "$messages" >> $languagefile
-done
-
-for languagefile in $skceresources/skce-messages_*; do
-        if grep "ja_JP" <<< "$languagefile" &>/dev/null; then
-                continue # Do not edit the JP language file
-        fi
-        sed -i '31,$d' $languagefile
-        echo "$skcemessages" >> $languagefile
-done
-
-for languagefile in $cryptoresources/crypto-messages_*; do
-        if grep "ja_JP" <<< "$languagefile" &>/dev/null; then
-                continue # Do not edit the JP language file
-        fi
-        sed -i '31,$d' $languagefile
-        echo "$cryptomessages" >> $languagefile
-done
 
 # Create dist
 # This cd is important for mvn to work
@@ -82,6 +52,5 @@ tar zcf FIDOServer-v${version}-dist.tgz -C $fidoserver/fidoserverInstall .
 trap : 0
 echo "Success!"
 
-tty -s && tput sgr0
 rm -f $fidoserver/fidoserverInstall/fidoserver.ear 
 exit 0

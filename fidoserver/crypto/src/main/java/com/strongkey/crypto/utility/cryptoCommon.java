@@ -43,7 +43,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.SortedMap;
@@ -79,7 +78,7 @@ public final class cryptoCommon {
     private static ResourceBundle cryhrb = null;
 
     // Property files used by this application for application messages
-    private static final ResourceBundle msgrb = ResourceBundle.getBundle("resources.crypto-messages_" + Locale.getDefault());
+    private static final ResourceBundle msgrb = ResourceBundle.getBundle("resources.crypto-messages");
 
     // Version of Cryptolib (Build #)
     private static final ResourceBundle vrb = ResourceBundle.getBundle("resources.crypto-version");
@@ -90,7 +89,7 @@ public final class cryptoCommon {
     private static final String appliancehome = "/usr/local/strongkey/appliance";
 
     // Logger for the application
-    private static final Logger logger = Logger.getLogger("CRYPTO", "resources.crypto-messages_" + Locale.getDefault());
+    private static final Logger logger = Logger.getLogger("CRYPTO", "resources.crypto-messages");
 
     // Map for the maximum length values
     private static Map<String, Integer> maxlenmap = new ConcurrentHashMap<>();

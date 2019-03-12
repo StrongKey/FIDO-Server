@@ -32,9 +32,9 @@
         <module>crypto</module>
         <module>authenticationBeans</module>
         <module>fidoserverEAR</module>
-        <module>ce/api</module>
-        <module>ce/fido2mds</module>
-        <module>ce/fidoserverbeans</module>
+        <module>api</module>
+        <module>fido2mds</module>
+        <module>fidoserverbeans</module>
         <module>common</module>
     </modules>
 </project>

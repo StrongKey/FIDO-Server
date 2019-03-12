@@ -25,7 +25,7 @@ Follow this link to sign the StrongKey [Contributor License Agreement (CLA)](htt
 
 ## Issues and New Features
 
-We use GitHub [Issues](/issues) to track bugs and feature additions.
+We use GitHub [Issues](../issues) to track bugs and feature additions.
 
 ### Did you discover a bug?
 

@@ -14,7 +14,7 @@
 
 ## Installation
 
-**NOTE:** If the install fails for any reason, follow the instructions for [Removal](#removal), below, and start from the beginning.
+**NOTE:** If the install fails for any reason, follow the instructions for [Removal](#removal), below, and restart from the beginning.
 
 
 1.  Open a terminal and **change directory** to the target download folder.

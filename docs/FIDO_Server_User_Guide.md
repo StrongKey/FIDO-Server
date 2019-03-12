@@ -23,7 +23,7 @@ Admin calls are designed for managing registered keys. **{kid}** represents the 
 ## Alternate Configurations
 StrongKey FIDO2 Server has only been tested using MariaDB (+JDBC), Payara, and Open JDK, but may work with other dependency applications. Following is a list of the component parts needed for StrongKey FIDO2 Server to function. All of the components may be installed on the same server, whether physical or virtual.
 
--   [StrongKey FIDO2 Server, Community Edition](FIDOServer-v0.9-dist.tgz)
+-   [StrongKey FIDO2 Server, Community Edition](../FIDOServer-v0.9-dist.tgz)
 -   A [relational database](https://en.wikipedia.org/wiki/List_of_relational_database_management_systems)
 -   A [Java Development Kit](https://en.wikipedia.org/wiki/Java_Development_Kit#External_links)
 -   A [Java Enterprise Edition web server](https://en.wikipedia.org/wiki/Java_Platform,_Enterprise_Edition#Certified_referencing_runtimes)

@@ -10,9 +10,9 @@
 
 # Source function library.
 . /etc/skfsrc
-. /etc/init.d/functions
-
-export AS_JAVA=$JAVA_HOME
+if [ -f /etc/init.d/functions ]; then
+        . /etc/init.d/functions
+fi
 
 PROGRAM="--user strongkey /usr/local/strongkey/payara41/glassfish/bin/asadmin"
 

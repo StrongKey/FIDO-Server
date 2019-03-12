@@ -16,45 +16,18 @@
 
 1.  **Change directory** to the target download folder.
 
-2.  **Download and install** various dependencies. Run the following commands:
-    
-    ```sh
-    sudo yum install wget unzip libaio java-1.8.0-openjdk
-    ```
-
-3.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz).
+2.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz).
 
     ```sh
     wget https://github.com/StrongKey/FIDO-Server/raw/master/FIDOServer-v0.9-dist.tgz
     ```
 
-4.  **Extract the downloaded file to the current directory**:
+3.  **Extract the downloaded file to the current directory**:
 
     ```sh
     tar xvzf FIDOServer-v0.9-dist.tgz
     ```
-
-5.  **Download the following**:
-    
-    -   [payara-4.1.2.181.zip](http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip)
-    -   [mariadb-10.2.13-linux-x86_64.tar.gz](https://downloads.mariadb.org/interstitial/mariadb-10.2.13/bintar-linux-x86_64/mariadb-10.2.13-linux-x86_64.tar.gz/from/http%3A//ftp.hosteurope.de/mirror/archive.mariadb.org/)
-    -   [mariadb-java-client-2.2.2.jar](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar)
-    -   [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
-
-    To download the files directly to your server, copy the commands below:  
-    
-    ```sh
-    wget http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip
-    wget https://downloads.mariadb.org/interstitial/mariadb-10.2.13/bintar-linux-x86_64/mariadb-10.2.13-linux-x86_64.tar.gz/from/http%3A//ftp.hosteurope.de/mirror/archive.mariadb.org/ -O mariadb-10.2.13-linux-x86_64.tar.gz
-    wget https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar
-    wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm
-    ```
-
-    **NOTE:** The StrongKey FIDO Server has been tested with the above software versions. The StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
-
-6.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name. This provides a label for your certificate.
-
-7. Be sure that you have your **server FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
+4. Be sure that you have your **server FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
 
     ```sh
     hostname
@@ -73,7 +46,7 @@
     echo `hostname -I | awk '{print $1}'` $(hostname) | sudo tee -a /etc/hosts
     ```
 
-8.  **Execute** the _install-skfs.sh_ script as follows:
+5.  **Execute** the _install-skfs.sh_ script as follows:
 
     ```sh
     sudo ./install-skfs.sh

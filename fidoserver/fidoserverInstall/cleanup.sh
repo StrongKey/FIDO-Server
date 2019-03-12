@@ -20,17 +20,23 @@ service mysqld stop
 service glassfishd stop 
 
 echo "Restoring original system files..." | tee -a $LOGNAME
-sed -i '/skfsrc/d' /etc/bashrc
+if [ -f /etc/bashrc ]; then
+        sed -i '/skfsrc/d' /etc/bashrc
+        cp /etc/org/bashrc /etc
+else
+        sed -i '/skfsrc/d' /etc/bash.bashrc
+        cp /etc/org/bash.bashrc /etc
+fi
 cp /etc/org/sudoers /etc
 
 echo "Removing SKFS configuration files..." | tee -a $LOGNAME
-chkconfig --del mysqld
-chkconfig --del glassfishd
+/lib/systemd/systemd-sysv-install disable mysqld
+/lib/systemd/systemd-sysv-install disable glassfishd
 
 rm /etc/my.cnf
 rm /etc/skfsrc
-rm /etc/rc.d/init.d/mysqld
-rm /etc/rc.d/init.d/glassfishd
+rm /etc/init.d/mysqld
+rm /etc/init.d/glassfishd
 
 echo "Removing User..." | tee -a $LOGNAME
 userdel -r strongkey

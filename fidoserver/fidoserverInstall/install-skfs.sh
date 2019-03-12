@@ -38,7 +38,6 @@ STRONGKEY_HOME=/usr/local/strongkey
 SKFS_HOME=$STRONGKEY_HOME/skfs
 GLASSFISH_HOME=$STRONGKEY_HOME/payara41/glassfish
 GLASSFISH_CONFIG=$GLASSFISH_HOME/domains/domain1/config
-JAVA_HOME=/lib/jvm/jre-1.8.0
 MARIAVER=mariadb-10.2.13-linux-x86_64
 MARIATGT=mariadb-10.2.13
 MARIA_HOME=$STRONGKEY_HOME/$MARIATGT
@@ -72,6 +71,44 @@ function get_ip {
         fi
 }
 
+# install required packages
+YUM_CMD=$(which yum  2>/dev/null)
+APT_GET_CMD=$(which apt-get 2>/dev/null)
+
+echo "Installing required linux packages ..."
+if [[ ! -z $YUM_CMD ]]; then
+    yum -y install wget unzip libaio java-1.8.0-openjdk >/dev/null 2>&1
+elif [[ ! -z $APT_GET_CMD ]]; then
+    apt-get update >/dev/null 2>&1
+    apt install wget unzip libaio1 openjdk-8-jdk-headless daemon rng-tools -y >/dev/null 2>&1
+else
+   echo "error can't install packages"
+   exit 1;
+fi
+
+
+# download required software
+if [ ! -f $SKFS_SOFTWARE/$GLASSFISH ]; then
+        echo "Downloading Payara ..."
+        wget http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip -q
+fi
+
+if [ ! -f $SKFS_SOFTWARE/$MARIA ]; then
+        echo "Downloading MARIADB SERVER ..."
+        wget https://downloads.mariadb.org/interstitial/mariadb-10.2.13/bintar-linux-x86_64/mariadb-10.2.13-linux-x86_64.tar.gz/from/http%3A//ftp.hosteurope.de/mirror/archive.mariadb.org/ -O mariadb-10.2.13-linux-x86_64.tar.gz -q
+fi
+
+if [ ! -f $SKFS_SOFTWARE/$MARIACONJAR ]; then
+        echo "Downloading MARIADB JAVA CONNECTOR ..."
+        wget https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar -q
+fi
+
+if [ ! -f $SKFS_SOFTWARE/$JEMALLOC ]; then
+        echo "Downloading JEMALLOC ..."
+        wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm -q
+fi
+
+
 # Make sure we can resolve our own hostname
 get_ip "$(hostname)" > /dev/null
 
@@ -84,12 +121,6 @@ fi
 # Check that strongkey doesn't already exist
 if $(id strongkey &> /dev/null); then
         >&2 echo -e "\E[31m'strongkey' user already exists. Run cleanup.sh and try again.\E[0m"
-        exit 1
-fi
-
-# Check that openjdk is installed
-if ! [ -d "$JAVA_HOME" ]; then
-        >&2 echo -e "\E[31mOpenJDK must be installed before running the installation script. Install it with the command 'yum install java-1.8.0-openjdk.x86_64'\E[0m" | tee -a $LOGFILE
         exit 1
 fi
 
@@ -111,7 +142,11 @@ if [ -d /etc/org ]; then
         :
 else
         mkdir /etc/org
-        cp /etc/bashrc /etc/org
+        if [ -f /etc/bashrc ]; then
+                cp /etc/bashrc /etc/org
+        else
+                cp /etc/bash.bashrc /etc/org
+        fi
         cp /etc/sudoers /etc/org
 fi
 
@@ -129,10 +164,9 @@ EOFSUDOERS
 ##### Create skfsrc #####
 cat > /etc/skfsrc << EOFSKFSRC
     export GLASSFISH_HOME=$GLASSFISH_HOME
-         export JAVA_HOME=$JAVA_HOME
         export MYSQL_HOME=$MARIA_HOME
    export STRONGKEY_HOME=$STRONGKEY_HOME
-              export PATH=\$GLASSFISH_HOME/bin:\$JAVA_HOME/bin:\$MYSQL_HOME/bin:\$STRONGKEY_HOME/bin:/usr/lib64/qt-3.3/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin
+              export PATH=\$GLASSFISH_HOME/bin:\$MYSQL_HOME/bin:\$STRONGKEY_HOME/bin:/usr/lib64/qt-3.3/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin
 
 alias str='cd $STRONGKEY_HOME'
 alias dist='cd $STRONGKEY_HOME/dist'
@@ -143,7 +177,11 @@ alias mys='mysql -u skfsdbuser -p\`dbpass 2> /dev/null\` skfs'
 alias java='java -Djavax.net.ssl.trustStore=\$STRONGKEY_HOME/certs/cacerts '
 EOFSKFSRC
 
-echo ". /etc/skfsrc" >> /etc/bashrc
+if [ -f /etc/bashrc ]; then
+        echo ". /etc/skfsrc" >> /etc/bashrc
+else
+        echo ". /etc/skfsrc" >> /etc/bash.bashrc
+fi
 
 # Make needed directories
 mkdir -p $STRONGKEY_HOME/certs $STRONGKEY_HOME/Desktop $STRONGKEY_HOME/dbdumps $STRONGKEY_HOME/lib $STRONGKEY_HOME/bin $STRONGKEY_HOME/appliance/etc $STRONGKEY_HOME/crypto/etc $SKFS_HOME/etc $SKFS_HOME/keystores
@@ -245,14 +283,14 @@ if [ $INSTALL_GLASSFISH = 'Y' ]; then
         chmod 755 /etc/init.d/glassfishd
         /lib/systemd/systemd-sysv-install enable glassfishd
 
-        $JAVA_HOME/bin/keytool -genkeypair -alias skfs -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit -keypass changeit -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -validity 3562 -dname "CN=$(hostname),OU=\"StrongKey FidoServer\"" &>/dev/null
-        $JAVA_HOME/bin/keytool -changealias -alias s1as -destalias s1as.original -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit &>/dev/null
-        $JAVA_HOME/bin/keytool -changealias -alias skfs -destalias s1as -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit &>/dev/null
+        keytool -genkeypair -alias skfs -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit -keypass changeit -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -validity 3562 -dname "CN=$(hostname),OU=\"StrongKey FidoServer\"" &>/dev/null
+        keytool -changealias -alias s1as -destalias s1as.original -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit &>/dev/null
+        keytool -changealias -alias skfs -destalias s1as -keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit &>/dev/null
         sed -ri 's|^(com.sun.enterprise.server.logging.GFFileHandler.rotationOnDateChange=).*|\1true|
                  s|^(com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes=).*|\1200000000|' $GLASSFISH_CONFIG/logging.properties
-        $JAVA_HOME/bin/keytool -exportcert -alias s1as -file $STRONGKEY_HOME/certs/$(hostname).der --keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit &>/dev/null
-        $JAVA_HOME/bin/keytool -importcert -noprompt -alias $(hostname) -file $STRONGKEY_HOME/certs/$(hostname).der --keystore $STRONGKEY_HOME/certs/cacerts -storepass changeit &>/dev/null
-        $JAVA_HOME/bin/keytool -importcert -noprompt -alias $(hostname) -file $STRONGKEY_HOME/certs/$(hostname).der --keystore $GLASSFISH_CONFIG/cacerts.jks -storepass changeit &>/dev/null
+        keytool -exportcert -alias s1as -file $STRONGKEY_HOME/certs/$(hostname).der --keystore $GLASSFISH_CONFIG/keystore.jks -storepass changeit &>/dev/null
+        keytool -importcert -noprompt -alias $(hostname) -file $STRONGKEY_HOME/certs/$(hostname).der --keystore $STRONGKEY_HOME/certs/cacerts -storepass changeit &>/dev/null
+        keytool -importcert -noprompt -alias $(hostname) -file $STRONGKEY_HOME/certs/$(hostname).der --keystore $GLASSFISH_CONFIG/cacerts.jks -storepass changeit &>/dev/null
 
         ##### MariaDB JDBC Driver #####
         echo "Installing JDBC Driver..."

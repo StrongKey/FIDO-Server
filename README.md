@@ -27,7 +27,7 @@ Sample Code is provided with a brief explanation of what each sample does:
 
 ## Links
 [Live FIDO2 demo website](https://webauthndemo.strongkey.com/tutorial.html)
-[FIDO Server User Guide](docs/FIDO_Server_User_Guide.md)
+[FIDO Server User Guide](docs/User_Guide.md)
 
 ## Contributing
 If you would like to contribute to the FIDO2 Server, Community Edition project, please read [CONTRIBUTING.md](CONTRIBUTING.md), then sign and return the [Contributor License Agreement (CLA)](https://cla-assistant.io/StrongKey/FIDO-Server).

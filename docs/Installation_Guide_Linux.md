@@ -14,6 +14,13 @@
 
 ## Installation
 
+0. Install **wget** if it does not exist already.
+    ```sh
+    sudo yum install wget 
+    or
+    sudo apt install wget
+     ```
+
 1.  **Change directory** to the target download folder.
 
 2.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz).

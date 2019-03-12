@@ -81,6 +81,11 @@ if [[ ! -z $YUM_CMD ]]; then
 elif [[ ! -z $APT_GET_CMD ]]; then
     apt-get update >/dev/null 2>&1
     apt install wget unzip libaio1 openjdk-8-jdk-headless daemon rng-tools -y >/dev/null 2>&1
+    # modify rng tools to use dev urandom as the vm may not have a harware random number generator
+    if ! grep -q "^HRNGDEVICE=/dev/urandom" /etc/default/rng-tools ; then
+            echo "HRNGDEVICE=/dev/urandom" | sudo tee -a /etc/default/rng-tool
+    fi
+    systemctl restart rng-tools
 else
    echo "error can't install packages"
    exit 1;

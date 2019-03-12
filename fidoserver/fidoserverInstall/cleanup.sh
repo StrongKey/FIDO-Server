@@ -29,6 +29,11 @@ else
 fi
 cp /etc/org/sudoers /etc
 
+#clean up rng option
+if [ -f /etc/default/rng-tools ]; then
+        sed -i "/^HRNGDEVICE=\/dev\/urandom/d" /etc/default/rng-tools
+fi
+
 echo "Removing SKFS configuration files..." | tee -a $LOGNAME
 /lib/systemd/systemd-sysv-install disable mysqld
 /lib/systemd/systemd-sysv-install disable glassfishd

@@ -50,7 +50,7 @@ StrongKey WebAuthn client uses the following files, contained in the _WebAuthn.t
 
 StrongKey installs a FIDO2 policy with the StrongKey FIDO2 Server, encoded in base64urlsafe format in the _install-skfs.sh_ script in _/usr/local/strongkey_. By default, it is configured to approve all signature types. The following table itemizes the JSON attributes and provides links to the various specifications governing their use:
 
-Policy Attribute(s) | Accepted Value(s) &mdash; [] indicates multiples can be chosen  |  More Information 
+Policy Attribute(s) | Accepted Value(s) &mdash; [...] indicates multiples can be chosen  |  More Information 
   :---  |  :---  |  :--
 | "cryptography":  |  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"attestation_formats":  |  ["fido-u2f", "packed", "tpm", "android-key", "android-safetynet", "none"] |  [WebAuthn Attestation Statement Formats](https://w3c.github.io/webauthn/#defined-attestation-formats)

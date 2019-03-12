@@ -397,7 +397,9 @@ done
 chown strongkey $GLASSFISH_HOME/domains/domain1/docroot/app.json
 
 echo "Deploying StrongKey FidoServer ..."
-$GLASSFISH_HOME/bin/asadmin deploy $SKFS_SOFTWARE/fidoserver.ear
+cp $SKFS_SOFTWARE/fidoserver.ear /tmp
+$GLASSFISH_HOME/bin/asadmin deploy /tmp/fidoserver.ear
 
+rm /tmp/fidoserver.ear
 echo "Done!"
 

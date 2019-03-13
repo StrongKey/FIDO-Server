@@ -39,9 +39,9 @@ Authenticate a user using FIDO2 protocols. These calls mirror the registration c
 
 ### Administration
 Admin calls are designed for managing registered Authenticators. **{kid}** is the unique ID of the Authenticator being manipulated. These calls require a user to be registered with at least one Authenticator, but not necessarily logged in (authenticated).
-- **/fidokeys (a.k.a. GET)**: Gets (via HTTP GET) all Authenticators associated with a registered user. Use this to generate lists and reports.
-- **/fidokeys/{kid} (a.k.a. PATCH)**: Updates a registered Authenticator's status (_Active_ or _Inactive_).
-- **/fidokeys/{kid} (a.k.a. DELETE)**: Deletes a registered Authenticator. Note that deleting all Authenticators from a user (including yourself) will prevent further logins for that user. If this occurs, either the orphaned user will need to be deleted and re-registered or, if you have built it into your application, a means must be made available for re-registering an Authenticator to the user without logging the user out.
+- **/fidokeys (GET)**: Gets (via HTTP GET) all Authenticators associated with a registered user. Use this to generate lists and reports.
+- **/fidokeys/{kid} (PATCH)**: Updates a registered Authenticator's status (_Active_ or _Inactive_).
+- **/fidokeys/{kid} (DELETE)**: Deletes a registered Authenticator. Note that deleting all Authenticators from a user (including yourself) will prevent further logins for that user. If this occurs, either the orphaned user will need to be deleted and re-registered or, if you have built it into your application, a means must be made available for re-registering an Authenticator to the user without logging the user out.
 
 ## Alternate Configurations
 StrongKey FIDO2 Server has only been tested using MariaDB (+JDBC), Payara, and Open JDK, but may work with other dependency applications. Following is a list of the component parts needed for StrongKey FIDO2 Server to function. All of the components may be installed on the same server, whether physical or virtual.
@@ -93,7 +93,7 @@ Policy Attribute(s) | Accepted Value(s) &mdash; [...] indicates multiples can be
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"token":  |  <Get from [https://mds2.fidoalliance.org/tokens/](https://mds2.fidoalliance.org/tokens/)> 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"certification":  |  ["FIDO_CERTIFIED", "NOT_FIDO_CERTIFIED", "USER_VERIFICATION_BYPASS", "ATTESTATION_KEY_COMPROMISE", "USER_KEY_REMOTE_COMPROMISE", "USER_KEY_PHYSICAL_COMPROMISE", "UPDATE_AVAILABLE", "REVOKED", "SELF_ASSERTION_SUBMITTED", "FIDO_CERTIFIED_L1", "FIDO_CERTIFIED_L1plus", "FIDO_CERTIFIED_L2", "FIDO_CERTIFIED_L2plus", "FIDO_CERTIFIED_L3", "FIDO_CERTIFIED_L3plus"]
 
-The included default policy enables all supported configuration choices for StrongKey FIDO2 Server; use any or all of them as needed. Search the _install-skfs.sh_ file contents for "Default Policy" and decode the encoded text entry from there, or copy and paste from the example JSON below. When changes have been made, save it and re-encode it using base64urlsafe and replace it in the script.
+The included default policy enables all supported configuration choices for StrongKey FIDO2 Server; use any or all of them as needed. **Prior to installation**, search the _install-skfs.sh_ file contents for "Default Policy" and decode the encoded text entry from there, or copy and paste from the example JSON below. When changes have been made, save it, re-encode it using base64urlsafe, then replace it in the script.
 ~~~~
 {
 	"storeSignatures": false,

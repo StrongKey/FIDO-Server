@@ -29,13 +29,15 @@ The following _Application Programmer Interface (API)_ calls are the underpinnin
 
 ### Registration
 These calls uniquely register a user, and are required before any other calls can be used. Though it is not required to include a Relying Party (RP) web application in the chain of events, it provides a number of [security benefits](https://www.w3.org/TR/webauthn/#sctn-rp-benefits). Using these calls a user, a Relying Party web applicaton, and the user’s client (containing at least one Authenticator) work in concert to generate a public key credential and associate it with the user’s RP web application account. This requires a test of user presence or user verification. We strongly recommend including a Relying Party web application in your architecture.
-- **/fidokeys/challenge**:  This is always the first call made for any user, as it initiates the registration process by obtaining a single-use, cryptographically strong random number (nonce) from the FIDO2 Server via the RP web application. From the FIDO2 Server the nonce is then sent to the Authenticator for signing.
-- **/fidokeys**: This call submits a signed challenge (nonce) from the Authenticator to the FIDO2 Server via an RP web application, after which registration is complete and the user may log in.
+- **/fidokeys/registration/challenge**:  This is always the first call made for any user, as it initiates the registration process by obtaining a single-use, cryptographically strong random number (nonce) from the FIDO2 Server via the RP web application. From the FIDO2 Server the nonce is then sent to the Authenticator for signing.
+- **/fidokeys**: This call submits a signed challenge (nonce) from the Authenticator to the FIDO2 Server via an RP web application, after which registration is complete and the user may log in. Upon success, the FIDO2 Authenticator public key is stored in the _skfs_ database. 
+
+**NOTE**: Registering additional Authenticators to an existing user makes use of the same REST APIs as when used for first-time registration, but the logic must be adjusted accordingly.
 
 ### Authentication
 Authenticate a user using FIDO2 protocols. These calls mirror the registration calls in function. A user must be registered with at least one key before authentication calls can be made. In these calls the user and their client (containing at least one Authenticator) work together to cryptographically prove to an RP web application that the user controls the credential private key associated with a previously-registered public key credential (see Registration, above). This requires a test of user presence or user verification, and will occur with every login attempt.
-- **/fidokeys/authenticate/challenge**: Obtains a single-use, cryptographically strong random number (nonce) from the FIDO2 Server via the RP web application. From the FIDO2 Server the nonce is then sent to the Authenticator for signing.
-- **/fidokeys/authenticate**: This call submits a signed challenge (nonce) from the Authenticator to the FIDO2 Server via RP web application, after which authentication is complete and the user is logged in.
+- **/fidokeys/authentication/challenge**: Obtains a single-use, cryptographically strong random number (nonce) from the FIDO2 Server via the RP web application. From the FIDO2 Server the nonce is then sent to the Authenticator for signing.
+- **/fidokeys/authentication**: This call submits a signed challenge (nonce) from the Authenticator to the FIDO2 Server via RP web application, after which authentication is complete and the user is logged in.
 
 ### Administration
 Admin calls are designed for managing registered Authenticators. **{kid}** is the unique ID of the Authenticator being manipulated. These calls require a user to be registered with at least one Authenticator, but not necessarily logged in (authenticated).
@@ -73,12 +75,12 @@ Policy Attribute(s) | Accepted Value(s) &mdash; [...] indicates multiples can be
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"attestation":  |  ["none", "indirect", "direct"]  |  [Direct Anonymous Attestation](https://en.wikipedia.org/wiki/Direct_Anonymous_Attestation)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"displayName":  |  ["required", "preferred"]  |  Because everyone needs a display name...
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"authenticatorSelection":  |  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"authenticatorAttachment":  |  ["platform", "cross-platform"]  |  [WebAuthn Authenticator Taxonomy](https://w3c.github.io/webauthn/#sctn-authenticator-taxonomy)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userVerification":  |  ["required", "preferred", "discouraged"]  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"requireResidentKey":  |  [true, false] (**can be both**)  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"authenticatorAttachment":  |  ["platform", "cross-platform"]&dagger;  |  [WebAuthn Authenticator Taxonomy](https://w3c.github.io/webauthn/#sctn-authenticator-taxonomy)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userVerification":  |  ["required", "preferred", "discouraged"]&dagger;  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"requireResidentKey":  |  [true, false] (**can be both&dagger;**)  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"excludeCredentials":  |  "enabled" or "disabled" | [WC3 Definition](https://w3c.github.io/webauthn/#dom-publickeycredentialcreationoptions-excludecredentials)
 "authentication":  |
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userVerification":  |  ["required", "preferred", "discouraged"]  |  [Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userVerification":  |  ["required", "preferred", "discouraged"]&Dagger;  |  [Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"allowCredentials":  |  "enabled" or "disabled"  |  [W3C Definition](https://w3c.github.io/webauthn/#dom-publickeycredentialrequestoptions-allowcredentials)
 "rp":  |
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name":  |  "demo.strongauth.com:8181"
@@ -92,6 +94,10 @@ Policy Attribute(s) | Accepted Value(s) &mdash; [...] indicates multiples can be
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"url":    |  ["https://mds2.fidoalliance.org"]
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"token":  |  <Get from [https://mds2.fidoalliance.org/tokens/](https://mds2.fidoalliance.org/tokens/)> 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"certification":  |  ["FIDO_CERTIFIED", "NOT_FIDO_CERTIFIED", "USER_VERIFICATION_BYPASS", "ATTESTATION_KEY_COMPROMISE", "USER_KEY_REMOTE_COMPROMISE", "USER_KEY_PHYSICAL_COMPROMISE", "UPDATE_AVAILABLE", "REVOKED", "SELF_ASSERTION_SUBMITTED", "FIDO_CERTIFIED_L1", "FIDO_CERTIFIED_L1plus", "FIDO_CERTIFIED_L2", "FIDO_CERTIFIED_L2plus", "FIDO_CERTIFIED_L3", "FIDO_CERTIFIED_L3plus"]
+
+&dagger;&mdash;These fields specify acceptable values the RP web application may request during _/fidokeys/registration/challenge_.
+
+&Dagger;&mdash;These fields specify acceptable values the RP web application may request during _/fidokeys/authentication/challenge_.
 
 The included default policy enables all supported configuration choices for StrongKey FIDO2 Server; use any or all of them as needed. **Prior to installation**, search the _install-skfs.sh_ file contents for "Default Policy" and decode the encoded text entry from there, or copy and paste from the example JSON below. When changes have been made, save it, re-encode it using base64urlsafe, then replace it in the script.
 ~~~~

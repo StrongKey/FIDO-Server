@@ -2,22 +2,22 @@
 # StrongKey FIDO2 Server User Guide
 ## Contents
 
-- [Overview](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#overview)
-- [API Calls](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#api-calls)
--- [Registration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#registration)
--- [Authentication](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#authentication)
--- [Administration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#administration)
-- [Alternate Configurations](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#alternate-configurations)
-- [Options with StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-with-strongkey-fido2-server)
--- [Policies and Their Use](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#policies-and-their-use)
--- [Application HOME Folders and the Path](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#application-home-folders-and-the-path)
-- [Database Schema for StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#database-schema-for-strongkey-fido2-server)
-- [Options for the Database Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-for-the-database-server)
-- [Options for the Java Web Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-for-the-java-web-server)
--- [Create JDBC Resources](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#create-jdbc-resources)
-- [Deploy StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#deploy-strongkey-fido-server)
-- [WebAuthn Client Files](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#webauthn-client-files)
-- [Removing StrongKey FIDO2 Server and Its Components](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#removing-strongkey-fido2-server-and-its-components)
+* [Overview](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#overview)
+* [API Calls](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#api-calls)
+** [Registration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#registration)
+** [Authentication](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#authentication)
+** [Administration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#administration)
+* [Alternate Configurations](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#alternate-configurations)
+* [Options with StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-with-strongkey-fido2-server)
+** [Policies and Their Use](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#policies-and-their-use)
+** [Application HOME Folders and the Path](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#application-home-folders-and-the-path)
+* [Database Schema for StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#database-schema-for-strongkey-fido2-server)
+* [Options for the Database Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-for-the-database-server)
+* [Options for the Java Web Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-for-the-java-web-server)
+** [Create JDBC Resources](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#create-jdbc-resources)
+* [Deploy StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#deploy-strongkey-fido-server)
+* [WebAuthn Client Files](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#webauthn-client-files)
+* [Removing StrongKey FIDO2 Server and Its Components](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#removing-strongkey-fido2-server-and-its-components)
 
 ## Overview
 So, you've installed StrongKey's FIDO2 Server and decided to delve depper, into its internal workings. This User Guide will shepherd you through the fine points of configuring and permutating the necessary components to make our FIDO Server more customized to suit your needs.

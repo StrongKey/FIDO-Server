@@ -1,7 +1,21 @@
 
 # StrongKey FIDO2 Server User Guide
+## Contents
+
+- [Overview](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#overview)
+- [API Calls](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#apicalls)
+-- [Registration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#registration)
+-- [Authentication](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#authentication)
+-- [Administration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#administration)
+- [Alternate Configurations](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#aternateconfigurations)
+- [Options with StrongKey FIDO2 Server]()
 
 ## Overview
+So, you've installed StrongKey's FIDO2 Server and decided to delve depper, into its internal workings. This User Guide will shepherd you through the fine points of configuring and permutating the necessary components to make our FIDO Server more customized to suit your needs.
+
+StrongKey's FIDO2 Server has only been tested against a very specific application stack, but should be adaptable to other applications of similar function. This document briefly touches on the necessary API calls, then goes through a vendor-inspecific installation using generic settings and commands.
+
+## API Calls
 The following _Application Programmer Interface (API)_ calls are the underpinning pieces of the StrongKey FIDO2 Server. They pass the designated FIDO2 responses necessary to strongly authenticate a user with an appropriate Authenticator (see this list of [FIDO2-certified Authenticator vendors](https://fidoalliance.org/certification/fido-certified-products/)).
 
 ### Registration

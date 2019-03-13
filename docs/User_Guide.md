@@ -1,24 +1,24 @@
 
 # StrongKey FIDO2 Server User Guide
 
-## API Calls Defined
-The following _Application Programmer Interface (API)_ calls are the underpinning pieces of the StrongKey FIDO2 Server. They pass the designated FIDO2 responses necessary to strongly authenticate a user with an appropriate Authenticator.
+## Overview
+The following _Application Programmer Interface (API)_ calls are the underpinning pieces of the StrongKey FIDO2 Server. They pass the designated FIDO2 responses necessary to strongly authenticate a user with an appropriate Authenticator (see this list of [FIDO2-certified Authenticator vendors](https://fidoalliance.org/certification/fido-certified-products/)).
 
 ### Registration
-These calls register a user, and are required before any other calls can be used. Though it is not required to include a Relying Party (RP) web application in the chain of events, to avoid vulnerabilities we recommend including one in your application architecture.
+These calls uniquely register a user, and are required before any other calls can be used. Though it is not required to include a Relying Party (RP) web application in the chain of events, it provides a number of [security benefits](https://www.w3.org/TR/webauthn/#sctn-rp-benefits). Using these calls a user, a Relying Party web applicaton, and the user’s client (containing at least one Authenticator) work in concert to generate a public key credential and associate it with the user’s RP web application account. This requires a test of user presence or user verification. We strongly recommend including a Relying Party web application in your architecture.
 - **/fidokeys/challenge**:  This is always the first call made for any user, as it initiates the registration process by obtaining a single-use, cryptographically strong random number (nonce) from the FIDO2 Server via the RP web application. From the FIDO2 Server the nonce is then sent to the Authenticator for signing.
 - **/fidokeys**: This call submits a signed challenge (nonce) from the Authenticator to the FIDO2 Server via an RP web application, after which registration is complete and the user may log in.
 
 ### Authentication
-Authenticate a user using FIDO2 protocols. These calls mirror the registration calls in function. A user must be registered with at least one key before authentication calls can be made.
+Authenticate a user using FIDO2 protocols. These calls mirror the registration calls in function. A user must be registered with at least one key before authentication calls can be made. In these calls the user and their client (containing at least one Authenticator) work together to cryptographically prove to an RP web application that the user controls the credential private key associated with a previously-registered public key credential (see Registration, above). This requires a test of user presence or user verification, and will occur with every login attempt.
 - **/fidokeys/authenticate/challenge**: Obtains a single-use, cryptographically strong random number (nonce) from the FIDO2 Server via the RP web application. From the FIDO2 Server the nonce is then sent to the Authenticator for signing.
 - **/fidokeys/authenticate**: This call submits a signed challenge (nonce) from the Authenticator to the FIDO2 Server via RP web application, after which authentication is complete and the user is logged in.
 
 ### Administration
-Admin calls are designed for managing registered keys. **{kid}** represents the key ID being manipulated. These calls require a user to be registered with at least one key, but not necessarily logged in (authenticated).
-- **/fidokeys (a.k.a. GET)**: Gets all keys associated with a registered user. Use this to generate lists and reports.
-- **/fidokeys/{kid} (a.k.a. PATCH)**: Updates a registered key's status (_Active_ or _Inactive_).
-- **/fidokeys/{kid} (a.k.a. DELETE)**: Deletes a registered key. Note that deleting all keys from a user (including yourself) will prevent further logins for that user. If this occurs, either the user will need to be deleted and re-registered or, if you have built it into your application, a means must be made available for re-registering a key to the user without logging the user out.
+Admin calls are designed for managing registered Authenticators. **{kid}** is the unique ID of the Authenticator being manipulated. These calls require a user to be registered with at least one Authenticator, but not necessarily logged in (authenticated).
+- **/fidokeys (a.k.a. GET)**: Gets (via HTTP GET) all Authenticators associated with a registered user. Use this to generate lists and reports.
+- **/fidokeys/{kid} (a.k.a. PATCH)**: Updates a registered Authenticator's status (_Active_ or _Inactive_).
+- **/fidokeys/{kid} (a.k.a. DELETE)**: Deletes a registered Authenticator. Note that deleting all Authenticators from a user (including yourself) will prevent further logins for that user. If this occurs, either the orphaned user will need to be deleted and re-registered or, if you have built it into your application, a means must be made available for re-registering an Authenticator to the user without logging the user out.
 
 ## Alternate Configurations
 StrongKey FIDO2 Server has only been tested using MariaDB (+JDBC), Payara, and Open JDK, but may work with other dependency applications. Following is a list of the component parts needed for StrongKey FIDO2 Server to function. All of the components may be installed on the same server, whether physical or virtual.
@@ -34,28 +34,16 @@ For the adventurous who want to explore alternate configurations of the FIDO2 Se
 
 ## Options with StrongKey FIDO2 Server 
 
-StrongKey WebAuthn client uses the following files, contained in the _WebAuthn.tgz_ download, to operate with the StrongKey FIDO2 Server, Community Edition and the sample Relying Party web application code:
-- index.html
-- css/fonts.css
-- css/fido2demo.css
-- js/jquery-3.3.1.min.js
-- js/browserCheck.js
-- js/base64js.min.js
-- js/buffer-5.2.1.js
-- js/base64url.js
-- js/cbor.js
-- js/fido2demo.js
-
 ### Policies and Their Use
 
-StrongKey installs a FIDO2 policy with the StrongKey FIDO2 Server, encoded in base64urlsafe format in the _install-skfs.sh_ script in _/usr/local/strongkey_. By default, it is configured to approve all signature types. The following table itemizes the JSON attributes and provides links to the various specifications governing their use:
+StrongKey installs a default FIDO2 policy with the StrongKey FIDO2 Server in JSON format, encoded using base64urlsafe in the _install-skfs.sh_ script in _/usr/local/strongkey_. The default policy is configured to approve all signature types, but may use any subset of the available attributes. The options provided in the following table allow the methods used to be tailored to your FIDO2 server's needs. Where appropriate, links have been provided to the various specifications governing each item's use:
 
 Policy Attribute(s) | Accepted Value(s) &mdash; [...] indicates multiples can be chosen  |  More Information 
   :---  |  :---  |  :--
 | "cryptography":  |  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"attestation_formats":  |  ["fido-u2f", "packed", "tpm", "android-key", "android-safetynet", "none"] |  [WebAuthn Attestation Statement Formats](https://w3c.github.io/webauthn/#defined-attestation-formats)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"elliptic_curves":  |  ["secp256r1", "secp384r1", "secp521r1", "curve25519"] | SEC 2: Recommended Elliptic Curve Domain Parameters [pages 9-11](http://www.secg.org/sec2-v2.pdf), and [This article](https://en.wikipedia.org/wiki/Curve25519) on curve25519
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"allowed_rsa_signatures":  |  ["rsassa-pkcs1-v1_5-sha1", "rsassa-pkcs1-v1_5-sha256", "rsassa-pkcs1-v1_5-sha384", "rsassa-pkcs1-v1_5-sha512", "rsassa-pss-sha256", "rsassa-pss-sha384", "rsassa-pss-sha512"]  |  Internet Engineering Task Force (IETF) # PKCS #1: RSA Cryptography Specifications Version 2.2 [pages 32-39](https://tools.ietf.org/html/rfc8017#page-32) and [pages 60-62]((https://tools.ietf.org/html/rfc8017#page-60))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"allowed_rsa_signatures":  |  ["rsassa-pkcs1-v1_5-sha1", "rsassa-pkcs1-v1_5-sha256", "rsassa-pkcs1-v1_5-sha384", "rsassa-pkcs1-v1_5-sha512", "rsassa-pss-sha256", "rsassa-pss-sha384", "rsassa-pss-sha512"]  |  Internet Engineering Task Force (IETF) # PKCS #1: RSA Cryptography Specifications Version 2.2 [pages 32-39](https://tools.ietf.org/html/rfc8017#page-32) and [pages 60-62](https://tools.ietf.org/html/rfc8017#page-60))
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"allowed_ec_signatures":  |  ["ecdsa-p256-sha256", "ecdsa-p384-sha384", "ecdsa-p521-sha512", "eddsa", "ecdsa-p256k-sha256"]  |  [Elliptic Curve Digital Signature Algorithm (ECDSA)](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm) and [Edwards-curve Digital Signature Algorithm (EdDSA)](https://en.wikipedia.org/wiki/EdDSA)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"attestation_types":  |  ["basic", "self", "attca", "ecdaa", "none"]  |  [Attestation Types](https://w3c.github.io/webauthn/#sctn-attestation-types) and [WebAuthn Considerations for Self and None Attestation Types and Ignoring Attestation](https://w3c.github.io/webauthn/#sctn-no-attestation-security-attestation)
 "registration":  |
@@ -82,7 +70,7 @@ Policy Attribute(s) | Accepted Value(s) &mdash; [...] indicates multiples can be
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"token":  |  <Get from [https://mds2.fidoalliance.org/tokens/](https://mds2.fidoalliance.org/tokens/)> 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"certification":  |  ["FIDO_CERTIFIED", "NOT_FIDO_CERTIFIED", "USER_VERIFICATION_BYPASS", "ATTESTATION_KEY_COMPROMISE", "USER_KEY_REMOTE_COMPROMISE", "USER_KEY_PHYSICAL_COMPROMISE", "UPDATE_AVAILABLE", "REVOKED", "SELF_ASSERTION_SUBMITTED", "FIDO_CERTIFIED_L1", "FIDO_CERTIFIED_L1plus", "FIDO_CERTIFIED_L2", "FIDO_CERTIFIED_L2plus", "FIDO_CERTIFIED_L3", "FIDO_CERTIFIED_L3plus"]
 
-The JSON included enables all supported policy configuration choices for StrongKey FIDO2 Server; use any or all of them as needed. Search the _install-skfs.sh_ file contents for "Default Policy" and decode the encoded text entry from there, or copy and paste from the example JSON below. When changes have been made, save it and re-encode it using base64urlsafe and replace it in the script.
+The included default policy enables all supported configuration choices for StrongKey FIDO2 Server; use any or all of them as needed. Search the _install-skfs.sh_ file contents for "Default Policy" and decode the encoded text entry from there, or copy and paste from the example JSON below. When changes have been made, save it and re-encode it using base64urlsafe and replace it in the script.
 ~~~~
 {
 	"storeSignatures": false,
@@ -142,6 +130,10 @@ The StrongKey FIDO2 Server is completely configurable to suit a specific enterpr
 4.  **Save**  and  **close**  the file and  **exit**  out of  _root_.
     
     `:wq`  `exec bash`
+    
+5.  Veirfy the paths have been included in the environment variables:
+    
+    `printenv`
 
 ## Options for the Database Server
 The instructions for database installation assume strong administrative experience with _structured query language (SQL)_ and methods for your database of choice. StrongKey FIDO2 Server has been tested using MariaDB 10.2.13, but other databases may work. Where possible, _American National Standards Institute (ANSI)_ SQL commands have been used, but due to the variable nature of proprietary SQL, we leave it to the database administrator to choose the appropriate commands for the particular flavor of SQL being used. Beyond the initial creation of users and tables, and the inserting of data therein, there is no reason for direct manipulation of the database once StrongKey FIDO2 Server is installed.
@@ -152,18 +144,20 @@ The database may be on the same or a different machine (virtual or physical) tha
 
 ### Database Schema for StrongKey FIDO2 Server
 
-1.  **Login** to the database server as _root_ via terminal and use the default/owner database. This will open database server access as  _root_.
+1.  **Login** to the database server via terminal using sudo and use the default/owner database. This will open database server access as  _root_.
+
+    `sudo mysql --user=<dbo username> --password=<dbo password>`
     
-2.  **Create a database** called  _skfs_  and a database user called _skfsdbuser_ for the StrongKey FIDO2 Server application, then grant privileges for the user on the new database. This document uses _AbracaDabra_ as the password for _skfsdbuser_.
+2.  **Create a database** called  _skfs_  and a database user called _skfsdbuser_ for the StrongKey FIDO2 Server application, then grant privileges for the user on the new database. Create a strong password for _skfsdbuser_.
     
     `create database skfs;`
     `grant all on skfs.* to skfsdbuser@localhost identified by '<PASSWORD>';`
     
 3.  **Log out**  of the database admin role.
     
-4.  **Change Directory** to the database home folder. **Login**  to the database server as _skfsdbuser_ using the _skfs_ database.
+4.  **Change Directory** to the database home folder (if unknown, use `printenv` to find MYSQL_HOME). **Login**  to the database server as _skfsdbuser_ using the _skfs_ database.
     
-5.  **Execute the commands** in the _create.txt_ file to create tables. The output should not have any errors. We recommend generating a list of the created tables to verify all were created. 
+5.  **Execute the commands** in the _create.txt_ file to create tables. We recommend generating a list of tables to verify all were created. 
     
 6.  Add the default entries to the the SERVERS, DOMAINS, and FIDO_POLICIES tables:
     
@@ -255,6 +249,19 @@ The StrongKey FIDO2 Server is ready to be deployed.
     _[https://localhost:8181/api/application.wadl](https://localhost:8181/api/application.wadl)_
     
     The StrongKey FIDO2 Server application _Web Application Definition Language (WADL)_ displays.
+
+## WebAuthn Client Files
+StrongKey WebAuthn client uses the following files, contained in the _WebAuthn.tgz_ download, to operate with the StrongKey FIDO2 Server, Community Edition and the sample Relying Party web application code:
+- index.html
+- css/fonts.css
+- css/fido2demo.css
+- js/jquery-3.3.1.min.js
+- js/browserCheck.js
+- js/base64js.min.js
+- js/buffer-5.2.1.js
+- js/base64url.js
+- js/cbor.js
+- js/fido2demo.js
 
 ## Removing the StrongKey FIDO2 Server and Its Components
 

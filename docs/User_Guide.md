@@ -144,7 +144,7 @@ The database may be on the same or a different machine (virtual or physical) tha
 
 ### Database Schema for StrongKey FIDO2 Server
 
-1.  **Login** to the database server via terminal using sudo and use the default/owner database. This will open database server access as  _root_.
+1.  **Login** to the database server via terminal using sudo and the default/owner database. This will open database server access.
 
     `sudo mysql --user=<dbo username> --password=<dbo password>`
     
@@ -157,9 +157,9 @@ The database may be on the same or a different machine (virtual or physical) tha
     
 4.  **Change Directory** to the database home folder (if unknown, use `printenv` to find MYSQL_HOME). **Login**  to the database server as _skfsdbuser_ using the _skfs_ database.
     
-5.  **Execute the commands** in the _create.txt_ file to create tables. We recommend generating a list of tables to verify all were created. 
+5.  **Execute the commands** in _fidoserver/fidoserverInstall/src/fidoserverSQL/mysql/create.txt_ to create the tables. We recommend generating a list of tables to verify all were created (methods vary by database). 
     
-6.  Add the default entries to the the SERVERS, DOMAINS, and FIDO_POLICIES tables:
+6.  Add the default entries to the the SERVERS, DOMAINS, and FIDO_POLICIES tables. The large hash strings contained between "BEGIN CERTIFICATE" and "END CERTIFICATE" are certificates.
     
     `insert into SERVERS values (1, '$(hostname)', 'Active', 'Both', 'Active', null, null);`
     
@@ -179,25 +179,21 @@ The StrongKey FIDO2 Server is fully tested using Payara 4.1 web application serv
 
 ### Download, Install, Configure
 
-1.  **Download** the installation files and **save** the file.
+1.  **Download** the installation files and **save** them locally.
     
-2.  Open a  **terminal window**  and extract the download into _usr/local/strongkey_.
+2.  If not already using one, open a  **terminal window**  and extract the download into _usr/local/strongkey_.
     
 3.  **Download and copy** the JDBC package into the web server's _/lib_ directory.
     
-    `cp <jar-location>/ /usr/local/strongkey/<web-application-folder>/lib`
+    `cp <saved-file-location>/ /usr/local/strongkey/<web-application-folder>/lib`
     
 4.  **Start the web server** and ensure that it has started successfully.
 
 Default ports differ by web server. Use this list of [common default web server ports](https://geekflare.com/default-port-numbers/) or consult the appropriate manuals. Open a web browser and type  **localhost:&lt;port-number&gt;** where &lt;port-number&gt; is the default port for your web server. If your web server must use another port, use that port instead. This opens the FIDO2 Server launch page.
-
-### Max Thread Pool Size
-
-Set the web server's _Max Thread Pool Size_  to  **100**.
     
 ### Create JDBC Resources
 
-1. Make sure you copy the JDBC driver _.JAR_ file into the _/lib_ directory.
+1. Make sure you copy the JDBC driver _.JAR_ file into the web server's _/lib_ directory.
 
 2. Set the JDBC connection pool information as shown here:
 
@@ -205,7 +201,7 @@ Set the web server's _Max Thread Pool Size_  to  **100**.
 	---:  |  :---
 	  _Pool Name_  |  **SKFSPool**
 	  _Resource Type_  |  **javax.sql.ConnectionPoolDataSource**
-	  _Database Driver Vendor_  |  **MariaDB**
+	  _Database Driver Vendor_  |  **&lt;Database Vendor&gt;**
     
 3. You will need to specify the _database name_, _hostname_, _port_, and _user credentials_ for access. Delete any existing values and add the new values as shown here:
     
@@ -213,15 +209,15 @@ Set the web server's _Max Thread Pool Size_  to  **100**.
 	  ---:  |  :---
 	  _User_  |  **skfsdbuser**
 	  _Port_  |  **3306**
-	  _Password_  |  **AbracaDabra**
+	  _Password_  |  **&lt;skfsdbuser password&gt;**
 	  _Server Name_  |  **localhost**
 	  _Database Name_  |  **skfs**
     
-	Test the connection before proceeding.
+	Test the connection before proceeding (methods vary by database).
     
    **NOTE:**  If the connection test fails, please verify the JDBC driver  _.JAR_ file  is in the _/lib_ directory.
     
-4.  To create a JDBC resource that uses the connection pool we just created above, we mus set the resources. Enter the  **JDBC resource information**  as shown here.
+4.  To create a JDBC resource that uses the connection pool we just created above, we must set the resources. Enter the  **JDBC resource information**  as shown here.
     
     **Field**  |  **Value**
     ---:  |  :---
@@ -242,7 +238,7 @@ The StrongKey FIDO2 Server is ready to be deployed.
     
     `asadmin deploy /usr/local/strongkey/fidoserver.ear`
     
-    **NOTE:**  If the deployment fails, verify the HOME folder is configured and check the web application server logs for errors.
+    **NOTE:**  If the deployment fails, verify the HOME folder is configured (using `printenv`) and check the web application server logs for errors.
     
 3.  **Open a browser**  and type the URL:
     

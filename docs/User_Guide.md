@@ -138,32 +138,6 @@ The included default policy enables all supported configuration choices for Stro
 }
 ~~~~
 
-#### Application HOME Folders and the Path
-
-The StrongKey FIDO2 Server is completely configurable to suit a specific enterprise environment. Application HOME folders and environment variables must be in place before the software is deployed and run. 
-
-1.  Open a  **terminal window**.
-    
-2.  Edit the  _/etc/bashrc_  file and export the variables using the command below:
-    
-    `sudo vi /etc/bashrc`
-    
-3.  **Add these lines**  at the end of the file:
-    
-     `export FIDOSERVER_HOME=/usr/local/strongkey/skfs` 
-     
-     `export <WEB_SERVER>_HOME=/usr/local/strongkey/<path-to-web-server-home>/`
-     
-     `PATH=$<WEB_SERVER>_HOME/bin:$PATH`
-    
-4.  **Save**  and  **close**  the file and  **exit**  out of  _root_.
-    
-    `:wq`  `exec bash`
-    
-5.  Veirfy the paths have been included in the environment variables:
-    
-    `printenv`
-
 ### Options for the Database Server
 The instructions for database installation assume strong administrative experience with _structured query language (SQL)_ and methods for your database of choice. StrongKey FIDO2 Server has been tested using MariaDB 10.2.13, but other databases may work. Where possible, _American National Standards Institute (ANSI)_ SQL commands have been used, but due to the variable nature of proprietary SQL, we leave it to the database administrator to choose the appropriate commands for the particular flavor of SQL being used. Beyond the initial creation of users and tables, and the inserting of data therein, there is no reason for direct manipulation of the database once StrongKey FIDO2 Server is installed.
 
@@ -175,8 +149,6 @@ The database may be on the same or a different machine (virtual or physical) tha
 
 1.  **Login** to the database server via terminal using sudo and the default/owner database. This will open database server access.
 
-    `sudo mysql --user=<dbo username> --password=<dbo password>`
-    
 2.  **Create a database** called  _skfs_  and a database user called _skfsdbuser_ for the StrongKey FIDO2 Server application, then grant privileges for the user on the new database. Create a strong password for _skfsdbuser_.
     
     `create database skfs;`
@@ -219,12 +191,14 @@ The StrongKey FIDO2 Server is fully tested using Payara 4.1 web application serv
 4.  **Start the web server** and ensure that it has started successfully.
 
 Default ports differ by web server. Use this list of [common default web server ports](https://geekflare.com/default-port-numbers/) or consult the appropriate manuals. Open a web browser and type  **localhost:&lt;port-number&gt;** where &lt;port-number&gt; is the default port for your web server. If your web server must use another port, use that port instead. This opens the FIDO2 Server launch page.
-    
+
 #### Create JDBC Resources
+
+JEE7 web application servers require the values below to create the Connection Pool, but administration methods vary by vendor.
 
 1. Make sure you copy the JDBC driver _.JAR_ file into the web server's _/lib_ directory.
 
-2. Set the JDBC connection pool information as shown here:
+2. Set the JDBC Connection Pool information as shown here:
 
 	  Field  |  Value
 	---:  |  :---
@@ -263,11 +237,9 @@ The StrongKey FIDO2 Server is ready to be deployed.
 
 1.  Open a  **terminal window**.
     
-2.  **Deploy**  _fidoserver.ear_ using the  _asadmin_  deploy command:
+2.  **Deploy**  _fidoserver.ear_ as appropriate for your web server.
     
-    `asadmin deploy /usr/local/strongkey/fidoserver.ear`
-    
-    **NOTE:**  If the deployment fails, verify the HOME folder is configured (using `printenv`) and check the web application server logs for errors.
+    **NOTE:**  If the deployment fails, verify the web server HOME folder is configured (using `printenv`) and check the web application server logs for errors.
     
 3.  **Open a browser**  and type the URL:
     

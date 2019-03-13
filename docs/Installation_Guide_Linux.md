@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
--  **The scripted installation process has been tested on CentOS 7 only.** The installation script is untested on other flavors of Linux but may work with slight modifications.
+-  **The scripted installation process has been tested on CentOS 7, Ubuntu 18.04, and Debian 9 only** The installation script is untested on other flavors of Linux but may work with slight modifications.
 
 -  A **fully qualified public domain name (FQDN)**. It is very important to have a hostname that is at least _top-level domain (TLD)_+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO functionality may not work.
 
@@ -21,20 +21,20 @@
     sudo apt install wget
      ```
 
-1.  **Change directory** to the target download folder.
+2.  **Change directory** to the target download folder.
 
-2.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz).
+3.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz).
 
     ```sh
     wget https://github.com/StrongKey/FIDO-Server/raw/master/FIDOServer-v0.9-dist.tgz
     ```
 
-3.  **Extract the downloaded file to the current directory**:
+4.  **Extract the downloaded file to the current directory**:
 
     ```sh
     tar xvzf FIDOServer-v0.9-dist.tgz
     ```
-4. Be sure that you have your **server FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
+5. Be sure that you have your **server FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
 
     ```sh
     hostname
@@ -53,7 +53,7 @@
     echo `hostname -I | awk '{print $1}'` $(hostname) | sudo tee -a /etc/hosts
     ```
 
-5.  **Execute** the _install-skfs.sh_ script as follows:
+6.  **Execute** the _install-skfs.sh_ script as follows:
 
     ```sh
     sudo ./install-skfs.sh
@@ -63,11 +63,11 @@
     
     **NOTE: The policy for the StrongKey FIDO Server is a generic policy with default settings.**
 
-9. Using the following command, **confirm your FIDO Server is running**. You should get the API _Web Application Definition Language (WADL)_ file back in response.
+7. Using the following command, **confirm your FIDO Server is running**. You should get the API _Web Application Definition Language (WADL)_ file back in response.
 
     ```sh
     curl -k https://localhost:8181/api/application.wadl
     ```
 
-10. To test this installation of the FIDO2 server, check out the [sample Relying Party](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
+8. To test this installation of the FIDO2 server, check out the [sample Relying Party](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
 

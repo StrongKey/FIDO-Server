@@ -9,6 +9,15 @@
 -- [Administration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#administration)
 - [Alternate Configurations](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#alternate-configurations)
 - [Options with StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-with-strongkey-fido2-server)
+-- [Policies and Their Use](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#policies-and-their-use)
+-- [Application HOME Folders and the Path](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#application-home-folders-and-the-path)
+- [Database Schema for StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#database-schema-for-strongkey-fido2-server)
+- [Options for the Database Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-for-the-database-server)
+- [Options for the Java Web Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-for-the-java-web-server)
+-- [Create JDBC Resources](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#create-jdbc-resources)
+- [Deploy StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#deploy-strongkey-fido-server)
+- [WebAuthn Client Files](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#webauthn-client-files)
+- [Removing StrongKey FIDO2 Server and Its Components](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#removing-strongkey-fido2-server-and-its-components)
 
 ## Overview
 So, you've installed StrongKey's FIDO2 Server and decided to delve depper, into its internal workings. This User Guide will shepherd you through the fine points of configuring and permutating the necessary components to make our FIDO Server more customized to suit your needs.
@@ -44,7 +53,14 @@ StrongKey FIDO2 Server has only been tested using MariaDB (+JDBC), Payara, and O
 -   A [JDBC version of your choice](https://www.soapui.org/jdbc/reference/jdbc-drivers.html)
 -   [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
 
-For the adventurous who want to explore alternate configurations of the FIDO2 Server, the next sections detail the necessary attributes for installation of each component listed above. If you successfully create a working StrongKey FIDO2 Server using alternative configurations, please inform us as soon as possible at support@strongkey.com.
+For the adventurous who want to explore alternate configurations of the FIDO2 Server, the next sections detail the necessary attributes for installation of each component listed above. If you successfully create a wor
+    `cp <saved-file-location>/ /usr/local/strongkey/<web-application-folder>/lib`
+    
+4.  **Start the web server** and ensure that it has started successfully.
+
+Default ports differ by web server. Use this list of [common default web server ports](https://geekflare.com/default-port-numbers/) or consult the appropriate manuals. Open a web browser and type  **localhost:&lt;port-number&gt;** where &lt;port-number&gt; is the default port for your web server. If your web server must use another port, use that port instead. This opens the FIDO2 Server launch page.
+    
+### Create JDBC Resourcesking StrongKey FIDO2 Server using alternative configurations, please inform us as soon as possible at support@strongkey.com.
 
 ## Options with StrongKey FIDO2 Server 
 
@@ -65,6 +81,13 @@ Policy Attribute(s) | Accepted Value(s) &mdash; [...] indicates multiples can be
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"displayName":  |  ["required", "preferred"]  |  Because everyone needs a display name...
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"authenticatorSelection":  |  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"authenticatorAttachment":  |  ["platform", "cross-platform"]  |  [WebAuthn Authenticator Taxonomy](https://w3c.github.io/webauthn/#sctn-authenticator-taxonomy)
+    `cp <saved-file-location>/ /usr/local/strongkey/<web-application-folder>/lib`
+    
+4.  **Start the web server** and ensure that it has started successfully.
+
+Default ports differ by web server. Use this list of [common default web server ports](https://geekflare.com/default-port-numbers/) or consult the appropriate manuals. Open a web browser and type  **localhost:&lt;port-number&gt;** where &lt;port-number&gt; is the default port for your web server. If your web server must use another port, use that port instead. This opens the FIDO2 Server launch page.
+    
+### Create JDBC Resources
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userVerification":  |  ["required", "preferred", "discouraged"]  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"requireResidentKey":  |  [true, false] (**can be both**)  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"excludeCredentials":  |  "enabled" or "disabled" | [WC3 Definition](https://w3c.github.io/webauthn/#dom-publickeycredentialcreationoptions-excludecredentials)
@@ -273,7 +296,7 @@ StrongKey WebAuthn client uses the following files, contained in the _WebAuthn.t
 - js/cbor.js
 - js/fido2demo.js
 
-## Removing the StrongKey FIDO2 Server and Its Components
+## Removing StrongKey FIDO2 Server and Its Components
 
 To uninstall StrongKey FIDO2 Server, run the following command from the */usr/local/strongkey* folder:
 

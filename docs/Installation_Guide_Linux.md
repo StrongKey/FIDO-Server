@@ -14,7 +14,7 @@
 
 ## Installation
 
-0. Install **wget** if it does not exist already.
+1. Install **wget** if it does not exist already.
     ```sh
     sudo yum install wget 
     or

@@ -3,12 +3,12 @@
 ## Contents
 
 - [Overview](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#overview)
-- [API Calls](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#apicalls)
+- [API Calls](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#api-calls)
 -- [Registration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#registration)
 -- [Authentication](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#authentication)
 -- [Administration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#administration)
-- [Alternate Configurations](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#aternateconfigurations)
-- [Options with StrongKey FIDO2 Server]()
+- [Alternate Configurations](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#alternate-configurations)
+- [Options with StrongKey FIDO2 Server](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#options-with-strongkey-fido2-server)
 
 ## Overview
 So, you've installed StrongKey's FIDO2 Server and decided to delve depper, into its internal workings. This User Guide will shepherd you through the fine points of configuring and permutating the necessary components to make our FIDO Server more customized to suit your needs.

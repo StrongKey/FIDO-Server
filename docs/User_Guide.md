@@ -53,14 +53,7 @@ StrongKey FIDO2 Server has only been tested using MariaDB (+JDBC), Payara, and O
 -   A [JDBC version of your choice](https://www.soapui.org/jdbc/reference/jdbc-drivers.html)
 -   [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
 
-For the adventurous who want to explore alternate configurations of the FIDO2 Server, the next sections detail the necessary attributes for installation of each component listed above. If you successfully create a wor
-    `cp <saved-file-location>/ /usr/local/strongkey/<web-application-folder>/lib`
-    
-4.  **Start the web server** and ensure that it has started successfully.
-
-Default ports differ by web server. Use this list of [common default web server ports](https://geekflare.com/default-port-numbers/) or consult the appropriate manuals. Open a web browser and type  **localhost:&lt;port-number&gt;** where &lt;port-number&gt; is the default port for your web server. If your web server must use another port, use that port instead. This opens the FIDO2 Server launch page.
-    
-### Create JDBC Resourcesking StrongKey FIDO2 Server using alternative configurations, please inform us as soon as possible at support@strongkey.com.
+For the adventurous who want to explore alternate configurations of the FIDO2 Server, the next sections detail the necessary attributes for installation of each component listed above. If you successfully create a working StrongKey FIDO2 Server using alternative configurations, please inform us as soon as possible at support@strongkey.com.
 
 ## Options with StrongKey FIDO2 Server 
 
@@ -81,13 +74,6 @@ Policy Attribute(s) | Accepted Value(s) &mdash; [...] indicates multiples can be
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"displayName":  |  ["required", "preferred"]  |  Because everyone needs a display name...
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"authenticatorSelection":  |  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"authenticatorAttachment":  |  ["platform", "cross-platform"]  |  [WebAuthn Authenticator Taxonomy](https://w3c.github.io/webauthn/#sctn-authenticator-taxonomy)
-    `cp <saved-file-location>/ /usr/local/strongkey/<web-application-folder>/lib`
-    
-4.  **Start the web server** and ensure that it has started successfully.
-
-Default ports differ by web server. Use this list of [common default web server ports](https://geekflare.com/default-port-numbers/) or consult the appropriate manuals. Open a web browser and type  **localhost:&lt;port-number&gt;** where &lt;port-number&gt; is the default port for your web server. If your web server must use another port, use that port instead. This opens the FIDO2 Server launch page.
-    
-### Create JDBC Resources
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userVerification":  |  ["required", "preferred", "discouraged"]  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"requireResidentKey":  |  [true, false] (**can be both**)  |  [WebAuthn Authenticator Selection Criteria](https://w3c.github.io/webauthn/#dictdef-authenticatorselectioncriteria)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"excludeCredentials":  |  "enabled" or "disabled" | [WC3 Definition](https://w3c.github.io/webauthn/#dom-publickeycredentialcreationoptions-excludecredentials)
@@ -296,7 +282,7 @@ StrongKey WebAuthn client uses the following files, contained in the _WebAuthn.t
 - js/cbor.js
 - js/fido2demo.js
 
-## Removing StrongKey FIDO2 Server and Its Components
+## Removing the StrongKey FIDO2 Server and Its Components
 
 To uninstall StrongKey FIDO2 Server, run the following command from the */usr/local/strongkey* folder:
 
@@ -304,4 +290,3 @@ To uninstall StrongKey FIDO2 Server, run the following command from the */usr/lo
 sudo ./cleanup.sh
 ```
 This removes all StrongKey files plus the installed dependency packages, including the sample Relying Party web application and the StrongKey WebAuthn client.
-

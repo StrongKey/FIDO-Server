@@ -4,6 +4,7 @@
 
 * [Overview](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#overview)
 * [API Calls](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#api-calls)
+
 ** [Registration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#registration)
 ** [Authentication](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#authentication)
 ** [Administration](https://github.com/khedrond/FIDO-Server/blob/master/docs/User_Guide.md#administration)

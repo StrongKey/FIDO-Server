@@ -110,7 +110,7 @@ public class FidoKeys implements Serializable {
     @Size(max = 45)
     @Column(name = "fido_version")
     private String fidoVersion;
-    @Size(max = 6)
+    @Size(max = 7)
     @Column(name = "fido_protocol")
     private String fidoProtocol;
     @Size(max = 36)

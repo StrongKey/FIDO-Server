@@ -7,7 +7,6 @@
 
 package com.strongkey.appliance.utilities;
 
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +16,7 @@ public class strongkeyLogger {
     private static final String classname = "strongkeyLogger";
 
     // Logger for the application
-    private static final Logger APPL_LOGGER = Logger.getLogger("APPL", "resources.appliance.appliance-messages_" + Locale.getDefault());
+    private static final Logger APPL_LOGGER = Logger.getLogger("APPL", "resources.appliance.appliance-messages");
 
     static {
 

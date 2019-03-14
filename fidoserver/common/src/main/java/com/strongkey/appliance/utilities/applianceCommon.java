@@ -54,7 +54,7 @@ public class applianceCommon {
     private static final ResourceBundle defaultApplianceConfig = ResourceBundle.getBundle("resources.appliance.appliance-configuration");
 
     // Property files used by this application for application messages
-    private static final ResourceBundle msgrb = ResourceBundle.getBundle("resources.appliance.appliance-messages_" + Locale.getDefault());
+    private static final ResourceBundle msgrb = ResourceBundle.getBundle("resources.appliance.appliance-messages");
 
     // Map for the maximum length values
     private static Map<String, Integer> maxlenmap = new ConcurrentHashMap<>();

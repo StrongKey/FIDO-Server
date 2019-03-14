@@ -138,12 +138,12 @@ public class authenticateRestRequestBean implements authenticateRestRequestBeanL
 
         try {
             String hmac = initCryptoModule.getCryptoModule().hmacRequest(signingKeystorePassword, accessKey, requestToHmac);
-            strongkeyLogger.logp(applianceConstants.APPLIANCE_LOGGER, Level.FINE, classname, "execute", "APPL-MSG-1015", hmac);
+            strongkeyLogger.logp(applianceConstants.APPLIANCE_LOGGER, Level.FINE, classname, "execute", "APPL-MSG-1015", hmac.substring(0, 4) + "****************************************");
             if (requestHmac.equals(hmac)) {
                 strongkeyLogger.logp(applianceConstants.APPLIANCE_LOGGER, Level.FINER, classname, "execute", "APPL-MSG-1016", "");
                 return true;
             } else {
-                strongkeyLogger.logp(applianceConstants.APPLIANCE_LOGGER, Level.WARNING, classname, "execute", "APPL-ERR-1016", "Expected HMAC: " + requestHmac + " Produced HMAC: " + hmac);
+                strongkeyLogger.logp(applianceConstants.APPLIANCE_LOGGER, Level.WARNING, classname, "execute", "APPL-ERR-1016", "Expected HMAC: " + requestHmac + " Produced HMAC: " + hmac.substring(0, 4) + "****************************************");
                 return false;
             }
             

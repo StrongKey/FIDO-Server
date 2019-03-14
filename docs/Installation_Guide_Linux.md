@@ -16,14 +16,15 @@
 
 **NOTE:** If the install fails for any reason, follow the instructions for [Removal](#removal), below, and restart from the beginning.
 
-1. Install **wget** if it does not exist already.
+
+1.  Open a terminal and **change directory** to the target download folder.
+
+2. Install **wget** if it does not exist already.
     ```sh
     sudo yum install wget 
     or
     sudo apt install wget
      ```
-
-2.  Open a terminal and **change directory** to the target download folder.
 
 3.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](../FIDOServer-v0.9-dist.tgz).
 
@@ -62,8 +63,6 @@
     ```
 
     The installation script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO2 Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. The default password for the _strongkey_ user is _ShaZam123_.
-    
-    **NOTE: The configuration policy JSON file for the StrongKey FIDO2 Server defaults to the maximum number of options for attestation and encryption settings. See the [StrongKey FIDO2 Server User Guide](User_Guide.md) for detailed policy information.**
 
 7. Using the following command, **confirm your FIDO2 Server is running**. You should get the API _Web Application Definition Language (WADL)_ file back in response.
 
@@ -80,5 +79,5 @@ To uninstall StrongKey FIDO2 Server, run the following command from the folder w
     ```sh
     sudo ./cleanup.sh
     ```
-This removes all StrongKey files plus the installed dependency packages, including the sample Relying Party web application and the StrongKey WebAuthn client.
 
+This removes all StrongKey files plus the installed dependency packages. If you've installed the sample Relying Party web application and the StrongKey WebAuthn client, they will be removed as well.

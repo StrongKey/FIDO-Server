@@ -1,4 +1,4 @@
-#### StrongKey FIDO Server, Community Edition
+#### StrongKey FIDO2 Server, Community Edition
 
 ## Prerequisites
 
@@ -8,13 +8,16 @@
 
 -  The installation script installs Payara running HTTPS on port 8181, so make sure all firewall rules allow that port to be accessed.
 
-- StrongKey's FIDO Server must be installed before the sample Relying Party and sample WebAuthn.
+- StrongKey's FIDO2 Server must be installed before the sample Relying Party and sample WebAuthn.
 
 ----------------
 
 ## Installation
 
-1.  **Change directory** to the target download folder.
+**NOTE:** If the install fails for any reason, follow the instructions for [Removal](#removal), below, and restart from the beginning.
+
+
+1.  Open a terminal and **change directory** to the target download folder.
 
 2.  **Download and install** various dependencies. Run the following commands:
     
@@ -22,7 +25,7 @@
     sudo yum install wget unzip libaio java-1.8.0-openjdk
     ```
 
-3.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](https://github.com/StrongKey/FIDO-Server/blob/master/FIDOServer-v0.9-dist.tgz).
+3.  **Download** the binary distribution file [FIDOServer-v0.9-dist.tgz](../FIDOServer-v0.9-dist.tgz).
 
     ```sh
     wget https://github.com/StrongKey/FIDO-Server/raw/master/FIDOServer-v0.9-dist.tgz
@@ -41,7 +44,7 @@
     -   [mariadb-java-client-2.2.2.jar](https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar)
     -   [Jemalloc 3.6.0-1](https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm)
 
-    To download the files directly to your server, copy the commands below:  
+    To download the files directly to your machine, copy the commands below:  
     
     ```sh
     wget http://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip
@@ -50,11 +53,11 @@
     wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jemalloc-3.6.0-1.el7.x86_64.rpm
     ```
 
-    **NOTE:** The StrongKey FIDO Server has been tested with the above software versions. The StrongKey FIDO Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
+    **NOTE:** The StrongKey FIDO2 Server has been tested with the above software versions. The StrongKey FIDO2 Server should work with any new minor versions released, but the installation script must be modified to accommodate the new filenames.
 
 6.  **Modify** the _COMPANY_ variable in _install-skfs.sh_ to your company name. This provides a label for your certificate.
 
-7. Be sure that you have your **server FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
+7. Be sure that you have your machine's **FQDN set as its hostname**. This is necessary to properly configure the self-signed certificate for the API. Check with the following command:
 
     ```sh
     hostname
@@ -79,15 +82,21 @@
     sudo ./install-skfs.sh
     ```
 
-    The installation script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. The default password for the _strongkey_ user is _ShaZam123_.
-    
-    **NOTE: The policy for the StrongKey FIDO Server is a generic policy with default settings.**
+    The installation script will create a _strongkey_ user account with the home directory of _/usr/local/strongkey_. All software required for the StrongKey FIDO2 Server will be deployed to the _/usr/local/strongkey_ directory and be run by the _strongkey_ user. The default password for the _strongkey_ user is _ShaZam123_.
 
-9. Using the following command, **confirm your FIDO Server is running**. You should get the API _Web Application Definition Language (WADL)_ file back in response.
+9. Using the following command, **confirm your FIDO2 Server is running**. You should get the API _Web Application Definition Language (WADL)_ file back in response.
 
     ```sh
     curl -k https://localhost:8181/api/application.wadl
     ```
 
-10. To test this installation of the FIDO2 server, check out the [sample Relying Party](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
+10. To test this installation of the FIDO2 Server, check out the [sample Relying Party web application](https://github.com/StrongKey/relying-party-java) and [sample WebAuthn client](https://github.com/StrongKey/WebAuthn).
 
+## Removal
+
+To uninstall StrongKey FIDO2 Server, run the following command from the _/usr/local/strongkey_ folder:
+
+    ```sh
+    sudo ./cleanup.sh
+    ```
+This removes all StrongKey files plus the installed dependency packages. If you've installed the sample Relying Party web application and the StrongKey WebAuthn client, they will be removed as well.

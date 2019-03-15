@@ -2,6 +2,7 @@ _site/
 .sass-cache/
 .jekyll-cache/
 .jekyll-metadata
+fidoserver/.DS_store
 fidoserver/fido2mds/target/
 fidoserver/fidoserverEAR/target/
 fidoserver/authenticationBeans/target/

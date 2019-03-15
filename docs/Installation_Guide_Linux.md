@@ -2,7 +2,11 @@
 
 ## Prerequisites
 
--  **The scripted installation process has been tested on CentOS 7, Ubuntu 18.04, and Debian 9 only.** The installation script is untested on other flavors of Linux but may work with slight modifications.
+-  **The scripted installation process has been tested on the following Linux distros only.** The installation script is untested on other flavors of Linux but may work with slight modifications.
+    - RedHat/CentOS/Oracle 7
+    - Ubuntu 18.04
+    - Debian 9
+    - Amazon Linux 2
 
 -  A **fully qualified public domain name (FQDN)**. It is very important to have a hostname that is at least _top-level domain (TLD)_+1 (i.e., [acme.com](http://acme.com), [example.org](http://example.org), etc); otherwise FIDO2 functionality may not work.
 

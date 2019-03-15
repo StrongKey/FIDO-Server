@@ -77,10 +77,10 @@ APT_GET_CMD=$(which apt-get 2>/dev/null)
 
 echo "Installing required linux packages ..."
 if [[ ! -z $YUM_CMD ]]; then
-    yum -y install unzip libaio java-1.8.0-openjdk ncurses-compat-libs >/dev/null 2>&1
+    yum -y install unzip libaio java-1.8.0-openjdk ncurses-compat-libs curl >/dev/null 2>&1
 elif [[ ! -z $APT_GET_CMD ]]; then
     apt-get update >/dev/null 2>&1
-    apt install unzip libaio1 openjdk-8-jdk-headless daemon rng-tools ncurses-compat-libs -y >/dev/null 2>&1
+    apt install unzip libaio1 openjdk-8-jdk-headless daemon rng-tools curl -y >/dev/null 2>&1
     # modify rng tools to use dev urandom as the vm may not have a harware random number generator
     if ! grep -q "^HRNGDEVICE=/dev/urandom" /etc/default/rng-tools ; then
             echo "HRNGDEVICE=/dev/urandom" | sudo tee -a /etc/default/rng-tool

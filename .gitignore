@@ -10,6 +10,7 @@ fidoserver/fidoserverbeans/target/
 fidoserver/api/target/
 fidoserver/common/target/
 fidoserver/crypto/target/
+fidoserver/keymanager/target/
 fidoserver/fidoserverEAR/target/
 fidoserver/fido2mds/src/main/resources/authenticator/metadata/GoTrust_Secp256R1_FIDO2_Interop_CTAP2_Authenticator_newer.json
 fidoserver/fido2mds/src/main/resources/authenticator/metadata/CTAP2Secp256r1AttCert.metadata.json

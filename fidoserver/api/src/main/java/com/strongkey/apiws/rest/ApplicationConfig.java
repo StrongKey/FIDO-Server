@@ -8,6 +8,7 @@
 package com.strongkey.apiws.rest;
 
 //import com.strongauth.apiws.fido2.rest.FidoAdminServlet;
+import com.strongauth.apiws.filters.CrossOriginResourceSharingFilter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +20,7 @@ public class ApplicationConfig extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        return new HashSet<>(Arrays.asList(APIServlet.class));
+        return new HashSet<>(Arrays.asList(APIServlet.class, CrossOriginResourceSharingFilter.class));
 //        return new HashSet<>(Arrays.asList(APIServlet.class, FidoAdminServlet.class));
     }
 }
